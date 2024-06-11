@@ -8,13 +8,16 @@ const PageContainer = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    width: 100%; 
+    height: 100%; 
 `;
 
 const ButtonContainer = styled.div`
     display: flex;
     gap: 1px;
     margin-left: -70px;
-    align-items: flex-end; /* 버튼 컨테이너의 align-items를 flex-end로 설정 */
+    align-items: flex-end; 
+    z-index: 1;
 `;
 
 interface ButtonProps {

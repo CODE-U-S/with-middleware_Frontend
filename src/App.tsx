@@ -10,11 +10,10 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Post from "./components/board/Post";
 
-
-
 const LayoutContainer = styled.div`
     display: flex;
-    height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+    height: calc(100% - 80px); /* 화면 전체 높이에서 헤더 높이(80px)를 뺀 높이 설정 */
+    margin-top: 80px; /* 헤더의 높이만큼 여백 추가 */
 `;
 
 const Content = styled.div`
@@ -22,8 +21,8 @@ const Content = styled.div`
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-     /* 내용이 많을 경우 스크롤이 가능하도록 설정 */
     background-color: #EFEFEF;
+    height: 100%; /* 부모의 높이를 100% 차지 */
 `;
 
 const App: React.FC = () => {
@@ -45,7 +44,6 @@ const App: React.FC = () => {
                 </div>
             </Router>
         </ThemeProvider>
-
     );
 };
 

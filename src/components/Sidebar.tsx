@@ -6,13 +6,11 @@ import { FaPen, FaUsers, FaCode } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
     width: 20%;
-    height: 100vh;
     background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    //box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 `;
 
 const Profile = styled.div`
