@@ -1,5 +1,3 @@
-// Sidebar.tsx
-
 import React from 'react';
 import styled from 'styled-components';
 import { FaPen, FaUsers, FaCode } from 'react-icons/fa';

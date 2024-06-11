@@ -1,26 +1,23 @@
-// GlobalStyles.tsx
-
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
-    * {
-        box-sizing: border-box;
+    @font-face {
+        font-family: 'S-CoreDream-3Light';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
     }
 
-    /* 한글 폰트 적용 */
+    * {
+        box-sizing: border-box;
+        font-family: S-CoreDream-3Light, sans-serif;  /* 전체 폰트 적용 */
+    }
+
     body {
+        padding-top: 73px;
         width: auto;
         height: 100%;
         background: ${(props) => props.theme.Color.backgroundColor};
         color: ${(props) => props.theme.Color.textColor};
-        font-family: 'S-CoreDream-3Light', sans-serif;
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* 페이지 스크롤바 제거 */
-    }
-
-    /* 영어 폰트 적용 */
-    body, input, select, textarea {
-        font-family: 'S-CoreDream-3Light', sans-serif;
     }
 `;
