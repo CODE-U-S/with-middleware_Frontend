@@ -1,3 +1,5 @@
+// GlobalStyles.tsx
+
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
@@ -7,6 +9,7 @@ export const GlobalStyle = createGlobalStyle`
 
     /* 한글 폰트 적용 */
     body {
+        padding-top: 73px;
         width: auto;
         height: 100%;
         background: ${(props) => props.theme.Color.backgroundColor};
