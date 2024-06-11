@@ -1,14 +1,20 @@
+// Header.tsx
+
 import React from 'react';
 import styled from 'styled-components';
 
 // 헤더 컨테이너 스타일
 const HeaderContainer = styled.header`
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 10px;
+    padding: 23px 10px;
     background-color: white;
-    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    box-shadow: 0px 10px 25px 0px #DFDFDF;
 `;
 
 // 로고 이미지 스타일
