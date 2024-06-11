@@ -1,3 +1,5 @@
+// GlobalStyles.tsx
+
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
@@ -7,17 +9,19 @@ export const GlobalStyle = createGlobalStyle`
         font-weight: normal;
         font-style: normal;
     }
-
+    
     * {
         box-sizing: border-box;
-        font-family: S-CoreDream-3Light, sans-serif;  /* 전체 폰트 적용 */
+        font-family: S-CoreDream-3Light, sans-serif;
     }
-
+  
     body {
-        padding-top: 73px;
         width: auto;
         height: 100%;
         background: ${(props) => props.theme.Color.backgroundColor};
         color: ${(props) => props.theme.Color.textColor};
+        margin: 0;
+        padding: 0;
     }
+    
 `;

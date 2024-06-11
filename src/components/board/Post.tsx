@@ -10,7 +10,7 @@ const PageContainer = styled.div`
     padding: 3vh;
     width: 100%;
     height: 100%;
-    overflow: auto; /* 내부 스크롤 추가 */
+
 `;
 
 const ButtonContainer = styled.div`
@@ -104,8 +104,8 @@ const SubmitButton = styled.button`
     cursor: pointer;
     border-radius: 1vh;
     margin-top: 3vh;
-    align-self: flex-end; 
-    font-weight: bold; 
+    align-self: flex-end;
+    font-weight: bold;
 `;
 
 
