@@ -12,9 +12,10 @@ const HeaderContainer = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 23px 10px;
+    padding: 25px 10px;
     background-color: white;
     box-shadow: 0px 10px 25px 0px #DFDFDF;
+    z-index: 10;
 `;
 
 // 로고 이미지 스타일
