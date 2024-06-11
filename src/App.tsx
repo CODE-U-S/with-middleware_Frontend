@@ -23,6 +23,8 @@ const Content = styled.div`
     align-items: center; /* 수직 중앙 정렬 */
     background-color: #EFEFEF;
     height: 100%; /* 부모의 높이를 100% 차지 */
+    padding: 20px; /* 내부 여백 추가 */
+
 `;
 
 const App: React.FC = () => {

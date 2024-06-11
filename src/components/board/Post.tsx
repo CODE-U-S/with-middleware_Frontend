@@ -9,13 +9,14 @@ const PageContainer = styled.div`
     align-items: center;
     padding: 20px;
     width: 100%; 
-    height: 100%; 
+    height: 100%;
+    overflow: auto; /* 내부 스크롤 추가 */
 `;
 
 const ButtonContainer = styled.div`
     display: flex;
     gap: 1px;
-    margin-left: -70px;
+    margin-left: -350px;
     align-items: flex-end; 
     z-index: 1;
 `;
@@ -44,6 +45,10 @@ const Button = styled.button<ButtonProps>`
 `;
 
 const PostContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
     background-color: white;
     padding: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
