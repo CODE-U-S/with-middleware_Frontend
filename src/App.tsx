@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import MainContent from './components/MainContent';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from './styles/GlobalStyles';
 import { Theme } from './styles/theme';
 import './App.css';
+
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Post from "./components/board/Post";
+
 
 
 const LayoutContainer = styled.div`
@@ -16,8 +18,12 @@ const LayoutContainer = styled.div`
 `;
 
 const Content = styled.div`
-    flex: 1;
-    overflow-y: auto; /* 내용이 많을 경우 스크롤이 가능하도록 설정 */
+    flex: 1; /* 남은 모든 공간을 차지함 */
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+     /* 내용이 많을 경우 스크롤이 가능하도록 설정 */
+    background-color: #EFEFEF;
 `;
 
 const App: React.FC = () => {
@@ -31,7 +37,7 @@ const App: React.FC = () => {
                         <Sidebar />
                         <Content>
                             <Routes>
-                                <Route path="/" element={<MainContent />} />
+                                <Route path="/" element={<Post />} />
                                 {/*<Route path="/post" element={<Post />} />*/}
                             </Routes>
                         </Content>
