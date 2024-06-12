@@ -125,7 +125,16 @@ const Post: React.FC = () => {
 
     const handleButtonClick = (category: string | null) => {
         setSelectedButton(category);
-        setSelectedCategory(category);
+        // 선택한 카테고리에 맞는 기본 값 설정
+        if (category === 'teamProject') {
+            setSelectedCategory('App(모바일 애플리케이션)');
+        } else if (category === 'developer') {
+            setSelectedCategory('App(모바일 애플리케이션)');
+        } else if (category === 'designer') {
+            setSelectedCategory('UI/UX 디자인');
+        } else {
+            setSelectedCategory(category);
+        }
     };
 
     const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
