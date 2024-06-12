@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MDEditor from '@uiw/react-md-editor';
 import { options } from './options';
+import { createPost } from '../../api/board/Post'; // createPost 함수 임포트
 
 const PageContainer = styled.div`
     display: flex;
@@ -10,7 +11,6 @@ const PageContainer = styled.div`
     padding: 3vh;
     width: 100%;
     height: 100%;
-
 `;
 
 const ButtonContainer = styled.div`
@@ -33,7 +33,7 @@ const Button = styled.button<ButtonProps>`
     border-radius: 1vh 1vh 0 0;
     transform: scale(${props => props.isSelected ? 1.2 : 1});
     transform-origin: bottom;
-    transition: transform 0.3s ease, margin-left 0.3s ease, margin-right 0.3s ease; /* 마진에 대한 transition 추가 */
+    transition: transform 0.3s ease, margin-left 0.3s ease, margin-right 0.3s ease;
     position: relative;
     z-index: ${props => props.isSelected ? 1 : 0};
     margin-left: ${props => props.isSelected ? '1vw' : '0'};
@@ -43,7 +43,6 @@ const Button = styled.button<ButtonProps>`
         background-color: #007BFF;
     }
 `;
-
 
 const PostContainer = styled.div`
     display: flex;
@@ -80,7 +79,6 @@ const DropdownContainer = styled.div`
     width: 90%;
     margin-bottom: 1vh;
     padding: 1vh;
-
 `;
 
 const Dropdown = styled.select`
@@ -108,12 +106,12 @@ const SubmitButton = styled.button`
     font-weight: bold;
 `;
 
-
 const Post: React.FC = () => {
     const [value, setValue] = useState<string | undefined>("");
     const [selectedButton, setSelectedButton] = useState<string | null>('teamProject');
     const [selectedCategory, setSelectedCategory] = useState<string | null>('teamProject');
     const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
+    const [title, setTitle] = useState<string>("");
 
     useEffect(() => {
         if (selectedCategory !== null && options[selectedCategory]) {
@@ -134,8 +132,27 @@ const Post: React.FC = () => {
         setSelectedCategory(event.target.value);
     };
 
-    const handleSubmission = () => {
-        // 등록 버튼이 클릭되었을 때의 처리를 여기에 추가하세요
+    const handleSubmission = async () => {
+        const category = selectedButton === 'teamProject' ? '팀프로젝트' :
+            selectedButton === 'developer' ? '개발자' :
+                selectedButton === 'designer' ? '디자이너' : '';
+
+        const postData = {
+            title,
+            content: value || "", // undefined일 경우 빈 문자열로 대체
+            user: { id: 1 },
+            category: category,
+            field: selectedCategory,
+        };
+
+        console.log("Request data:", postData);
+        console.log("|||||||   끝났다");
+        try {
+            const response = await createPost(postData);
+            console.log("Post created successfully:", response);
+        } catch (error) {
+            console.error("Failed to create post:", error);
+        }
     };
 
     return (
@@ -147,7 +164,12 @@ const Post: React.FC = () => {
                 <Button color="#4682B4" isSelected={selectedButton === null} onClick={() => handleButtonClick(null)}>스터디</Button>
             </ButtonContainer>
             <PostContainer>
-                <TitleInput type="text" placeholder="제목을 입력하세요" />
+                <TitleInput
+                    type="text"
+                    placeholder="제목을 입력하세요"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
                 {selectedCategory !== null && categoryOptions.length > 0 && (
                     <DropdownContainer>
                         <Dropdown onChange={handleCategoryChange} value={selectedCategory}>
@@ -162,7 +184,7 @@ const Post: React.FC = () => {
                     <StyledMDEditor
                         value={value}
                         onChange={setValue}
-                        height={40*document.documentElement.clientHeight/100}
+                        height={40 * document.documentElement.clientHeight / 100}
                     />
                 </MarkdownEditorContainer>
                 <SubmitButton onClick={handleSubmission}>등록</SubmitButton>

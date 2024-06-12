@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   
     body {
         width: auto;
-        height: 100%;
+        height: auto;
         background: ${(props) => props.theme.Color.backgroundColor};
         color: ${(props) => props.theme.Color.textColor};
         margin: 0;
