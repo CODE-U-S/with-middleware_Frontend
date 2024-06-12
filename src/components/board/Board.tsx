@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getPostsByCategory, Post } from '../../api/board/PostList'; // 여기서 Post 타입을 가져옵니다.
+import { getPostsByCategory, Post } from '../../api/board/api_PostList.ts'; // 여기서 Post 타입을 가져옵니다.
 
 const PostListContainer = styled.div`
     width: 100%;

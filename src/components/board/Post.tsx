@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MDEditor from '@uiw/react-md-editor';
 import { options } from './options';
-import { createPost } from '../../api/board/Post'; // createPost 함수 임포트
+import { createPost } from '../../api/board/api_Post.ts'; // createPost 함수 임포트
 
 const PageContainer = styled.div`
     display: flex;
