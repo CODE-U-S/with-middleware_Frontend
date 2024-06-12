@@ -9,7 +9,6 @@ import './App.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Post from "./components/board/Post";
-import PostView from './components/board/PostView';
 import StudyBoard from "./pages/StudyBoardPage";
 
 
@@ -44,8 +43,6 @@ const App: React.FC = () => {
                                 <Route path="/" element={<Post />} />
                                 <Route path="/post" element={<Post />} />
                                 <Route path="/board" element={<StudyBoard />} />
-                                <Route path="/post/:postId" Component={PostView} />
-
                             </Routes>
                         </Content>
                     </LayoutContainer>
