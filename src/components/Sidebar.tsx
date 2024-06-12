@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { FaPen, FaUsers, FaCode } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
@@ -34,7 +35,7 @@ const ButtonContainer = styled.div`
     width: 100%;
 `;
 
-const Button = styled.button`
+const Button = styled(Link)`
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -62,15 +63,15 @@ const Sidebar: React.FC = () => {
                 <ProfileName>김선희</ProfileName>
             </Profile>
             <ButtonContainer>
-                <Button>
+                <Button to="/post">
                     <FaPen />
                     글쓰기
                 </Button>
-                <Button>
+                <Button to="/board">
                     <FaUsers />
                     팀프로젝트
                 </Button>
-                <Button>
+                <Button to="/board">
                     <FaCode />
                     개발자
                 </Button>
