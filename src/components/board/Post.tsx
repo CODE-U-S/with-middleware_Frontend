@@ -142,9 +142,16 @@ const Post: React.FC = () => {
     };
 
     const handleSubmission = async () => {
-        const category = selectedButton === 'teamProject' ? '팀프로젝트' :
-            selectedButton === 'developer' ? '개발자' :
-                selectedButton === 'designer' ? '디자이너' : '';
+        let category;
+        if (selectedButton === 'teamProject') {
+            category = '팀프로젝트';
+        } else if (selectedButton === 'developer') {
+            category = '개발자';
+        } else if (selectedButton === 'designer') {
+            category = '디자이너';
+        } else {
+            category = '스터디';
+        }
 
         const postData = {
             title,
@@ -155,7 +162,7 @@ const Post: React.FC = () => {
         };
 
         console.log("Request data:", postData);
-        console.log("|||||||   끝났다");
+
         try {
             const response = await createPost(postData);
             console.log("Post created successfully:", response);
