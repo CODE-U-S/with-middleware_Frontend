@@ -9,6 +9,7 @@ import './App.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Post from "./components/board/Post";
+import StudyBoard from "./pages/StudyBoardPage";
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -39,7 +40,8 @@ const App: React.FC = () => {
                         <Content>
                             <Routes>
                                 <Route path="/" element={<Post />} />
-                                {/*<Route path="/post" element={<Post />} />*/}
+                                <Route path="/post" element={<Post />} />
+                                <Route path="/board" element={<StudyBoard />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
