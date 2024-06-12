@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 // 헤더 컨테이너 스타일
@@ -35,8 +35,30 @@ const Icon = styled.img`
     height: 20px;
 `;
 
+const SearchInput = styled.input`
+    margin-right: -1rem;
+    border: none;
+    display: block;
+    border-bottom: 1px solid ${props => props.theme.Color.gray};
+    &::placeholder {
+        color: #BEBEBE;
+    }
+    &:focus {
+        outline: none;
+    }
+`;
+
 // Header 컴포넌트
 const Header: React.FC = () => {
+    // 검색바 관련 useState 선언
+    const [isClickedSearch, setIsClickedSearch] = useState(false);
+    const HandleSearchbar = () => {
+        if(isClickedSearch)
+            setIsClickedSearch(false);
+        else
+            setIsClickedSearch(true);
+    }
+
     return (
         <HeaderContainer>
             {/* 왼쪽 로고 이미지 */}
@@ -44,7 +66,15 @@ const Header: React.FC = () => {
 
             {/* 오른쪽 아이콘 */}
             <IconsContainer>
-                <Icon src="/src/assets/header/search_icon.svg" alt="검색 아이콘" />
+                {isClickedSearch ?
+                    <SearchInput
+                        type="text"
+                        name="search_text"
+                        placeholder="검색어를 입력하세요"
+                        autoFocus   // 검색 아이콘 클릭 시 자동으로 검색창 커서 깜빡임
+                    /> : ''
+                }
+                <Icon src="/src/assets/header/search_icon.svg" alt="검색 아이콘" onClick={HandleSearchbar} />
                 <Icon src="/src/assets/header/user_icon.svg" alt="유저 아이콘" />
                 <Icon src="/src/assets/header/alarm_icon.svg" alt="알람 아이콘" />
             </IconsContainer>
