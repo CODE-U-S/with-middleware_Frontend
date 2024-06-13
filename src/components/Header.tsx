@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
+import {Link} from "react-router-dom";
 
 // 헤더 컨테이너 스타일
 const HeaderContainer = styled.header`
@@ -10,7 +11,7 @@ const HeaderContainer = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 10px;
+    padding: 20px 10px;
     background-color: white;
     box-shadow: 0px 10px 25px 0px #DFDFDF;
     z-index: 10;
@@ -33,6 +34,7 @@ const IconsContainer = styled.div`
 const Icon = styled.img`
     width: 20px;
     height: 20px;
+    cursor: pointer;
 `;
 
 const SearchInput = styled.input`
@@ -40,43 +42,103 @@ const SearchInput = styled.input`
     border: none;
     display: block;
     border-bottom: 1px solid ${props => props.theme.Color.gray};
+
     &::placeholder {
         color: #BEBEBE;
+        font-size: 11pt;
     }
+
     &:focus {
         outline: none;
+    }
+
+    @media screen and (max-width: 600px) {
+        width: 7vmax;
+    }
+    @media screen and (min-width: 600px) and (max-width: 1020px) {
+        width: 17vmax;
+    }
+    @media screen and (min-width: 1020px) {
+        width: 15vmax;
     }
 `;
 
 // Header 컴포넌트
 const Header: React.FC = () => {
-    // 검색바 관련 useState 선언
     const [isClickedSearch, setIsClickedSearch] = useState(false);
+    const [searchText, setSearchText] = useState<string>('');
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    // 검색 아이콘 클릭 여부 판단 함수
     const HandleSearchbar = () => {
-        if(isClickedSearch)
+        if (isClickedSearch)
             setIsClickedSearch(false);
         else
             setIsClickedSearch(true);
     }
+    // 검색 아이콘
+    const SearchIcon = () => {
+        return (
+            <Icon
+                src="/src/assets/header/search_icon.svg"
+                alt="검색 아이콘"
+                className="icon-search"
+                onClick={HandleSearchbar}/>
+        );
+    }
+    // 유저 아이콘
+    const UserIcon = () => {
+        return <Icon src="/src/assets/header/user_icon.svg" alt="유저 아이콘" className="icon-user"/>;
+    }
+    // 알람 아이콘
+    const AlarmIcon = () => {
+        return <Icon src="/src/assets/header/alarm_icon.svg" alt="알람 아이콘" className="icon-alarm"/>;
+    }
+
+    // useEffect 사용 - 검색창 생성 후 검색창이 아닌 다른 곳을 클릭할 경우 검색창이 사라짐
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent): void => {
+            if(searchInputRef.current && !searchInputRef.current.contains(e.target as Node)) {
+                setIsClickedSearch(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [searchText]);
 
     return (
-        <HeaderContainer>
+        <HeaderContainer ref={searchInputRef}>
             {/* 왼쪽 로고 이미지 */}
-            <LogoImage src="/src/assets/header/Logo.svg" alt="로고" />
+            <Link to='/'>
+                <LogoImage src="/src/assets/header/Logo.svg" alt="로고"/>
+            </Link>
 
             {/* 오른쪽 아이콘 */}
             <IconsContainer>
-                {isClickedSearch ?
-                    <SearchInput
-                        type="text"
-                        name="search_text"
-                        placeholder="검색어를 입력하세요"
-                        autoFocus   // 검색 아이콘 클릭 시 자동으로 검색창 커서 깜빡임
-                    /> : ''
-                }
-                <Icon src="/src/assets/header/search_icon.svg" alt="검색 아이콘" onClick={HandleSearchbar} />
-                <Icon src="/src/assets/header/user_icon.svg" alt="유저 아이콘" />
-                <Icon src="/src/assets/header/alarm_icon.svg" alt="알람 아이콘" />
+                {isClickedSearch ? (
+                    <>
+                        <SearchInput
+                            type="text"
+                            name="search_text"
+                            placeholder="검색어를 입력하세요"
+                            autoFocus   // 검색 아이콘 클릭 시 자동으로 검색창 커서 깜빡임
+                            onChange={(e) => {
+                                setSearchText(e.target.value);
+                            }}
+                        />
+                        <Link to={`/posts?posts_title=${searchText}`}>
+                            {/* 검색 아이콘 */}
+                            <SearchIcon />
+                        </Link>
+                    </>
+                ) : (
+                    <SearchIcon />
+                )}
+                <Link to={`/mypage`}>
+                    <UserIcon />
+                </Link>
+                <AlarmIcon />
             </IconsContainer>
         </HeaderContainer>
     );
