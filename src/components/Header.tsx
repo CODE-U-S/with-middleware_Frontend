@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {Link} from "react-router-dom";
 
 // 헤더 컨테이너 스타일
 const HeaderContainer = styled.header`
@@ -33,6 +34,7 @@ const IconsContainer = styled.div`
 const Icon = styled.img`
     width: 20px;
     height: 20px;
+    cursor: pointer;
 `;
 
 const SearchInput = styled.input`
@@ -40,43 +42,87 @@ const SearchInput = styled.input`
     border: none;
     display: block;
     border-bottom: 1px solid ${props => props.theme.Color.gray};
+
     &::placeholder {
         color: #BEBEBE;
+        font-size: 11pt;
     }
+
     &:focus {
         outline: none;
+    }
+
+    @media screen and (max-width: 600px) {
+        width: 7vmax;
+    }
+    @media screen and (min-width: 600px) and (max-width: 1020px) {
+        width: 17vmax;
+    }
+    @media screen and (min-width: 1020px) {
+        width: 15vmax;
     }
 `;
 
 // Header 컴포넌트
 const Header: React.FC = () => {
-    // 검색바 관련 useState 선언
+    // 검색 아이콘 클릭 여부
     const [isClickedSearch, setIsClickedSearch] = useState(false);
+    // 검색어
+    const [searchText, setSearchText] = useState<string>('');
+    // 검색바: 검색 아이콘 클릭 시 보이도록 조정하는 함수
     const HandleSearchbar = () => {
-        if(isClickedSearch)
+        if (isClickedSearch)
             setIsClickedSearch(false);
         else
             setIsClickedSearch(true);
+    }
+    // 검색 아이콘 생성 함수
+    const SearchIcon = () => {
+        return (
+            <Icon
+                src="/src/assets/header/search_icon.svg"
+                alt="검색 아이콘"
+                className="icon-search"
+                onClick={HandleSearchbar}/>
+        );
     }
 
     return (
         <HeaderContainer>
             {/* 왼쪽 로고 이미지 */}
-            <LogoImage src="/src/assets/header/Logo.svg" alt="로고" />
+            <LogoImage src="/src/assets/header/Logo.svg" alt="로고"/>
 
             {/* 오른쪽 아이콘 */}
             <IconsContainer>
-                {isClickedSearch ?
-                    <SearchInput
-                        type="text"
-                        name="search_text"
-                        placeholder="검색어를 입력하세요"
-                        autoFocus   // 검색 아이콘 클릭 시 자동으로 검색창 커서 깜빡임
-                    /> : ''
-                }
-                <Icon src="/src/assets/header/search_icon.svg" alt="검색 아이콘" onClick={HandleSearchbar} />
-                <Icon src="/src/assets/header/user_icon.svg" alt="유저 아이콘" />
-                <Icon src="/src/assets/header/alarm_icon.svg" alt="알람 아이콘" />
+                {isClickedSearch ? (
+                    <>
+                        <SearchInput
+                            type="text"
+                            name="search_text"
+                            placeholder="검색어를 입력하세요"
+                            autoFocus   // 검색 아이콘 클릭 시 자동으로 검색창 커서 깜빡임
+                            onChange={(e) => {
+                                setSearchText(e.target.value);
+                            }}
+                        />
+                        <Link to={`/posts?posts_title=${searchText}`}>
+                            {/* 검색 아이콘 */}
+                            <SearchIcon />
+                        </Link>
+                    </>
+                ) : (
+                    <SearchIcon />
+                )}
+                <Icon
+                    src="/src/assets/header/user_icon.svg"
+                    alt="유저 아이콘"
+                    className="icon-user"
+                />
+                <Icon
+                    src="/src/assets/header/alarm_icon.svg"
+                    alt="알람 아이콘"
+                    className="icon-alarm"
+                />
             </IconsContainer>
         </HeaderContainer>
     );
