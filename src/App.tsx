@@ -9,6 +9,7 @@ import './App.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Post from "./components/board/Post";
+import PostView from './components/board/PostView';
 import StudyBoard from "./pages/StudyBoardPage";
 
 
@@ -23,7 +24,6 @@ const Content = styled.div`
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-    background-color: #EFEFEF;
     height: 100%; /* 부모의 높이를 100% 차지 */
     padding: 20px; /* 내부 여백 추가 */
 
@@ -43,6 +43,7 @@ const App: React.FC = () => {
                                 <Route path="/" element={<Post />} />
                                 <Route path="/post" element={<Post />} />
                                 <Route path="/board" element={<StudyBoard />} />
+                                <Route path="/post/:id" element={<PostView />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>

@@ -1,16 +1,9 @@
-// api/api.ts
-
 import axios from 'axios';
+import { Post } from './types';
 
-interface PostData {
-    title: string;
-    content: string;
-    user: { id: number };
-    category: string | null;
-    field: string | null;
-}
+interface PostData extends Omit<Post, 'id'> {}
 
-export const createPost = async (postData: PostData) => {
+export const createPost = async (postData: PostData): Promise<Post> => {
     try {
         const response = await axios.post('http://localhost:8080/post', postData);
         return response.data;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MDEditor from '@uiw/react-md-editor';
 import { options } from './options';
-import { createPost } from '../../api/board/api_Post.ts'; // createPost 함수 임포트
+import { createPost } from '../../api/board/api_Post.ts';
 
 const PageContainer = styled.div`
     display: flex;
@@ -113,6 +114,8 @@ const Post: React.FC = () => {
     const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
     const [title, setTitle] = useState<string>("");
 
+    const navigate = useNavigate(); // useNavigate 훅 사용
+
     useEffect(() => {
         if (selectedCategory !== null && options[selectedCategory]) {
             setCategoryOptions(options[selectedCategory]);
@@ -166,6 +169,12 @@ const Post: React.FC = () => {
         try {
             const response = await createPost(postData);
             console.log("Post created successfully:", response);
+
+            // 등록 후에 새로운 포스트의 ID 값을 얻어옴
+            const postId = response.id;
+
+            // 얻어온 ID를 사용하여 페이지 이동
+            navigate(`/post/${postId}`);
         } catch (error) {
             console.error("Failed to create post:", error);
         }

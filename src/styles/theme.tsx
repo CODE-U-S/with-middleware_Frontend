@@ -6,6 +6,6 @@ export const Theme : DefaultTheme = {
         gray : '#A0B2C1',
         backgroundColor : '#ffffff',
         textColor: '#2B2E33',
-        sideColor : '#f4f4f4',
+        sideColor : '#f0f0f0'
     }
 }

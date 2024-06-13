@@ -1,6 +1,7 @@
+// Board.tsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getPostsByCategory, Post } from '../../api/board/api_PostList.ts'; // 여기서 Post 타입을 가져옵니다.
+import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
 import MDEditor from '@uiw/react-md-editor';
 
 const PostListContainer = styled.div`
@@ -32,7 +33,7 @@ const PostContent = styled(MDEditor.Markdown)`
 `;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
-    const [posts, setPosts] = useState<Post[]>([]);
+    const [posts, setPosts] = useState<PostType[]>([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
