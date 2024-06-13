@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {Link} from "react-router-dom";
 
@@ -11,7 +11,7 @@ const HeaderContainer = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 10px;
+    padding: 20px 10px;
     background-color: white;
     box-shadow: 0px 10px 25px 0px #DFDFDF;
     z-index: 10;
@@ -65,18 +65,17 @@ const SearchInput = styled.input`
 
 // Header 컴포넌트
 const Header: React.FC = () => {
-    // 검색 아이콘 클릭 여부
     const [isClickedSearch, setIsClickedSearch] = useState(false);
-    // 검색어
     const [searchText, setSearchText] = useState<string>('');
-    // 검색바: 검색 아이콘 클릭 시 보이도록 조정하는 함수
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    // 검색 아이콘 클릭 여부 판단 함수
     const HandleSearchbar = () => {
         if (isClickedSearch)
             setIsClickedSearch(false);
         else
             setIsClickedSearch(true);
     }
-    // 검색 아이콘 생성 함수
+    // 검색 아이콘
     const SearchIcon = () => {
         return (
             <Icon
@@ -86,11 +85,34 @@ const Header: React.FC = () => {
                 onClick={HandleSearchbar}/>
         );
     }
+    // 유저 아이콘
+    const UserIcon = () => {
+        return <Icon src="/src/assets/header/user_icon.svg" alt="유저 아이콘" className="icon-user"/>;
+    }
+    // 알람 아이콘
+    const AlarmIcon = () => {
+        return <Icon src="/src/assets/header/alarm_icon.svg" alt="알람 아이콘" className="icon-alarm"/>;
+    }
+
+    // useEffect 사용 - 검색창 생성 후 검색창이 아닌 다른 곳을 클릭할 경우 검색창이 사라짐
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent): void => {
+            if(searchInputRef.current && !searchInputRef.current.contains(e.target as Node)) {
+                setIsClickedSearch(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [searchText]);
 
     return (
-        <HeaderContainer>
+        <HeaderContainer ref={searchInputRef}>
             {/* 왼쪽 로고 이미지 */}
-            <LogoImage src="/src/assets/header/Logo.svg" alt="로고"/>
+            <Link to='/'>
+                <LogoImage src="/src/assets/header/Logo.svg" alt="로고"/>
+            </Link>
 
             {/* 오른쪽 아이콘 */}
             <IconsContainer>
@@ -113,16 +135,10 @@ const Header: React.FC = () => {
                 ) : (
                     <SearchIcon />
                 )}
-                <Icon
-                    src="/src/assets/header/user_icon.svg"
-                    alt="유저 아이콘"
-                    className="icon-user"
-                />
-                <Icon
-                    src="/src/assets/header/alarm_icon.svg"
-                    alt="알람 아이콘"
-                    className="icon-alarm"
-                />
+                <Link to={`/mypage`}>
+                    <UserIcon />
+                </Link>
+                <AlarmIcon />
             </IconsContainer>
         </HeaderContainer>
     );
