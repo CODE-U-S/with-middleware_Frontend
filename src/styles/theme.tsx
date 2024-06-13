@@ -5,7 +5,7 @@ export const Theme : DefaultTheme = {
         primaryColor : '#196CE9',
         gray : '#A0B2C1',
         backgroundColor : '#ffffff',
-        textColor: '#B75D69',
+        textColor: '#2B2E33',
         sideColor : '#f0f0f0'
     }
 }
