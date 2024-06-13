@@ -5,6 +5,7 @@ import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파
 import MDEditor from '@uiw/react-md-editor';
 
 const PostListContainer = styled.div`
+    width: 100vw;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
     padding-right: 10%;
