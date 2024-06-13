@@ -24,7 +24,6 @@ const Content = styled.div`
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-    background-color: #EFEFEF;
     height: 100%; /* 부모의 높이를 100% 차지 */
     padding: 20px; /* 내부 여백 추가 */
 
@@ -44,8 +43,7 @@ const App: React.FC = () => {
                                 <Route path="/" element={<Post />} />
                                 <Route path="/post" element={<Post />} />
                                 <Route path="/board" element={<StudyBoard />} />
-                                <Route path="/post/:postId" Component={PostView} />
-
+                                <Route path="/post/:id" element={<PostView />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
