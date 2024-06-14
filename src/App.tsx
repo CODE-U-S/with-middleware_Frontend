@@ -14,6 +14,8 @@ import StudyBoard from "./pages/StudyBoardPage";
 import TeamBoard from "./pages/TeamBoardPage";
 import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
+import LikeBoardPage from "./pages/LikeBoardPage.tsx";
+import RecentBoardPage from "./pages/RecentBoardPage.tsx";
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -44,7 +46,9 @@ const App: React.FC = () => {
                                 <Route path="/" element={<TeamBoard />} />
                                 <Route path="/developers" element={<DevelopBoard />} />
                                 <Route path="/designs" element={<DesignBoard />} />
-                                <Route path="/studies" element={<StudyBoard />} />
+                                <Route path="/study" element={<StudyBoard />} />
+                                <Route path="/like" element={<LikeBoardPage />} />
+                                <Route path="/recent" element={<RecentBoardPage />} />
                                 <Route path="/post/:id" element={<PostView />} />
                                 <Route path="/post" element={<Post />} />
                             </Routes>
