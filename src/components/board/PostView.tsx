@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost } from '../../api/board/api_PostView';
 import { Post as PostType } from '../../api/board/types';
+import MDEditor from '@uiw/react-md-editor';
 
 const PageContainer = styled.div`
     display: flex;
@@ -54,16 +55,13 @@ const Divider = styled.hr`
     margin: 2vh 0;
 `;
 
-const Content = styled.div`
-    font-size: 2.5vh;
-    line-height: 1.5;
-`;
-
 const BoldDate = styled.span`
     font-weight: bold;
 `;
 
-const CategoryButton = styled.button`
+const CustomButton = styled.button`
+    display: flex;
+    align-items: center;
     background-color: #fff;
     color: black;
     font-size: 2vh;
@@ -72,11 +70,19 @@ const CategoryButton = styled.button`
     border-radius: 5vh;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-const FieldButton = styled(CategoryButton)`
-    /* CategoryButton 스타일을 상속. */
+// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
+const DesignIcon = () => <Icon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+const DevelopIcon = () => <Icon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+const StudyIcon = () => <Icon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+const TeamIcon = () => <Icon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
+const Icon = styled.img`
+    width: 1.5vh;
+    height: 2vh;
+    margin-right: 1vh;
 `;
 
 const PostView: React.FC = () => {
@@ -105,6 +111,22 @@ const PostView: React.FC = () => {
         return <div>Loading...</div>;
     }
 
+    // 함수를 통해 카테고리에 따른 아이콘 선택
+    const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
+        switch (category) {
+            case '팀프로젝트':
+                return <TeamIcon />;
+            case '개발자':
+                return <DevelopIcon />;
+            case '디자이너':
+                return <DesignIcon />;
+            case '스터디':
+                return <StudyIcon />;
+            default:
+                return null; // 기본적으로 아이콘 없음
+        }
+    };
+
     return (
         <PageContainer>
             <PostContainer>
@@ -115,14 +137,23 @@ const PostView: React.FC = () => {
                         작성일 <BoldDate>{post.createdDate}</BoldDate>
                     </InfoItem>
                     <InfoItem>
-                        <CategoryButton>{post.category}</CategoryButton>
+                        {post.category && (
+                            <CustomButton>
+                                {getCategoryIcon(post.category)}
+                                {post.category}
+                            </CustomButton>
+                        )}
                     </InfoItem>
                     <InfoItem>
-                        <FieldButton>{post.field}</FieldButton>
+                        {post.field && (
+                            <CustomButton>
+                                {post.field}
+                            </CustomButton>
+                        )}
                     </InfoItem>
                 </InfoContainer>
                 <Divider />
-                <Content>{post.content}</Content>
+                <MDEditor.Markdown source={post.content} /> {/* Correctly render markdown content */}
             </PostContainer>
         </PageContainer>
     );
