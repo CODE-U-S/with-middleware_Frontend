@@ -1,4 +1,3 @@
-// Board.tsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -168,6 +167,25 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         }
     };
 
+    const formatDate = (date: string | Date): string => {
+        const modifiedDate = new Date(date);
+        const now = new Date(); // 현재 시간
+        const differenceInMilliseconds = now.getTime() - modifiedDate.getTime();
+        const seconds = Math.floor(differenceInMilliseconds / 1000);
+    
+        if (seconds < 60) {
+            return '방금 전';
+        } else if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes}분 전`;
+        } else if (seconds < 86400) {
+            const hours = Math.floor(seconds / 3600);
+            return `${hours}시간 전`;
+        } else {
+            return formatDistanceToNow(modifiedDate, { locale: ko, addSuffix: true });
+        }
+    };
+
     return (
         <PostListContainer>
             {posts.map((post) => (
@@ -181,7 +199,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             <ProfileDescription>
                                 <ProfileNameAndTime>
                                     <ProfileName>{post.user.name}</ProfileName>
-                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDistanceToNow(new Date(post.modifiedDate), { locale: ko, addSuffix: true })}</PostTime>
+                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
                                 </ProfileNameAndTime>
                                 <ProfileIconList>
                                     {post.field && (
