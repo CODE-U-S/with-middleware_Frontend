@@ -6,7 +6,7 @@ import { Theme } from '../styles/theme'; // 테마 가져오기
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     width: 20%;
-    height: 100vh; /* 화면 전체 높이 */
+    height: 100vh; 
     background-color: ${props => props.theme.Color.sideColor};
     display: flex;
     flex-direction: column;
@@ -70,13 +70,21 @@ const Sidebar: React.FC = () => {
                         <FaPen />
                         글쓰기
                     </Button>
-                    <Button to="/board">
+                    <Button to="/">
                         <FaUsers />
                         팀프로젝트
                     </Button>
-                    <Button to="/board">
+                    <Button to="/developers">
                         <FaCode />
                         개발자
+                    </Button>
+                    <Button to="/designs">
+                        <FaCode />
+                        디자이너
+                    </Button>
+                    <Button to="/studies">
+                        <FaCode />
+                        스터디
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>
