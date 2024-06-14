@@ -11,7 +11,9 @@ import Sidebar from './components/Sidebar';
 import Post from "./components/board/Post";
 import PostView from './components/board/PostView';
 import StudyBoard from "./pages/StudyBoardPage";
-
+import TeamBoard from "./pages/TeamBoardPage";
+import DevelopBoard from "./pages/DevelopBoardPage";
+import DesignBoard from "./pages/DesignBoardPage";
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -34,16 +36,18 @@ const App: React.FC = () => {
         <ThemeProvider theme={Theme}>
             <Router>
                 <GlobalStyle />
-                <div className="app">
+                <div className="app" >
                     <Header />
                     <LayoutContainer>
                         <Sidebar />
                         <Content>
                             <Routes>
-                                <Route path="/" element={<Post />} />
-                                <Route path="/post" element={<Post />} />
-                                <Route path="/board" element={<StudyBoard />} />
+                                <Route path="/" element={<TeamBoard />} />
+                                <Route path="/developers" element={<DevelopBoard />} />
+                                <Route path="/designs" element={<DesignBoard />} />
+                                <Route path="/studies" element={<StudyBoard />} />
                                 <Route path="/post/:id" element={<PostView />} />
+                                <Route path="/post" element={<Post />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
