@@ -209,7 +209,7 @@ const Post: React.FC = () => {
                     <StyledMDEditor
                         value={value}
                         onChange={setValue}
-                        height={40 * document.documentElement.clientHeight / 100}
+                        height="auto"
                     />
                 </MarkdownEditorContainer>
                 <SubmitButton onClick={handleSubmission}>등록</SubmitButton>
