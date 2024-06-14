@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import MDEditor from '@uiw/react-md-editor';
+import rehypeSanitize from 'rehype-sanitize';
 import { options } from './options';
 import { createPost } from '../../api/board/api_Post.ts';
 
@@ -113,7 +114,10 @@ const Post: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>('teamProject');
     const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
     const [title, setTitle] = useState<string>("");
+    const MIN_EDITOR_HEIGHT = 200;
+    const [editorHeight, setEditorHeight] = useState(MIN_EDITOR_HEIGHT); // 초기 높이를 설정합니다.
 
+    const viewerRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate(); // useNavigate 훅 사용
 
     useEffect(() => {
@@ -125,6 +129,15 @@ const Post: React.FC = () => {
     useEffect(() => {
         setSelectedCategory('teamProject'); // 페이지 로드 시 '팀프로젝트'를 선택
     }, []);
+
+    useEffect(() => {
+        if (viewerRef.current) {
+            const viewerHeight = viewerRef.current.scrollHeight;
+            if (viewerHeight > MIN_EDITOR_HEIGHT) {
+                setEditorHeight(viewerHeight); // 에디터 높이를 업데이트합니다.
+            }
+        }
+    }, [value]);
 
     const handleButtonClick = (category: string | null) => {
         setSelectedButton(category);
@@ -209,9 +222,13 @@ const Post: React.FC = () => {
                     <StyledMDEditor
                         value={value}
                         onChange={setValue}
-                        height="auto"
+                        height={editorHeight + 100}
+                        enableScroll={false}
                     />
                 </MarkdownEditorContainer>
+                <div ref={viewerRef} style={{ visibility: 'hidden', position: 'absolute', top: 0, left: 0 }}>
+                    <MDEditor.Markdown source={value} rehypePlugins={[[rehypeSanitize]]} />
+                </div>
                 <SubmitButton onClick={handleSubmission}>등록</SubmitButton>
             </PostContainer>
         </PageContainer>
