@@ -78,7 +78,9 @@ const StyledMDEditor = styled(MDEditor)`
 `;
 
 const DropdownContainer = styled.div`
-    width: 90%;
+    display: flex;
+    align-items: center;
+    width: 100%;
     margin-bottom: 1vh;
     padding: 1vh;
 `;
@@ -106,6 +108,12 @@ const SubmitButton = styled.button`
     margin-top: 3vh;
     align-self: flex-end;
     font-weight: bold;
+`;
+
+const CategoryLabel = styled.p`
+    width: 5%;
+    font-size: 2vh;
+    margin-right: 1vw;
 `;
 
 const Post: React.FC = () => {
@@ -210,6 +218,7 @@ const Post: React.FC = () => {
                 />
                 {selectedCategory !== null && categoryOptions.length > 0 && (
                     <DropdownContainer>
+                        <CategoryLabel>분류: </CategoryLabel>
                         <Dropdown onChange={handleCategoryChange} value={selectedCategory}>
                             <Option value="" disabled>분야를 선택하세요</Option>
                             {categoryOptions.map((option: string, index: number) => (
