@@ -16,7 +16,6 @@ const PostListContainer = styled.div`
 const PostItem = styled(Link)`
     width: 80%;
     height: 25vh;
-    overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
     margin-bottom: 50px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -35,6 +34,8 @@ const PostTitle = styled.h2`
 `;
 
 const PostContent = styled(MDEditor.Markdown)`
+    height: 75%;
+    overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
     font-size: 16px;
     background: rgba(255, 0, 0, 0);
 `;
