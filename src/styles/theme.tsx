@@ -8,4 +8,5 @@ export const Theme : DefaultTheme = {
         textColor: '#2B2E33',
         sideColor : '#ffffff'
     }
+
 }
