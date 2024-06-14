@@ -38,7 +38,6 @@ const Profile = styled.div`
     align-items: center;
     height: 100%;
     width: 100%;
-    // border: 1px solid yellowgreen;
 `;
 
 const ProfileImage = styled.img`
@@ -51,7 +50,6 @@ const ProfileDescription = styled.div`
     display: flex;
     flex-direction: column;
     margin-left: 0.5vw;
-    // border: 2px solid blue;
 `;
 
 const ProfileNameAndTime = styled.div`
@@ -59,7 +57,6 @@ const ProfileNameAndTime = styled.div`
     flex-direction: row;
     align-items: center;
     height: 2vh;
-    // border: 1px solid aqua;
 `;
 
 const ProfileIconList = styled.div`
@@ -67,7 +64,6 @@ const ProfileIconList = styled.div`
     flex-direction: row;
     align-items: center;
     width: 100%;
-    // border: 1px solid yellow;
 `;
 
 const PostTime = styled.p`
@@ -89,13 +85,12 @@ const PostDescription = styled.div`
     display: flex;
     flex-direction: column;
     height: 17%;
-    // border: 1px dotted red;
 `;
 
 const PostTitle = styled.h2`
     font-size: 20px;
     margin: 0;
-    margin-bottom: 20px;
+    margin-bottom: 1.5vh;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
@@ -103,7 +98,7 @@ const PostTitle = styled.h2`
 `;
 
 const PostContent = styled(MDEditor.Markdown)`
-    height: 15vh;
+    height: 16vh;
     font-size: 13px;
     overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
     background: rgba(255, 0, 0, 0);
@@ -135,7 +130,7 @@ const PostFooter = styled.div`
     display: flex;
     flex-direction: row;
     margin-top: 0.5vh;
-    height: 3vh;
+    height: 2vh;
     border: 1px solid red;
 `;
 
@@ -179,10 +174,8 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
                             <ProfileDescription>
                                 <ProfileNameAndTime>
-                                    <ProfileName>김선희</ProfileName>
-                                    <PostTime>
-                                        · {post.modifiedDate && formatDistanceToNow(new Date(post.modifiedDate), { locale: ko, addSuffix: true })}
-                                    </PostTime>
+                                    <ProfileName>{post.user.name}</ProfileName>
+                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDistanceToNow(new Date(post.modifiedDate), { locale: ko, addSuffix: true })}</PostTime>
                                 </ProfileNameAndTime>
                                 <ProfileIconList>
                                     {post.field && (
@@ -194,6 +187,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             </ProfileDescription>
                         </Profile>
                     </PostDescription>
+                    <hr/>
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>
