@@ -21,6 +21,8 @@ const PostItem = styled(Link)`
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
+    background-color: #fefefe;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 
     &:visited {
         color: black; /* 방문한 링크의 색상을 기본 텍스트 색상과 동일하게 설정 */
@@ -134,6 +136,10 @@ const PostFooter = styled.div`
     border: 1px solid red;
 `;
 
+const Divider = styled.hr`
+    width: 100%;
+    border: 0.5px solid #ddd;
+`;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -187,7 +193,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             </ProfileDescription>
                         </Profile>
                     </PostDescription>
-                    <hr/>
+                    <Divider/>
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>
