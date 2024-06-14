@@ -1,6 +1,7 @@
 // Board.tsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
 import MDEditor from '@uiw/react-md-editor';
 
@@ -12,7 +13,7 @@ const PostListContainer = styled.div`
     padding-left: 10%;
 `;
 
-const PostItem = styled.div`
+const PostItem = styled(Link)`
     width: 80%;
     height: 25vh;
     overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
@@ -20,6 +21,11 @@ const PostItem = styled.div`
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    text-decoration: none;
+
+    &:visited {
+        color: black; /* 방문한 링크의 색상을 기본 텍스트 색상과 동일하게 설정 */
+    }
 `;
 
 const PostTitle = styled.h2`
@@ -48,7 +54,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     return (
         <PostListContainer>
             {posts.map((post) => (
-                <PostItem key={post.id}>
+                <PostItem key={post.id} to={`/post/${post.id}`}>
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content}/>
                 </PostItem>
