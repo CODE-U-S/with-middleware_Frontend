@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost } from '../../api/board/api_PostView';
 import { Post as PostType } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
+import { FaArrowLeft } from 'react-icons/fa';
+import {ViewButton} from "./ViewButton.ts";
 
-const PageContainer = styled.div`
+const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 100%;
+    padding: 0 5vh; /* 전체 콘텐츠에서 좌우 여백 추가 */
 `;
 
 const PostContainer = styled.div`
@@ -18,14 +21,14 @@ const PostContainer = styled.div`
     flex-direction: column;
     width: 100%;
     background-color: white;
-    padding: 5vh;
+    padding: 5vh 25vh; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 1vh;
 `;
 
 const Title = styled.h1`
-    font-size: 4vh;
-    margin-bottom: 1vh;
+    font-size: 5vh;
+    margin-bottom: 3vh;
 `;
 
 const UserName = styled.div`
@@ -37,8 +40,7 @@ const UserName = styled.div`
 
 const InfoContainer = styled.div`
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-between; /* 요소 사이의 간격을 최대화 */
     align-items: center;
     margin-bottom: 1vh;
     font-size: 2vh;
@@ -73,11 +75,19 @@ const CustomButton = styled.button`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
-const DesignIcon = () => <Icon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
-const DevelopIcon = () => <Icon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
-const StudyIcon = () => <Icon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
-const TeamIcon = () => <Icon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+const BackButton = styled(ViewButton)`
+    position: fixed; 
+    top: 25vh; 
+    left: 55vh; 
+`;
+
+const StatusButton = styled(ViewButton)`
+    position: fixed; 
+    top: 35vh; 
+    right: 15vh; 
+    background: #196CE9;
+    color: white;
+`;
 
 const Icon = styled.img`
     width: 1.5vh;
@@ -85,10 +95,16 @@ const Icon = styled.img`
     margin-right: 1vh;
 `;
 
+const DesignIcon = () => <Icon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+const DevelopIcon = () => <Icon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+const StudyIcon = () => <Icon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+const TeamIcon = () => <Icon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -96,7 +112,7 @@ const PostView: React.FC = () => {
                 const data = await getPost(Number(id));
                 setPost(data);
             } catch (error) {
-                setError("Failed to fetch post.");
+                setError("포스트를 불러오는 데 실패했습니다.");
             }
         };
 
@@ -108,7 +124,7 @@ const PostView: React.FC = () => {
     }
 
     if (!post) {
-        return <div>Loading...</div>;
+        return <div>로딩 중...</div>;
     }
 
     // 함수를 통해 카테고리에 따른 아이콘 선택
@@ -127,11 +143,25 @@ const PostView: React.FC = () => {
         }
     };
 
+    const getStatusButtonText = (status: string | null | undefined): string => {
+        switch (status) {
+            case 'OPEN':
+                return '모집중';
+            case 'CLOSED':
+                return '모집완료';
+            default:
+                return '';
+        }
+    };
+
     return (
-        <PageContainer>
+        <Container>
+            <BackButton onClick={() => navigate('/')}>
+                <FaArrowLeft style={{ marginRight: '0.5vh' }} />
+            </BackButton>
             <PostContainer>
                 <Title>{post.title}</Title>
-                <UserName>{post.user.name || "Unknown User"}</UserName>
+                <UserName>{post.user.name || "알 수 없는 사용자"}</UserName>
                 <InfoContainer>
                     <InfoItem>
                         작성일 <BoldDate>{post.createdDate}</BoldDate>
@@ -153,9 +183,14 @@ const PostView: React.FC = () => {
                     </InfoItem>
                 </InfoContainer>
                 <Divider />
-                <MDEditor.Markdown source={post.content} /> {/* Correctly render markdown content */}
+                <MDEditor.Markdown source={post.content} /> {/* 마크다운 콘텐츠를 정확히 렌더링 */}
             </PostContainer>
-        </PageContainer>
+            {post.status && (
+                <StatusButton>
+                    {getStatusButtonText(post.status)}
+                </StatusButton>
+            )}
+        </Container>
     );
 };
 

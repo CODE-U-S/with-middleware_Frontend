@@ -10,4 +10,5 @@ declare module 'styled-components' {
             sideColor : string;
         }
     }
+    
 }

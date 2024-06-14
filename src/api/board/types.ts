@@ -17,4 +17,5 @@ export interface Post {
     modifiedDate?: string | null;
     category: string | null;
     field: string | null;
+    status: "OPEN" | "CLOSED";
 }
