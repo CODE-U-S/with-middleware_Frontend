@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
 import { FaPen, FaUsers, FaCode } from 'react-icons/fa';
-import { Theme } from '../styles/theme'; // 테마 가져오기
+import { Theme } from '../styles/theme';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     width: 20%;

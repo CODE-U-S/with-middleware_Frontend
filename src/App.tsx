@@ -27,8 +27,7 @@ const Content = styled.div`
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
     height: 100%; /* 부모의 높이를 100% 차지 */
-    padding: 20px; /* 내부 여백 추가 */
-
+    //padding: 20px; // Postview에는 뒷배경이 안보이게 하기위함.
 `;
 
 const App: React.FC = () => {

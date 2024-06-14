@@ -9,7 +9,7 @@ const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 3vh;
+    padding: 5vh;
     width: 100%;
     height: 100%;
 `;
@@ -130,13 +130,13 @@ const Post: React.FC = () => {
         setSelectedButton(category);
         // 선택한 카테고리에 맞는 기본 값 설정
         if (category === 'teamProject') {
-            setSelectedCategory('App(모바일 애플리케이션)');
+            setSelectedCategory('teamProject');
         } else if (category === 'developer') {
-            setSelectedCategory('App(모바일 애플리케이션)');
+            setSelectedCategory('developer');
         } else if (category === 'designer') {
-            setSelectedCategory('UI/UX 디자인');
+            setSelectedCategory('designer');
         } else {
-            setSelectedCategory(category);
+            setSelectedCategory(null); // 스터디의 경우 null로 설정
         }
     };
 
@@ -158,8 +158,8 @@ const Post: React.FC = () => {
 
         const postData = {
             title,
-            content: value || "", // undefined일 경우 빈 문자열로 대체
-            user: { id: 1 },
+            content: value || "",
+            user: { id: 1, name: 'Example User' }, // 예시로 name 추가
             category: category,
             field: selectedCategory,
         };
