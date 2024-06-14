@@ -1,4 +1,3 @@
-// Board.tsx
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -21,6 +20,8 @@ const PostItem = styled(Link)`
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
+    background-color: #fefefe;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 
     &:visited {
         color: black; /* 방문한 링크의 색상을 기본 텍스트 색상과 동일하게 설정 */
@@ -134,6 +135,10 @@ const PostFooter = styled.div`
     border: 1px solid red;
 `;
 
+const Divider = styled.hr`
+    width: 100%;
+    border: 0.5px solid #ddd;
+`;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [posts, setPosts] = useState<PostType[]>([]);
@@ -162,6 +167,25 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         }
     };
 
+    const formatDate = (date: string | Date): string => {
+        const modifiedDate = new Date(date);
+        const now = new Date(); // 현재 시간
+        const differenceInMilliseconds = now.getTime() - modifiedDate.getTime();
+        const seconds = Math.floor(differenceInMilliseconds / 1000);
+    
+        if (seconds < 60) {
+            return '방금 전';
+        } else if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes}분 전`;
+        } else if (seconds < 86400) {
+            const hours = Math.floor(seconds / 3600);
+            return `${hours}시간 전`;
+        } else {
+            return formatDistanceToNow(modifiedDate, { locale: ko, addSuffix: true });
+        }
+    };
+
     return (
         <PostListContainer>
             {posts.map((post) => (
@@ -175,7 +199,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             <ProfileDescription>
                                 <ProfileNameAndTime>
                                     <ProfileName>{post.user.name}</ProfileName>
-                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDistanceToNow(new Date(post.modifiedDate), { locale: ko, addSuffix: true })}</PostTime>
+                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
                                 </ProfileNameAndTime>
                                 <ProfileIconList>
                                     {post.field && (
@@ -187,7 +211,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                             </ProfileDescription>
                         </Profile>
                     </PostDescription>
-                    <hr/>
+                    <Divider/>
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>

@@ -112,7 +112,8 @@ const SubmitButton = styled.button`
 
 const CategoryLabel = styled.p`
     width: 5%;
-    font-size: 2vh;
+    font-size: 2.7vh;
+    font-weight: bold;
     margin-right: 1vw;
 `;
 
@@ -218,7 +219,7 @@ const Post: React.FC = () => {
                 />
                 {selectedCategory !== null && categoryOptions.length > 0 && (
                     <DropdownContainer>
-                        <CategoryLabel>분류: </CategoryLabel>
+                        <CategoryLabel>분류 </CategoryLabel>
                         <Dropdown onChange={handleCategoryChange} value={selectedCategory}>
                             <Option value="" disabled>분야를 선택하세요</Option>
                             {categoryOptions.map((option: string, index: number) => (
