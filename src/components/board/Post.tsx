@@ -151,16 +151,19 @@ const Post: React.FC = () => {
     const handleButtonClick = (category: string | null) => {
         setSelectedButton(category);
         // 선택한 카테고리에 맞는 기본 값 설정
-        if (category === 'teamProject') {
-            setSelectedCategory('teamProject');
-        } else if (category === 'developer') {
-            setSelectedCategory('developer');
-        } else if (category === 'designer') {
-            setSelectedCategory('designer');
+        if (category && options[category]) {
+            setSelectedCategory(options[category][0]); // options 객체에서 첫 번째 값을 선택
         } else {
             setSelectedCategory(null); // 스터디의 경우 null로 설정
         }
     };
+
+    useEffect(() => {
+        if (selectedButton !== null && options[selectedButton]) {
+            setCategoryOptions(options[selectedButton]);
+            setSelectedCategory(options[selectedButton][0]); // options 객체에서 첫 번째 값을 선택
+        }
+    }, [selectedButton]);
 
     const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCategory(event.target.value);
@@ -184,6 +187,7 @@ const Post: React.FC = () => {
             user: { id: 1, name: 'Example User' }, // 예시로 name 추가
             category: category,
             field: selectedCategory,
+            status: 'OPEN' as 'OPEN' | 'CLOSED'
         };
 
         console.log("Request data:", postData);
