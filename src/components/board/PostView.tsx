@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { getPost } from '../../api/board/api_PostView';
 import { Post as PostType } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaHeart  } from 'react-icons/fa';
 import {ViewButton} from "./ViewButton.ts";
 
 const Container = styled.div`
@@ -89,6 +89,15 @@ const StatusButton = styled(ViewButton)`
     color: white;
 `;
 
+const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
+    position: fixed;
+    top: 41.5vh;
+    right: 15vh;
+    background: #fff; /* Red color when liked */
+    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
+`;
+
+
 const Icon = styled.img`
     width: 1.5vh;
     height: 2vh;
@@ -104,6 +113,7 @@ const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [liked, setLiked] = useState(false); // 좋아요 상태 Hook 추가
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -159,6 +169,11 @@ const PostView: React.FC = () => {
         return createDate ? createDate.substring(0, 10) : "시간 정보 없음";
     }
 
+    // 좋아요 버튼 핸들러
+    const handleLikeClick = () => {
+        setLiked(!liked);
+    };
+
     return (
         <Container>
             <BackButton onClick={() => navigate('/')}>
@@ -195,6 +210,9 @@ const PostView: React.FC = () => {
                     {getStatusButtonText(post.status)}
                 </StatusButton>
             )}
+            <HeartButton onClick={handleLikeClick} isLiked={liked}>
+                <FaHeart style={{ marginRight: '0.5vh' }} />
+            </HeartButton>
         </Container>
     );
 };

@@ -19,3 +19,11 @@ export interface Post {
     field: string | null;
     status: "OPEN" | "CLOSED";
 }
+
+export interface Like {
+    id: number;
+    user: User;
+    post: Post;
+    createdDate?: string | null;
+    modifiedDate?: string | null;
+}
