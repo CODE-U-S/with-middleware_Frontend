@@ -154,6 +154,11 @@ const PostView: React.FC = () => {
         }
     };
 
+    // 날짜 포맷팅
+    const getPostDate = (createDate: string | null | undefined): string | string => {
+        return createDate ? createDate.substring(0, 10) : "시간 정보 없음";
+    }
+
     return (
         <Container>
             <BackButton onClick={() => navigate('/')}>
@@ -164,7 +169,7 @@ const PostView: React.FC = () => {
                 <UserName>{post.user.name || "알 수 없는 사용자"}</UserName>
                 <InfoContainer>
                     <InfoItem>
-                        작성일 <BoldDate>{post.createdDate}</BoldDate>
+                        작성일 <BoldDate>{getPostDate(post.createdDate)}</BoldDate>
                     </InfoItem>
                     <InfoItem>
                         {post.category && (
