@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
-import { FaPen, FaUsers, FaCode } from 'react-icons/fa';
+import {FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { Theme } from '../styles/theme';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
@@ -45,14 +45,17 @@ const Button = styled(Link)`
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background-color: #282c34;
+    background-color: ${props => props.theme.Color.textColor};
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    text-decoration: none;
 
     &:hover {
         background-color: #61dafb;
+        color: ${props => props.theme.Color.textColor};
+        font-weight: bold;
     }
 `;
 
@@ -78,12 +81,20 @@ const Sidebar: React.FC = () => {
                         개발자
                     </Button>
                     <Button to="/designs">
-                        <FaCode />
+                        <FaPalette />
                         디자이너
                     </Button>
-                    <Button to="/studies">
-                        <FaCode />
+                    <Button to="/study">
+                        <FaBookOpen />
                         스터디
+                    </Button>
+                    <Button to="/like">
+                        <FaHeart />
+                        찜한 게시물
+                    </Button>
+                    <Button to="/recent">
+                        <FaCode />
+                        최근 본 게시물
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>

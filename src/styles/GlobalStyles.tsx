@@ -1,5 +1,3 @@
-import { createGlobalStyle } from "styled-components";
-
 export const GlobalStyle = createGlobalStyle`
     @font-face {
         font-family: 'S-CoreDream-3Light';
@@ -14,12 +12,14 @@ export const GlobalStyle = createGlobalStyle`
     }
   
     body {
+        margin: 0;
+        padding: 0;
         width: auto;
         height: auto;
         background: ${(props) => props.theme.Color.backgroundColor};
         color: ${(props) => props.theme.Color.textColor};
-        margin: 0;
-        padding: 0;
     }
     
 `;
+
+import { createGlobalStyle } from "styled-components";
