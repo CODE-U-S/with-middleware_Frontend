@@ -1,30 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
 import {FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
+import {FaAngleLeft, FaAngleRight} from 'react-icons/fa6';
 import { Theme } from '../styles/theme';
 
-const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
-    width: 20%;
+const SidebarContainer = styled.div<{ theme: DefaultTheme }>`    
     height: 100vh; 
     background-color: ${props => props.theme.Color.sideColor};
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    &.collapse {
+        width: 8%;
+    }
+    &.default {
+        width: 20%;
+    }
 `;
 
 const Profile = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 40px;
     margin-bottom: 40px;
 `;
 
 const ProfileImage = styled.img`
-    width: 10vmax;
     border-radius: 50%;
-    margin-bottom: 10px;
+    &.collapse {
+        width: 4.3vmax;
+    }
+    &.default {    
+        width: 10vmax;
+        margin-bottom: 10px;
+    }
 `;
 
 const ProfileName = styled.div`
@@ -59,42 +71,66 @@ const Button = styled(Link)`
     }
 `;
 
+const AngleArrow = styled.div`
+    position: absolute;
+    cursor: pointer;
+    
+    &.default {
+        margin-left: 13%;
+    }
+`
+
 const Sidebar: React.FC = () => {
+    const [isCollapse, setIsCollapse] = useState(false);
+    const HandleCollapse = () => {
+        setIsCollapse(isCollapse => !isCollapse);
+    }
     return (
         <ThemeProvider theme={Theme}>
-            <SidebarContainer>
+            <SidebarContainer className={isCollapse ? 'collapse' : 'default'}>
+                <AngleArrow className={isCollapse ? 'collapse' : 'default'} onClick={HandleCollapse}>
+                    {isCollapse ? (
+                        <div>
+                            <FaAngleRight />
+                        </div>
+                    ) : (
+                        <div>
+                            <FaAngleLeft  />
+                        </div>
+                    )}
+                </AngleArrow>
                 <Profile>
-                    <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
-                    <ProfileName>김선희</ProfileName>
+                    <ProfileImage src="https://via.placeholder.com/80" alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
+                    <ProfileName>{isCollapse ? '' : '김선희'}</ProfileName>
                 </Profile>
                 <ButtonContainer>
                     <Button to="/post">
                         <FaPen />
-                        글쓰기
+                        {isCollapse ? '' : '글쓰기'}
                     </Button>
                     <Button to="/">
                         <FaUsers />
-                        팀프로젝트
+                        {isCollapse ? '' : '팀프로젝트'}
                     </Button>
                     <Button to="/developers">
                         <FaCode />
-                        개발자
+                        {isCollapse ? '' : '개발자'}
                     </Button>
                     <Button to="/designs">
                         <FaPalette />
-                        디자이너
+                        {isCollapse ? '' : '디자이너'}
                     </Button>
                     <Button to="/study">
                         <FaBookOpen />
-                        스터디
+                        {isCollapse ? '' : '스터디'}
                     </Button>
                     <Button to="/like">
                         <FaHeart />
-                        찜한 게시물
+                        {isCollapse ? '' : '찜한 게시물'}
                     </Button>
                     <Button to="/recent">
                         <FaCode />
-                        최근 본 게시물
+                        {isCollapse ? '' : '최근 본 게시물'}
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>

@@ -73,7 +73,7 @@ const PostTime = styled.p`
 `;
 
 const PinIcon = styled.img`
-    width: 1.5vh;
+    width: 1.8vh;
     height: 2vh;
 `;
 
