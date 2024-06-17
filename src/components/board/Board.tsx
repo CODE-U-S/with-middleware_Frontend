@@ -110,11 +110,11 @@ const CustomButton = styled.button`
     align-items: center;
     background-color: #fff;
     color: black;
-    font-size: calc(0.5vw + 0.5vh);
+    font-size: 1vh;
     border: none;
     border-radius: 5vh;
     cursor: pointer;
-    margin-top: 0.3vh;
+    margin-top: 0.5vh;
     padding-left: 0.5vw;
     padding-right: 0.5vw;
     transition: background-color 0.3s ease;
