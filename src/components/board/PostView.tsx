@@ -7,6 +7,8 @@ import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 
+import userProfilePic from '../../assets/user/프사.jpeg';
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -20,7 +22,7 @@ const PostContainer = styled.div`
     flex-direction: column;
     width: 100%;
     background-color: white;
-    padding: 5vh 25vh;
+    padding: 5vh 40vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -115,7 +117,7 @@ const EditorWrapper = styled.div`
 const CommentSection = styled.div`
     width: 100%;
     background-color: #f9f9f9;
-    padding: 2vh 25vh;
+    padding: 2vh 40vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -127,18 +129,31 @@ const CommentCount = styled.div`
     margin-bottom: 2vh;
     color: #333;
     span {
-        color: #196CE9; 
+        color: #196CE9;
     }
 `;
 
-const CommentInput = styled.textarea`
+const CommentInputWrapper = styled.div`
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding: 2vh; 
-    margin-bottom: 1vh; 
+    margin-bottom: 1vh;
+`;
+
+const CommentInput = styled.textarea`
+    width: calc(100% - 6vh);
+    padding: 2vh;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 2.5vh;
+    border-radius: 30px;
+    font-size: 2vh;
     resize: none;
+`;
+
+const ProfilePicture = styled.img`
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
+    margin-right: 1vh;
 `;
 
 const CommentButton = styled.button`
@@ -151,26 +166,24 @@ const CommentButton = styled.button`
     font-size: 2vh;
     margin-bottom: 3vh;
     transition: background-color 0.3s ease;
-    margin-left: auto; 
+    margin-left: auto;
     &:hover {
         background-color: #145bbd; /* 호버 시 배경색 변경 */
     }
 `;
 
-
-
 const CommentItem = styled.div`
     background-color: white;
-    padding: 3vh; /* 패딩 크기 증가 */
-    margin-bottom: 4vh; /* 마진 크기 증가 */
+    padding: 3vh; 
+    margin-bottom: 4vh; 
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const CommentContent = styled.div`
-    font-size: 2.5vh; 
-    margin-bottom: 2vh; /
+    font-size: 2.5vh;
+    margin-bottom: 2vh;
 `;
 
 const CommentActions = styled.div`
@@ -318,11 +331,14 @@ const PostView: React.FC = () => {
             </HeartButton>
             <CommentSection>
                 <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
-                <CommentInput
-                    placeholder="댓글을 입력하세요..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                />
+                <CommentInputWrapper>
+                    <ProfilePicture src={userProfilePic} alt="프로필 사진" />
+                    <CommentInput
+                        placeholder="댓글을 작성해보세요."
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                    />
+                </CommentInputWrapper>
                 <CommentButton onClick={handleAddComment}>등록</CommentButton>
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
