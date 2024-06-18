@@ -307,7 +307,7 @@ const PostSearchView: React.FC = () => {
                     </PostList>
                 </div>
             ) : (
-                <PostResultText>{`해당 검색어를 찾을 수 없습니다.`}</PostResultText>
+                <PostResultText>{`"${params}"에 대한 검색 결과를 찾을 수 없습니다.`}</PostResultText>
             )}
 
         </PostListContainer>
