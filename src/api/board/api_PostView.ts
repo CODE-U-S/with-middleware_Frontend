@@ -65,9 +65,9 @@ export const addComment = async (data: { userId: number; postId: number; comment
 export const updateComment = async (commentId: number, comment: string): Promise<Comment> => {
     try {
         const response = await axios.put<Comment>(`http://localhost:8080/comment/${commentId}`, { comment });
-        return response.data;
+        return response.data; // 서버에서 업데이트된 댓글 데이터 반환
     } catch (error) {
-        console.error(`Error updating comment with ID ${commentId}:`, error);
+        console.error(`댓글 ID ${commentId} 업데이트 오류:`, error);
         throw error;
     }
 };
