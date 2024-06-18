@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost } from '../../api/board/api_PostView';
-import { Post as PostType } from '../../api/board/types';
+import { getPost, addComment, getCommentsByPostId } from '../../api/board/api_PostView';
+import { Post as PostType, Comment } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
-import { FaArrowLeft, FaHeart  } from 'react-icons/fa';
-import {ViewButton} from "./ViewButton.ts";
+import { FaArrowLeft, FaHeart } from 'react-icons/fa'; // FaComment 아이콘 추가
+import { ViewButton } from './ViewButton.ts';
 
 const Container = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const PostContainer = styled.div`
     flex-direction: column;
     width: 100%;
     background-color: white;
-    padding: 5vh 25vh; 
+    padding: 5vh 25vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -74,15 +74,15 @@ const CustomButton = styled.button`
 `;
 
 const BackButton = styled(ViewButton)`
-    position: fixed; 
-    top: 25vh; 
-    left: 48vh; 
+    position: fixed;
+    top: 25vh;
+    left: 48vh;
 `;
 
 const StatusButton = styled(ViewButton)`
-    position: fixed; 
-    top: 35vh; 
-    right: 8vh; 
+    position: fixed;
+    top: 35vh;
+    right: 8vh;
     background: #196CE9;
     color: white;
 `;
@@ -94,7 +94,6 @@ const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     background: #fff; /* Red color when liked */
     color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
 `;
-
 
 const Icon = styled.img`
     width: 1.5vh;
@@ -113,12 +112,77 @@ const EditorWrapper = styled.div`
     margin-bottom: 5vh;
 `;
 
+const CommentSection = styled.div`
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 2vh 25vh;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const CommentInput = styled.textarea`
+    width: 100%;
+    padding: 1vh;
+    margin-bottom: 2vh;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 2vh;
+    resize: none;
+`;
+
+const CommentButton = styled.button`
+    padding: 1vh 2vh;
+    background-color: #196CE9;
+    color: white;
+    border: none;
+    border-radius: 5vh;
+    cursor: pointer;
+    font-size: 2vh;
+    transition: background-color 0.3s ease;
+    
+    &:hover {
+        background-color: #145bbd;
+    }
+`;
+
+const CommentItem = styled.div`
+    background-color: white;
+    padding: 2vh;
+    margin-bottom: 3vh;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const CommentContent = styled.div`
+    font-size: 2vh;
+    margin-bottom: 1vh;
+`;
+
+const CommentActions = styled.div`
+    display: flex;
+    justify-content: flex-end;
+`;
+
+const CommentAction = styled.button`
+    background: none;
+    border: none;
+    color: #196CE9;
+    cursor: pointer;
+    font-size: 2vh;
+    margin-left: 1vh;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;
 
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
+    const [comments, setComments] = useState<Comment[]>([]); // 댓글을 담는 상태
+    const [newComment, setNewComment] = useState(''); // 새 댓글 입력을 위한 상태
     const [error, setError] = useState<string | null>(null);
-    const [liked, setLiked] = useState(false); // 좋아요 상태 Hook 추가
+    const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -126,8 +190,10 @@ const PostView: React.FC = () => {
             try {
                 const data = await getPost(Number(id));
                 setPost(data);
+                const commentsData = await getCommentsByPostId(Number(id)); // 해당 포스트의 댓글을 가져옴
+                setComments(commentsData);
             } catch (error) {
-                setError("포스트를 불러오는 데 실패했습니다.");
+                setError('포스트를 불러오는 데 실패했습니다.');
             }
         };
 
@@ -179,6 +245,21 @@ const PostView: React.FC = () => {
         setLiked(!liked);
     };
 
+    const handleAddComment = async () => {
+        try {
+            const newCommentData = await addComment({
+                userId: 1, // 실제 사용자 ID로 변경해야 함
+                postId: Number(id),
+                comment: newComment,
+            });
+            setComments([...comments, newCommentData]); // 댓글 목록 상태 업데이트
+            setNewComment(''); // 댓글 입력 후 입력창 초기화
+        } catch (error) {
+            console.error('댓글 추가 오류:', error);
+            // 오류 처리
+        }
+    };
+
     return (
         <Container>
             <BackButton onClick={() => navigate('/')}>
@@ -220,6 +301,23 @@ const PostView: React.FC = () => {
             <HeartButton onClick={handleLikeClick} isLiked={liked}>
                 <FaHeart style={{ marginRight: '0.5vh' }} />
             </HeartButton>
+            <CommentSection>
+                <CommentInput
+                    placeholder="댓글을 입력하세요..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                />
+                <CommentButton onClick={handleAddComment}>댓글 달기</CommentButton>
+                {comments.map((comment) => (
+                    <CommentItem key={comment.id}>
+                        <CommentContent>{comment.comment}</CommentContent>
+                        <CommentActions>
+                            <CommentAction>Delete</CommentAction>
+                            <CommentAction>Edit</CommentAction>
+                        </CommentActions>
+                    </CommentItem>
+                ))}
+            </CommentSection>
         </Container>
     );
 };
