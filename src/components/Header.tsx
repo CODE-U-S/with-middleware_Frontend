@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
-import {createBrowserRouter, Link, useParams} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 // 헤더 컨테이너 스타일
 const HeaderContainer = styled.header`
@@ -76,6 +76,7 @@ const Header: React.FC = () => {
         else
             setIsClickedSearch(true);
     }
+    
     // 검색 아이콘
     const SearchIcon = () => {
         return (
@@ -83,7 +84,10 @@ const Header: React.FC = () => {
                 src="/src/assets/header/search_icon.svg"
                 alt="검색 아이콘"
                 className="icon-search"
-                onClick={HandleSearchbar}
+                onClick={() => {
+                    HandleSearchbar();
+                    setSearchText("");  // 검색어 초기화: 검색 후 다시 검색 시 공백일 때 이전 검색어로 검색되는 현상 막음
+                }}
             />
         );
     }
