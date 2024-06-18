@@ -197,7 +197,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     const count = await getCommentCountByPostId(post.id);
                     counts[post.id] = count;
                 } catch (error) {
-                    console.error(`Error fetching like count for post ${post.id}:`, error);
+                    console.error(`Error fetching comments count for post ${post.id}:`, error);
                     counts[post.id] = 0; // 에러 발생 시 기본 값 설정
                 }
             }
