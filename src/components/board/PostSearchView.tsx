@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {getSearchPost} from "../../api/board/api_PostSearch.ts";
-import {getPostsByCategory, PostType} from "../../api/board/api_Board.ts";
-import {Link, useParams} from "react-router-dom"
-import {FaComment, FaHeart} from "react-icons/fa";
-import {getCommentCountByPostId, getLikeCount} from "../../api/board/api_PostView.ts";
-import {formatDistanceToNow} from "date-fns";
-import {ko} from "date-fns/locale";
-import styled from "styled-components";
-import MDEditor from "@uiw/react-md-editor";
+import styled from 'styled-components';
+import {Link, useParams} from 'react-router-dom';
+import {PostType} from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
+import MDEditor from '@uiw/react-md-editor';
+import {formatDistanceToNow} from 'date-fns';
+import {ko} from 'date-fns/locale';
+import {FaComment, FaHeart} from 'react-icons/fa';
+import {getCommentCountByPostId, getLikeCount} from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
     width: 100%;
@@ -102,8 +102,7 @@ const PostDescription = styled.div`
 
 const PostTitle = styled.h2`
     font-size: 1.7vh;
-    margin: 0vh;
-    margin-bottom: 1.5vh;
+    margin: 0 0 1.5vh;
     width: 100%;
     height: 2vh;
     white-space: nowrap;
@@ -134,12 +133,6 @@ const CustomButton = styled.button`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
-const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
-const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
-const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
-const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
-
 const Divider = styled.hr`
     width: 100%;
     border: 0.5px solid #ddd;
@@ -159,13 +152,22 @@ const PostFooterNumber = styled.p`
     margin-right: 0.7vw;
 `;
 
+const PostResultText = styled.h3`
+    text-align: center;
+    margin-top: 3vh;
+    margin-bottom: 5vh;
+`
+
 const PostSearchView: React.FC = () => {
-    // hook
+    // 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
+    const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+    const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+    const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+    const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
+    // hook 관련
     const params = useParams().id;
     const [searchResults, setSearchResults] = useState<PostType[]>([]);
-    const [error, setError] = useState("");
-
-    const [posts, setPosts] = useState<PostType[]>([]);
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
     const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
 
@@ -173,10 +175,9 @@ const PostSearchView: React.FC = () => {
     useEffect(() => {
         const fetchLikeCounts = async () => {
             const counts: Record<number, number> = {};
-            for (const post of posts) {
+            for (const post of searchResults) {
                 try {
-                    const count = await getLikeCount(post.id);
-                    counts[post.id] = count;
+                    counts[post.id] = await getLikeCount(post.id);
                 } catch (error) {
                     console.error(`Error fetching like count for post ${post.id}:`, error);
                     counts[post.id] = 0; // 에러 발생 시 기본 값 설정
@@ -185,19 +186,18 @@ const PostSearchView: React.FC = () => {
             setLikeCounts(counts);
         };
 
-        if (posts.length > 0) {
+        if (searchResults.length > 0) {
             fetchLikeCounts();
         }
-    }, [posts]);
+    }, [searchResults]);
 
     // 댓글수 불러오기
     useEffect(() => {
         const fetchCommentCounts = async () => {
             const counts: Record<number, number> = {};
-            for (const post of posts) {
+            for (const post of searchResults) {
                 try {
-                    const count = await getCommentCountByPostId(post.id);
-                    counts[post.id] = count;
+                    counts[post.id] = await getCommentCountByPostId(post.id);
                 } catch (error) {
                     console.error(`Error fetching comments count for post ${post.id}:`, error);
                     counts[post.id] = 0; // 에러 발생 시 기본 값 설정
@@ -206,10 +206,10 @@ const PostSearchView: React.FC = () => {
             setcommentCounts(counts);
         };
 
-        if (posts.length > 0) {
+        if (searchResults.length > 0) {
             fetchCommentCounts();
         }
-    }, [posts]);
+    }, [searchResults]);
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
@@ -249,12 +249,11 @@ const PostSearchView: React.FC = () => {
     useEffect(() => {
         const fetchSearchData = async () => {
             try {
-                if (!params)
+                if (!params)  // 만약 검색어가 null 이면 데이터를 가져오지 않음
                     return
                 const data = await getSearchPost(params);
                 setSearchResults(data);
             } catch (error) {
-                setError("검색 결과를 가져올 수 없습니다");
                 setSearchResults([]);
             }
         };
@@ -264,47 +263,52 @@ const PostSearchView: React.FC = () => {
 
     return (
         <PostListContainer>
-            {searchResults ? (
-                <PostList>
-                    {searchResults.map((post) => (
-                        <PostItem key={post.id} to={`/post/${post.id}`}>
-                            <PostPin>
-                                {post.category && getCategoryIcon(post.category)}
-                            </PostPin>
-                            <PostDescription>
-                                <Profile>
-                                    <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
-                                    <ProfileDescription>
-                                        <ProfileNameAndTime>
-                                            <ProfileName>{post.user.name}</ProfileName>
-                                            <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
-                                        </ProfileNameAndTime>
-                                        <ProfileIconList>
-                                            {post.field && (
-                                                <CustomButton>
-                                                    {post.field}
-                                                </CustomButton>
-                                            )}
-                                        </ProfileIconList>
-                                    </ProfileDescription>
-                                </Profile>
-                            </PostDescription>
-                            <Divider/>
-                            <PostTitle>{post.title}</PostTitle>
-                            <PostContent source={post.content} />
-                            <PostFooter>
-                                <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
-                                <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
-                                <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
-                                <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
-                            </PostFooter>
-                        </PostItem>
-                    ))}
-                </PostList>
+            {searchResults.length > 0 ? (
+                <div>
+                    <PostResultText>
+                        {`"${params}"로 검색한 결과입니다.`}
+                    </PostResultText>
+                    <PostList>
+                        {searchResults.map((post) => (
+                            <PostItem key={post.id} to={`/post/${post.id}`}>
+                                <PostPin>
+                                    {post.category && getCategoryIcon(post.category)}
+                                </PostPin>
+                                <PostDescription>
+                                    <Profile>
+                                        <ProfileImage src="https://via.placeholder.com/80" alt="Profile"/>
+                                        <ProfileDescription>
+                                            <ProfileNameAndTime>
+                                                <ProfileName>{post.user.name}</ProfileName>
+                                                <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
+                                            </ProfileNameAndTime>
+                                            <ProfileIconList>
+                                                {post.field && (
+                                                    <CustomButton>
+                                                        {post.field}
+                                                    </CustomButton>
+                                                )}
+                                            </ProfileIconList>
+                                        </ProfileDescription>
+                                    </Profile>
+                                </PostDescription>
+                                <Divider/>
+                                <PostTitle>{post.title}</PostTitle>
+                                <PostContent source={post.content}/>
+                                <PostFooter>
+                                    <FaHeart style={{marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                                    <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
+                                    <FaComment style={{marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                                    <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
+                                </PostFooter>
+                            </PostItem>
+                        ))}
+                    </PostList>
+                </div>
             ) : (
-                <h1>해당 검색어를 찾을 수 없습니다</h1>
+                <PostResultText>{`해당 검색어를 찾을 수 없습니다.`}</PostResultText>
             )}
-            
+
         </PostListContainer>
     );
 };

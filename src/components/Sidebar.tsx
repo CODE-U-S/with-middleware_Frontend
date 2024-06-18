@@ -10,12 +10,12 @@ const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 17px;
     &.collapse {
-        width: 7vmin;
+        width: 70px;
     }
     &.default {
-        width: 20vmin;
+        width: 195px;
     }
 `;
 
@@ -30,10 +30,10 @@ const Profile = styled.div`
 const ProfileImage = styled.img`
     border-radius: 50%;
     &.collapse {
-        width: 4.3vmin;
+        width: 37px;
     }
     &.default {    
-        width: 12vmin;
+        width: 100px;
         margin-bottom: 10px;
     }
 `;
@@ -74,7 +74,7 @@ const AngleArrow = styled.div`
     cursor: pointer;
     
     &.default {
-        margin-left: 15vmin;
+        margin-left: 120px;
     }
 `;
 
