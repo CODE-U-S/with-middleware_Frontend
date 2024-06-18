@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
-import {FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
-import {FaAngleLeft, FaAngleRight} from 'react-icons/fa6';
+import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { Theme } from '../styles/theme';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`    
@@ -13,10 +12,10 @@ const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     align-items: center;
     padding: 20px;
     &.collapse {
-        width: 8%;
+        width: 7vmin;
     }
     &.default {
-        width: 20%;
+        width: 20vmin;
     }
 `;
 
@@ -24,17 +23,17 @@ const Profile = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 40px;
 `;
 
 const ProfileImage = styled.img`
     border-radius: 50%;
     &.collapse {
-        width: 4.3vmax;
+        width: 4.3vmin;
     }
     &.default {    
-        width: 10vmax;
+        width: 12vmin;
         margin-bottom: 10px;
     }
 `;
@@ -72,13 +71,12 @@ const Button = styled(Link)`
 `;
 
 const AngleArrow = styled.div`
-    position: absolute;
     cursor: pointer;
     
     &.default {
-        margin-left: 13%;
+        margin-left: 15vmin;
     }
-`
+`;
 
 const Sidebar: React.FC = () => {
     const [isCollapse, setIsCollapse] = useState(false);
@@ -91,11 +89,11 @@ const Sidebar: React.FC = () => {
                 <AngleArrow className={isCollapse ? 'collapse' : 'default'} onClick={HandleCollapse}>
                     {isCollapse ? (
                         <div>
-                            <FaAngleRight />
+                            <FaAngleDoubleRight />
                         </div>
                     ) : (
                         <div>
-                            <FaAngleLeft  />
+                            <FaAngleDoubleLeft  />
                         </div>
                     )}
                 </AngleArrow>

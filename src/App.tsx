@@ -16,6 +16,7 @@ import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
 import LikeBoardPage from "./pages/LikeBoardPage.tsx";
 import RecentBoardPage from "./pages/RecentBoardPage.tsx";
+import PostSearchView from "./components/board/PostSearchView.tsx";
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -50,6 +51,7 @@ const App: React.FC = () => {
                                 <Route path="/like" element={<LikeBoardPage />} />
                                 <Route path="/recent" element={<RecentBoardPage />} />
                                 <Route path="/post/:id" element={<PostView />} />
+                                <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />
                             </Routes>
                         </Content>
