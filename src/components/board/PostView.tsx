@@ -117,6 +117,8 @@ const CommentSection = styled.div`
     background-color: #f9f9f9;
     padding: 2vh 25vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 `;
 
 const CommentCount = styled.div`
@@ -124,7 +126,6 @@ const CommentCount = styled.div`
     font-weight: bold;
     margin-bottom: 2vh;
     color: #333;
-
     span {
         color: #196CE9; 
     }
@@ -136,24 +137,27 @@ const CommentInput = styled.textarea`
     margin-bottom: 1vh; 
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 2.5vh; /* 폰트 크기 증가 */
+    font-size: 2.5vh;
     resize: none;
 `;
 
 const CommentButton = styled.button`
-    padding: 1vh 2vh; 
+    padding: 1vh 2vh;
     background-color: #196CE9;
     color: white;
     border: none;
     border-radius: 1vh;
     cursor: pointer;
-    font-size: 1.5vh; 
+    font-size: 2vh;
     margin-bottom: 3vh;
     transition: background-color 0.3s ease;
+    margin-left: auto; 
     &:hover {
-        background-color: #145bbd;
+        background-color: #145bbd; /* 호버 시 배경색 변경 */
     }
 `;
+
+
 
 const CommentItem = styled.div`
     background-color: white;
@@ -165,8 +169,8 @@ const CommentItem = styled.div`
 `;
 
 const CommentContent = styled.div`
-    font-size: 2.5vh; /* 폰트 크기 증가 */
-    margin-bottom: 2vh; /* 마진 크기 증가 */
+    font-size: 2.5vh; 
+    margin-bottom: 2vh; /
 `;
 
 const CommentActions = styled.div`
