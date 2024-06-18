@@ -33,14 +33,14 @@ const Title = styled.h1`
 
 const UserName = styled.div`
     font-size: 2.5vh;
-    color: #196CE9; /* 변경된 색상 */
-    font-weight: bold; /* 볼드체로 변경 */
+    color: #196CE9; 
+    font-weight: bold; 
     margin-bottom: 1vh;
 `;
 
 const InfoContainer = styled.div`
     display: flex;
-    justify-content: space-between; /* 요소 사이의 간격을 최대화 */
+    justify-content: space-between; 
     align-items: center;
     margin-bottom: 1vh;
     font-size: 2vh;
@@ -93,8 +93,8 @@ const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     position: fixed;
     top: 41.5vh;
     right: 8vh;
-    background: #fff; /* Red color when liked */
-    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
+    background: #fff; /
+    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; 
 `;
 
 const Icon = styled.img`
@@ -174,11 +174,32 @@ const CommentButton = styled.button`
 
 const CommentItem = styled.div`
     background-color: white;
-    padding: 3vh; 
-    margin-bottom: 4vh; 
+    padding: 3vh;
+    margin-bottom: 4vh;
     border: 1px solid #ddd;
     border-radius: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+`;
+
+const CommentHeader = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 2vh;
+`;
+
+const CommentUserName = styled.div`
+    font-size: 2vh;
+    font-weight: bold;
+    color: #333;
+`;
+
+const CommentTime = styled.div`
+    font-size: 1.5vh;
+    color: #888;
+    margin-right: auto;
+    padding: 1vh;
 `;
 
 const CommentContent = styled.div`
@@ -275,13 +296,48 @@ const PostView: React.FC = () => {
         setLiked(!liked);
     };
 
+    const getTimeDifference = (dateString: string): string => {
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffMs = now.getTime() - date.getTime();
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        const diffDay = Math.floor(diffHour / 24);
+
+        if (diffMin < 1) {
+            return `방금 전`;
+        } else if (diffMin < 60) {
+            return `${diffMin}분 전`;
+        } else if (diffHour < 24) {
+            return `${diffHour}시간 전`;
+        } else {
+            return `${diffDay}일 전`;
+        }
+    }
+
+    const handleAddComment = async () => {
+        try {
+            const newCommentData = await addComment({
+                userId: 1,
+                postId: Number(id),
+                comment: newComment,
+            });
+            setComments([...comments, newCommentData]);
+            setCommentCount(commentCount + 1);
+            setNewComment('');
+        } catch (error) {
+            console.error('댓글 추가 오류:', error);
+        }
+    };
+
     // 댓글 수정 누르면 수정 기능
     const handleEditComment = (commentId: number, currentContent: string) => {
         setEditingCommentId(commentId);
         setEditedComment(currentContent);
     };
 
-    // Function to update a comment after editing
+
     const handleUpdateComment = async (commentId: number) => {
         try {
             // API를 사용하여 댓글을 업데이트하는 로직을 구현해야 합니다.
@@ -299,22 +355,6 @@ const PostView: React.FC = () => {
         }
     };
 
-
-
-    const handleAddComment = async () => {
-        try {
-            const newCommentData = await addComment({
-                userId: 1,
-                postId: Number(id),
-                comment: newComment,
-            });
-            setComments([...comments, newCommentData]);
-            setCommentCount(commentCount + 1);
-            setNewComment('');
-        } catch (error) {
-            console.error('댓글 추가 오류:', error);
-        }
-    };
 
     return (
         <Container>
@@ -370,6 +410,11 @@ const PostView: React.FC = () => {
                 <CommentButton onClick={handleAddComment}>등록</CommentButton>
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
+                        <CommentHeader>
+                            <ProfilePicture src={userProfilePic} alt="프로필 사진" />
+                            <CommentUserName>{comment.user.name}</CommentUserName>
+                            <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
+                        </CommentHeader>
                         {editingCommentId === comment.id ? (
                             <>
                                 <CommentInput

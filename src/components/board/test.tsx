@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId } from '../../api/board/api_PostView';
-import { Post as PostType, Comment } from '../../api/board/types';
+import { Post as PostType, Comment as CommentType } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
@@ -40,7 +40,7 @@ const UserName = styled.div`
 
 const InfoContainer = styled.div`
     display: flex;
-    justify-content: space-between; /* 요소 사이의 간격을 최대화 */
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1vh;
     font-size: 2vh;
@@ -53,7 +53,7 @@ const InfoItem = styled.div`
 
 const Divider = styled.hr`
     width: 100%;
-    border:0.5px solid #ddd;
+    border: 0.5px solid #ddd;
     margin: 2vh 0;
 `;
 
@@ -195,6 +195,13 @@ const CommentUserName = styled.div`
     color: #333;
 `;
 
+const CommentTime = styled.div`
+    font-size: 1.5vh;
+    color: #888;
+    margin-right: auto;
+    padding: 1vh;
+`;
+
 const CommentContent = styled.div`
     font-size: 2.5vh;
     margin-bottom: 2vh;
@@ -221,7 +228,7 @@ const CommentAction = styled.button`
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
+    const [comments, setComments] = useState<CommentType[]>([]);
     const [commentCount, setCommentCount] = useState(0);
     const [newComment, setNewComment] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -322,6 +329,7 @@ const PostView: React.FC = () => {
         }
     };
 
+
     return (
         <Container>
             <BackButton onClick={() => navigate('/')}>
@@ -352,7 +360,7 @@ const PostView: React.FC = () => {
                 </InfoContainer>
                 <Divider />
                 <EditorWrapper>
-                    <MDEditor.Markdown source={post.content} style={{ fontSize: '40px', lineHeight: '1.6' }} />
+                    <MDEditor.Markdown source={post.content} style={{ fontSize: '20px', lineHeight: '1.6' }} />
                 </EditorWrapper>
             </PostContainer>
             {post.status && (
@@ -379,9 +387,7 @@ const PostView: React.FC = () => {
                         <CommentHeader>
                             <ProfilePicture src={userProfilePic} alt="프로필 사진" />
                             <CommentUserName>{comment.user.name}</CommentUserName>
-                            <div style={{ marginLeft: 'auto', fontSize: '1.5vh', color: '#888' }}>
-                                {getTimeDifference(comment.createdDate || '')}
-                            </div>
+                            <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
                         <CommentContent>{comment.comment}</CommentContent>
                         <CommentActions>
