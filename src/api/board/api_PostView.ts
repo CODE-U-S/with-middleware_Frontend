@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Post, Comment } from './types';
+import { Post, Comment, Like as LikeType } from './types';
 
 // 게시물 조회
 export const getPost = async (id: number): Promise<Post> => {
@@ -12,10 +12,21 @@ export const getPost = async (id: number): Promise<Post> => {
     }
 };
 
+// 좋아요 게시물 조회
+export const getLikePosts = async (postId: number): Promise<LikeType[]> => {
+    try{
+        const response = await axios.get<LikeType[]>(`http://localhost:8080/like/post/${postId}`);
+        return response.data;
+    }catch (error){
+        console.error(`Error get like for post ${postId} : `, error);
+        throw error;
+    }
+}
+
 // 좋아요 추가
 export const addLike = async (userId: number, postId: number): Promise<void> => {
     try {
-        await axios.post(`http://localhost:8080/like`, {
+        await axios.post<LikeType>(`http://localhost:8080/like`, {
             user: { id: userId },
             post: { id: postId }
         });
@@ -26,14 +37,22 @@ export const addLike = async (userId: number, postId: number): Promise<void> => 
 };
 
 // 좋아요 취소
-export const cancelLike = async (likeId: number): Promise<void> => {
+export const cancelLike = async (userId: number, postId: number): Promise<void> => {
     try {
-        await axios.delete(`http://localhost:8080/like/${likeId}`);
+        let likes = await getLikePosts(postId);
+        likes = likes.filter((like) => like.user.id === userId);
+        if (likes.length > 0) {
+            const likeId = likes[0].id;
+            await axios.delete(`http://localhost:8080/like/${likeId}`);
+        } else {
+            console.warn(`No like found for user ${userId} on post ${postId}`);
+        }
     } catch (error) {
-        console.error(`Error cancelling like with ID ${likeId}:`, error);
+        console.error(`Error cancelling like with userId ${userId} and postId ${postId}:`, error);
         throw error;
     }
 };
+
 
 // 좋아요 개수 조회
 export const getLikeCount = async (postId: number): Promise<number> => {
