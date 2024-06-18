@@ -90,7 +90,7 @@ const Button = styled(Link)`
 const AngleArrow = styled.div`
     cursor: pointer;
     text-align: center;
-    
+
     &.default {
         margin-left: 190px;
     }
