@@ -5,18 +5,34 @@ import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파
 import MDEditor from '@uiw/react-md-editor';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { FaHeart, FaComment } from 'react-icons/fa';
+import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
-    width: 70vw;
+    width: 100%;
+    height: 100%;
+`;
+
+const PostList = styled.div`
+    width: 95%;
     display: grid;
+    margin-left: 4.5vw;
     grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+`;
+
+const PostFilterBar = styled.div`
+    widht: 100%;
+    height: 5vh;
+    margin-bottom: 2vh;
+    background-color: #A1A1FF;
 `;
 
 const PostItem = styled(Link)`
     width: 80%;
     height: 35vh;
-    margin-bottom: 50px;
-    padding: 10px;
+    margin-bottom: 4vh;
+    padding-left: 1.5vh;
+    padding-right: 1.5vh;
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
@@ -30,6 +46,8 @@ const PostItem = styled(Link)`
 
 const PostPin = styled.div`
     width:100%;
+    height: 2vh;
+    margin-top: 0.5vh;
     text-align: center;
 `;
 
@@ -37,7 +55,7 @@ const Profile = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 100%;
+    height: 6vh;
     width: 100%;
 `;
 
@@ -89,17 +107,18 @@ const PostDescription = styled.div`
 `;
 
 const PostTitle = styled.h2`
-    font-size: 20px;
-    margin: 0;
+    font-size: 1.7vh;
+    margin: 0vh;
     margin-bottom: 1.5vh;
     width: 100%;
+    height: 2vh;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 `;
 
 const PostContent = styled(MDEditor.Markdown)`
-    height: 16vh;
+    height: 18vh;
     font-size: 13px;
     overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
     background: rgba(255, 0, 0, 0);
@@ -110,11 +129,11 @@ const CustomButton = styled.button`
     align-items: center;
     background-color: #fff;
     color: black;
-    font-size: calc(0.5vw + 0.5vh);
+    font-size: 1vh;
     border: none;
     border-radius: 5vh;
     cursor: pointer;
-    margin-top: 0.3vh;
+    margin-top: 0.5vh;
     padding-left: 0.5vw;
     padding-right: 0.5vw;
     transition: background-color 0.3s ease;
@@ -127,21 +146,29 @@ const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt=
 const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
 const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
 
-const PostFooter = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 0.5vh;
-    height: 2vh;
-    border: 1px solid red;
-`;
-
 const Divider = styled.hr`
     width: 100%;
     border: 0.5px solid #ddd;
 `;
 
+const PostFooter = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 0.5vh;
+    height: 2vh;
+`;
+const PostFooterNumber = styled.p`
+    font-size: 1vh;
+    color: #ccc;
+    margin-right: 0.7vw;
+`;
+
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [posts, setPosts] = useState<PostType[]>([]);
+    const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+    const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -151,6 +178,48 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
         fetchPosts();
     }, [category]);
+
+    // 좋아요수 불러오기
+    useEffect(() => {
+        const fetchLikeCounts = async () => {
+            const counts: Record<number, number> = {};
+            for (const post of posts) {
+                try {
+                    const count = await getLikeCount(post.id);
+                    counts[post.id] = count;
+                } catch (error) {
+                    console.error(`Error fetching like count for post ${post.id}:`, error);
+                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                }
+            }
+            setLikeCounts(counts);
+        };
+
+        if (posts.length > 0) {
+            fetchLikeCounts();
+        }
+    }, [posts]);
+
+    // 댓글수 불러오기
+    useEffect(() => {
+        const fetchCommentCounts = async () => {
+            const counts: Record<number, number> = {};
+            for (const post of posts) {
+                try {
+                    const count = await getCommentCountByPostId(post.id);
+                    counts[post.id] = count;
+                } catch (error) {
+                    console.error(`Error fetching comments count for post ${post.id}:`, error);
+                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                }
+            }
+            setcommentCounts(counts);
+        };
+
+        if (posts.length > 0) {
+            fetchCommentCounts();
+        }
+    }, [posts]);
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
@@ -188,6 +257,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
     return (
         <PostListContainer>
+            <PostFilterBar>
+
+            </PostFilterBar>
+            <PostList>
             {posts.map((post) => (
                 <PostItem key={post.id} to={`/post/${post.id}`}>
                     <PostPin>
@@ -215,10 +288,14 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>
-
+                        <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/> 
+                        <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
+                        <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                        <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
                     </PostFooter>
                 </PostItem>
             ))}
+            </PostList>
         </PostListContainer>
     );
 };
