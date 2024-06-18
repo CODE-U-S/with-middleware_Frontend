@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId } from '../../api/board/api_PostView';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId } from '../../api/board/api_PostView';
 import { Post as PostType, Comment } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
-import { FaArrowLeft, FaHeart } from 'react-icons/fa'; // FaComment 아이콘 추가
+import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 
 const Container = styled.div`
@@ -119,26 +119,37 @@ const CommentSection = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
+const CommentCount = styled.div`
+    font-size: 2vh;
+    font-weight: bold;
+    margin-bottom: 2vh;
+    color: #333;
+
+    span {
+        color: #196CE9; 
+    }
+`;
+
 const CommentInput = styled.textarea`
     width: 100%;
-    padding: 1vh;
-    margin-bottom: 2vh;
+    padding: 2vh; 
+    margin-bottom: 1vh; 
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 2vh;
+    font-size: 2.5vh; /* 폰트 크기 증가 */
     resize: none;
 `;
 
 const CommentButton = styled.button`
-    padding: 1vh 2vh;
+    padding: 1vh 2vh; 
     background-color: #196CE9;
     color: white;
     border: none;
-    border-radius: 5vh;
+    border-radius: 1vh;
     cursor: pointer;
-    font-size: 2vh;
+    font-size: 1.5vh; 
+    margin-bottom: 3vh;
     transition: background-color 0.3s ease;
-    
     &:hover {
         background-color: #145bbd;
     }
@@ -146,16 +157,16 @@ const CommentButton = styled.button`
 
 const CommentItem = styled.div`
     background-color: white;
-    padding: 2vh;
-    margin-bottom: 3vh;
+    padding: 3vh; /* 패딩 크기 증가 */
+    margin-bottom: 4vh; /* 마진 크기 증가 */
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const CommentContent = styled.div`
-    font-size: 2vh;
-    margin-bottom: 1vh;
+    font-size: 2.5vh; /* 폰트 크기 증가 */
+    margin-bottom: 2vh; /* 마진 크기 증가 */
 `;
 
 const CommentActions = styled.div`
@@ -169,7 +180,7 @@ const CommentAction = styled.button`
     color: #196CE9;
     cursor: pointer;
     font-size: 2vh;
-    margin-left: 1vh;
+    margin-left: 2vh; /* 마진 크기 증가 */
 
     &:hover {
         text-decoration: underline;
@@ -179,25 +190,28 @@ const CommentAction = styled.button`
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]); // 댓글을 담는 상태
-    const [newComment, setNewComment] = useState(''); // 새 댓글 입력을 위한 상태
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [commentCount, setCommentCount] = useState(0);
+    const [newComment, setNewComment] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchPost = async () => {
+        const fetchPostData = async () => {
             try {
                 const data = await getPost(Number(id));
                 setPost(data);
-                const commentsData = await getCommentsByPostId(Number(id)); // 해당 포스트의 댓글을 가져옴
+                const commentsData = await getCommentsByPostId(Number(id));
                 setComments(commentsData);
+                const commentCountData = await getCommentCountByPostId(Number(id));
+                setCommentCount(commentCountData);
             } catch (error) {
                 setError('포스트를 불러오는 데 실패했습니다.');
             }
         };
 
-        fetchPost();
+        fetchPostData();
     }, [id]);
 
     if (error) {
@@ -208,7 +222,6 @@ const PostView: React.FC = () => {
         return <div>로딩 중...</div>;
     }
 
-    // 함수를 통해 카테고리에 따른 아이콘 선택
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
             case '팀프로젝트':
@@ -220,7 +233,7 @@ const PostView: React.FC = () => {
             case '스터디':
                 return <StudyIcon />;
             default:
-                return null; // 기본적으로 아이콘 없음
+                return null;
         }
     };
 
@@ -235,12 +248,10 @@ const PostView: React.FC = () => {
         }
     };
 
-    // 날짜 포맷팅
     const getPostDate = (createDate: string | null | undefined): string | string => {
         return createDate ? createDate.substring(0, 10) : "시간 정보 없음";
     }
 
-    // 좋아요 버튼 핸들러
     const handleLikeClick = () => {
         setLiked(!liked);
     };
@@ -248,15 +259,15 @@ const PostView: React.FC = () => {
     const handleAddComment = async () => {
         try {
             const newCommentData = await addComment({
-                userId: 1, // 실제 사용자 ID로 변경해야 함
+                userId: 1,
                 postId: Number(id),
                 comment: newComment,
             });
-            setComments([...comments, newCommentData]); // 댓글 목록 상태 업데이트
-            setNewComment(''); // 댓글 입력 후 입력창 초기화
+            setComments([...comments, newCommentData]);
+            setCommentCount(commentCount + 1);
+            setNewComment('');
         } catch (error) {
             console.error('댓글 추가 오류:', error);
-            // 오류 처리
         }
     };
 
@@ -302,18 +313,19 @@ const PostView: React.FC = () => {
                 <FaHeart style={{ marginRight: '0.5vh' }} />
             </HeartButton>
             <CommentSection>
+                <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
                 <CommentInput
                     placeholder="댓글을 입력하세요..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                 />
-                <CommentButton onClick={handleAddComment}>댓글 달기</CommentButton>
+                <CommentButton onClick={handleAddComment}>등록</CommentButton>
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
                         <CommentContent>{comment.comment}</CommentContent>
                         <CommentActions>
-                            <CommentAction>Delete</CommentAction>
-                            <CommentAction>Edit</CommentAction>
+                            <CommentAction>수정</CommentAction>
+                            <CommentAction>삭제</CommentAction>
                         </CommentActions>
                     </CommentItem>
                 ))}
