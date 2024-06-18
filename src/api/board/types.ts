@@ -27,3 +27,12 @@ export interface Like {
     createdDate?: string | null;
     modifiedDate?: string | null;
 }
+
+export interface Comment {
+    id: number;
+    user: User;
+    post: Post;
+    comment: string;
+    createdDate?: string | null;
+    modifiedDate?: string | null;
+}
