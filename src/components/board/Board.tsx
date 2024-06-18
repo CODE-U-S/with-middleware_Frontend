@@ -5,8 +5,8 @@ import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파
 import MDEditor from '@uiw/react-md-editor';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { FaHeart } from 'react-icons/fa';
-import { getLikeCount } from '../../api/board/api_PostView';
+import { FaHeart, FaComment } from 'react-icons/fa';
+import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
     width: 95%;
@@ -135,9 +135,8 @@ const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스
 const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
 
 const Divider = styled.hr`
-width: 100%;
-
-border: 0.5px solid #ddd;
+    width: 100%;
+    border: 0.5px solid #ddd;
 `;
 
 const PostFooter = styled.div`
@@ -151,11 +150,13 @@ const PostFooter = styled.div`
 const PostFooterNumber = styled.p`
     font-size: 1vh;
     color: #ccc;
+    margin-right: 0.7vw;
 `;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [posts, setPosts] = useState<PostType[]>([]);
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+    const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -184,6 +185,27 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
         if (posts.length > 0) {
             fetchLikeCounts();
+        }
+    }, [posts]);
+
+    // 댓글수 불러오기
+    useEffect(() => {
+        const fetchCommentCounts = async () => {
+            const counts: Record<number, number> = {};
+            for (const post of posts) {
+                try {
+                    const count = await getCommentCountByPostId(post.id);
+                    counts[post.id] = count;
+                } catch (error) {
+                    console.error(`Error fetching like count for post ${post.id}:`, error);
+                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                }
+            }
+            setcommentCounts(counts);
+        };
+
+        if (posts.length > 0) {
+            fetchCommentCounts();
         }
     }, [posts]);
 
@@ -250,8 +272,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>
-                        <FaHeart style={{ marginRight: '0.5vh', color: '#ddd', blockSize: '1.3vh'}}/>
+                        <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
                         <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
+                        <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                        <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
                     </PostFooter>
                 </PostItem>
             ))}
