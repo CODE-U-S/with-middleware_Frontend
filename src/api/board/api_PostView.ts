@@ -13,13 +13,12 @@ export const getPost = async (id: number): Promise<Post> => {
 };
 
 // 좋아요 추가
-export const addLike = async (userId: number, postId: number): Promise<any> => {
+export const addLike = async (userId: number, postId: number): Promise<void> => {
     try {
-        const response = await axios.post(`http://localhost:8080/like`, {
+        await axios.post(`http://localhost:8080/like`, {
             user: { id: userId },
             post: { id: postId }
         });
-        return response.data;
     } catch (error) {
         console.error(`Error adding like for post ${postId} by user ${userId}:`, error);
         throw error;

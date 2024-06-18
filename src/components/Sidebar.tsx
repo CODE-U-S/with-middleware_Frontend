@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { Theme } from '../styles/theme';
 
-const SidebarContainer = styled.div<{ theme: DefaultTheme }>`    
-    height: 100vh; 
+const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
+    min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
     display: flex;
     flex-direction: column;
