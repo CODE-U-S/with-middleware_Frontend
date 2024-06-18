@@ -30,7 +30,7 @@ const Profile = styled.div`
 const ProfileImage = styled.img`
     border-radius: 50%;
     &.collapse {
-        width: 4.3vmin;
+        width: 5vmin;
     }
     &.default {    
         width: 12vmin;

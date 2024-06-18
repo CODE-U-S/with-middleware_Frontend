@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { getPostsByCategory, PostType } from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
+import {Link} from 'react-router-dom';
+import {getPostsByCategory, PostType} from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
 import MDEditor from '@uiw/react-md-editor';
-import { formatDistanceToNow } from 'date-fns';
-import { ko } from 'date-fns/locale';
-import { FaHeart, FaComment } from 'react-icons/fa';
-import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
+import {formatDistanceToNow} from 'date-fns';
+import {ko} from 'date-fns/locale';
+import {FaComment, FaHeart} from 'react-icons/fa';
+import {getCommentCountByPostId, getLikeCount} from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
     width: 100%;
@@ -108,8 +108,7 @@ const PostDescription = styled.div`
 
 const PostTitle = styled.h2`
     font-size: 1.7vh;
-    margin: 0vh;
-    margin-bottom: 1.5vh;
+    margin: 0 0 1.5vh;
     width: 100%;
     height: 2vh;
     white-space: nowrap;
@@ -140,12 +139,6 @@ const CustomButton = styled.button`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
-const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
-const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
-const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
-const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
-
 const Divider = styled.hr`
     width: 100%;
     border: 0.5px solid #ddd;
@@ -166,6 +159,12 @@ const PostFooterNumber = styled.p`
 `;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
+    // 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
+    const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+    const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+    const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+    const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
     const [posts, setPosts] = useState<PostType[]>([]);
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
     const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
@@ -185,8 +184,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
             const counts: Record<number, number> = {};
             for (const post of posts) {
                 try {
-                    const count = await getLikeCount(post.id);
-                    counts[post.id] = count;
+                    counts[post.id] = await getLikeCount(post.id);
                 } catch (error) {
                     console.error(`Error fetching like count for post ${post.id}:`, error);
                     counts[post.id] = 0; // 에러 발생 시 기본 값 설정
@@ -206,8 +204,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
             const counts: Record<number, number> = {};
             for (const post of posts) {
                 try {
-                    const count = await getCommentCountByPostId(post.id);
-                    counts[post.id] = count;
+                    counts[post.id] = await getCommentCountByPostId(post.id);
                 } catch (error) {
                     console.error(`Error fetching comments count for post ${post.id}:`, error);
                     counts[post.id] = 0; // 에러 발생 시 기본 값 설정
