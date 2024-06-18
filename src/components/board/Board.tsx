@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Link} from 'react-router-dom';
-import {getPostsByCategory, PostType} from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
+import { Link } from 'react-router-dom';
+import { getPostsByCategory, PostType, getPostsByCategoryAndField } from '../../api/board/api_Board';
 import MDEditor from '@uiw/react-md-editor';
-import {formatDistanceToNow} from 'date-fns';
-import {ko} from 'date-fns/locale';
-import {FaComment, FaHeart} from 'react-icons/fa';
-import {getCommentCountByPostId, getLikeCount} from '../../api/board/api_PostView';
+import { formatDistanceToNow } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { FaHeart, FaComment } from 'react-icons/fa';
+import { options } from './options';
+import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
     width: 100%;
@@ -21,10 +22,12 @@ const PostList = styled.div`
 `;
 
 const PostFilterBar = styled.div`
-    widht: 100%;
+    width: 100%;
     height: 5vh;
+    display: flex;
+    aligin-items: center;
     margin-bottom: 2vh;
-    background-color: #A1A1FF;
+    background-color: #fff;
 `;
 
 const PostItem = styled(Link)`
@@ -40,7 +43,7 @@ const PostItem = styled(Link)`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 
     &:visited {
-        color: black; /* 방문한 링크의 색상을 기본 텍스트 색상과 동일하게 설정 */
+        color: black;
     }
 `;
 
@@ -119,7 +122,7 @@ const PostTitle = styled.h2`
 const PostContent = styled(MDEditor.Markdown)`
     height: 18vh;
     font-size: 13px;
-    overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
+    overflow-y: clip;
     background: rgba(255, 0, 0, 0);
 `;
 
@@ -139,6 +142,19 @@ const CustomButton = styled.button`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
+const FilterSumbmitButton = styled.button`
+    align-items: center;
+    width: 30%;
+    background-color: #fff;
+    color: black;
+    font-size: 1.5vh;
+    border: none;
+    cursor: pointer;
+    border-radius: 5vh;
+    margin: 1vh;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
+`;
+
 const Divider = styled.hr`
     width: 100%;
     border: 0.5px solid #ddd;
@@ -152,11 +168,37 @@ const PostFooter = styled.div`
     margin-top: 0.5vh;
     height: 2vh;
 `;
+
 const PostFooterNumber = styled.p`
     font-size: 1vh;
     color: #ccc;
     margin-right: 0.7vw;
 `;
+
+const DropdownContainer = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1vh;
+`;
+
+const Dropdown = styled.select`
+    width: 100%;
+    padding: 0.5vh;
+    font-size: 1.5vh;
+    border: none;
+    border-radius: 1vh;
+    background-color: #ddd;
+    outline: none;
+`;
+
+const CategoryLabel = styled.p`
+    width: 30%;
+    font-size: 1.5vh;
+    font-weight: bold;
+`;
+
+const Option = styled.option``;
 
 const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     // 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
@@ -167,7 +209,31 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
     const [posts, setPosts] = useState<PostType[]>([]);
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
-    const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
+    const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState<string>('');
+    const [selectedSort, setSelectedSort] = useState<string>('likes');
+
+    useEffect(() => {
+        switch (category) {
+            case '팀프로젝트':
+                setSelectedCategory('teamProject'); break;
+            case '개발자':
+                setSelectedCategory('developer'); break;
+            case '디자이너':
+                setSelectedCategory('designer'); break;
+        }
+    }, [category]);
+
+    const statusOptions = ["OPEN", "CLOSED"]; // Define status options
+    const sortOptions = ["likes", "comments", "date"]; // Define sort options
+
+    useEffect(() => {
+        if (selectedCategory !== null && options[selectedCategory]) {
+            setCategoryOptions(options[selectedCategory]);
+        }
+    }, [selectedCategory]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -178,7 +244,6 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         fetchPosts();
     }, [category]);
 
-    // 좋아요수 불러오기
     useEffect(() => {
         const fetchLikeCounts = async () => {
             const counts: Record<number, number> = {};
@@ -187,7 +252,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     counts[post.id] = await getLikeCount(post.id);
                 } catch (error) {
                     console.error(`Error fetching like count for post ${post.id}:`, error);
-                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                    counts[post.id] = 0;
                 }
             }
             setLikeCounts(counts);
@@ -198,7 +263,6 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         }
     }, [posts]);
 
-    // 댓글수 불러오기
     useEffect(() => {
         const fetchCommentCounts = async () => {
             const counts: Record<number, number> = {};
@@ -207,10 +271,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     counts[post.id] = await getCommentCountByPostId(post.id);
                 } catch (error) {
                     console.error(`Error fetching comments count for post ${post.id}:`, error);
-                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                    counts[post.id] = 0;
                 }
             }
-            setcommentCounts(counts);
+            setCommentCounts(counts);
         };
 
         if (posts.length > 0) {
@@ -229,16 +293,16 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
             case '스터디':
                 return <StudyIcon />;
             default:
-                return null; // 기본적으로 아이콘 없음
+                return null;
         }
     };
 
     const formatDate = (date: string | Date): string => {
         const modifiedDate = new Date(date);
-        const now = new Date(); // 현재 시간
+        const now = new Date();
         const differenceInMilliseconds = now.getTime() - modifiedDate.getTime();
         const seconds = Math.floor(differenceInMilliseconds / 1000);
-    
+
         if (seconds < 60) {
             return '방금 전';
         } else if (seconds < 3600) {
@@ -252,49 +316,94 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         }
     };
 
+    const getPostsFilter = async (field: string | null, status: string | null, sort: string | null) => {
+        const posts = await getPostsByCategoryAndField(category, field, status, sort);
+        setPosts(posts);
+    }
+
+    const handleFilterClick = (field: string | null, status: string | null, sort: string | null) => {
+        getPostsFilter(field, status, sort);
+    };
+
     return (
         <PostListContainer>
-            <PostFilterBar>
-
-            </PostFilterBar>
+            {category !== '스터디' && (
+                <PostFilterBar>
+                    {selectedCategory !== null && categoryOptions.length > 0 && (
+                        <DropdownContainer>
+                            <CategoryLabel>분류</CategoryLabel>
+                            <Dropdown value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                                <Option value="">분야를 선택하세요</Option>
+                                {categoryOptions.map((option: string, index: number) => (
+                                    <Option key={index} value={option}>{option}</Option>
+                                ))}
+                            </Dropdown>
+                        </DropdownContainer>
+                    )}
+                    <DropdownContainer>
+                        <CategoryLabel>상태</CategoryLabel>
+                        <Dropdown value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+                            <Option value="">모집 상태를 선택하세요</Option>
+                            {statusOptions.map((option: string, index: number) => (
+                                <Option key={index} value={option}>{option}</Option>
+                            ))}
+                        </Dropdown>
+                    </DropdownContainer>
+                    <DropdownContainer>
+                        {selectedCategory && selectedStatus && (
+                            <CategoryLabel>순서</CategoryLabel>
+                        )}
+                        {selectedCategory && selectedStatus && (
+                            <Dropdown value={selectedSort} onChange={(e) => setSelectedSort(e.target.value)}>
+                                <Option value="" disabled>게시판 순서를 선택하세요</Option>
+                                {sortOptions.map((option: string, index: number) => (
+                                    <Option key={index} value={option}>{option}</Option>
+                                ))}
+                            </Dropdown>
+                        )}
+                    </DropdownContainer>
+                    <FilterSumbmitButton onClick={() => handleFilterClick(selectedCategory || null, selectedStatus || null, selectedSort || null)}>찾기</FilterSumbmitButton>
+                </PostFilterBar>
+            )}
             <PostList>
-            {posts.map((post) => (
-                <PostItem key={post.id} to={`/post/${post.id}`}>
-                    <PostPin>
-                        {post.category && getCategoryIcon(post.category)}
-                    </PostPin>
-                    <PostDescription>
-                        <Profile>
-                            <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
-                            <ProfileDescription>
-                                <ProfileNameAndTime>
-                                    <ProfileName>{post.user.name}</ProfileName>
-                                    <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
-                                </ProfileNameAndTime>
-                                <ProfileIconList>
-                                    {post.field && (
-                                        <CustomButton>
-                                            {post.field}
-                                        </CustomButton>
-                                    )}
-                                </ProfileIconList>
-                            </ProfileDescription>
-                        </Profile>
-                    </PostDescription>
-                    <Divider/>
-                    <PostTitle>{post.title}</PostTitle>
-                    <PostContent source={post.content} />
-                    <PostFooter>
-                        <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/> 
-                        <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
-                        <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
-                        <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
-                    </PostFooter>
-                </PostItem>
-            ))}
+                {posts.map((post) => (
+                    <PostItem key={post.id} to={`/post/${post.id}`}>
+                        <PostPin>
+                            {post.category && getCategoryIcon(post.category)}
+                        </PostPin>
+                        <PostDescription>
+                            <Profile>
+                                <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
+                                <ProfileDescription>
+                                    <ProfileNameAndTime>
+                                        <ProfileName>{post.user.name}</ProfileName>
+                                        <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
+                                    </ProfileNameAndTime>
+                                    <ProfileIconList>
+                                        {post.field && (
+                                            <CustomButton>
+                                                {post.field}
+                                            </CustomButton>
+                                        )}
+                                    </ProfileIconList>
+                                </ProfileDescription>
+                            </Profile>
+                        </PostDescription>
+                        <Divider />
+                        <PostTitle>{post.title}</PostTitle>
+                        <PostContent source={post.content} />
+                        <PostFooter>
+                            <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
+                            <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <PostFooterNumber>{commentCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
+                        </PostFooter>
+                    </PostItem>
+                ))}
             </PostList>
         </PostListContainer>
     );
 };
+
 
 export default PostComponent;
