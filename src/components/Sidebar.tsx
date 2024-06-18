@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { Theme } from '../styles/theme';
 
-const SidebarContainer = styled.div<{ theme: DefaultTheme }>`    
-    height: 100vh; 
+const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
+    min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 17px;
     &.collapse {
-        width: 7vmin;
+        width: 70px;
     }
     &.default {
-        width: 20vmin;
+        width: 195px;
     }
 `;
 
@@ -30,10 +30,10 @@ const Profile = styled.div`
 const ProfileImage = styled.img`
     border-radius: 50%;
     &.collapse {
-        width: 5vmin;
+        width: 37px;
     }
     &.default {    
-        width: 12vmin;
+        width: 100px;
         margin-bottom: 10px;
     }
 `;
@@ -74,7 +74,7 @@ const AngleArrow = styled.div`
     cursor: pointer;
     
     &.default {
-        margin-left: 15vmin;
+        margin-left: 120px;
     }
 `;
 

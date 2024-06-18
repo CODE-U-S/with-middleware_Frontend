@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId } from '../../api/board/api_PostView';
-import { Post as PostType, Comment } from '../../api/board/types';
+import { Post as PostType, Comment as CommentType } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
@@ -33,14 +33,14 @@ const Title = styled.h1`
 
 const UserName = styled.div`
     font-size: 2.5vh;
-    color: #196CE9; 
-    font-weight: bold; 
+    color: #196CE9; /* 변경된 색상 */
+    font-weight: bold; /* 볼드체로 변경 */
     margin-bottom: 1vh;
 `;
 
 const InfoContainer = styled.div`
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1vh;
     font-size: 2vh;
@@ -93,8 +93,8 @@ const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     position: fixed;
     top: 41.5vh;
     right: 8vh;
-    background: #fff; /
-    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; 
+    background: #fff; /* Red color when liked */
+    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
 `;
 
 const Icon = styled.img`
@@ -228,14 +228,12 @@ const CommentAction = styled.button`
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [post, setPost] = useState<PostType | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
+    const [comments, setComments] = useState<CommentType[]>([]);
     const [commentCount, setCommentCount] = useState(0);
     const [newComment, setNewComment] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
-    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-    const [editedComment, setEditedComment] = useState<string>('');
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -292,10 +290,6 @@ const PostView: React.FC = () => {
         return createDate ? createDate.substring(0, 10) : "시간 정보 없음";
     }
 
-    const handleLikeClick = () => {
-        setLiked(!liked);
-    };
-
     const getTimeDifference = (dateString: string): string => {
         const now = new Date();
         const date = new Date(dateString);
@@ -316,6 +310,10 @@ const PostView: React.FC = () => {
         }
     }
 
+    const handleLikeClick = () => {
+        setLiked(!liked);
+    };
+
     const handleAddComment = async () => {
         try {
             const newCommentData = await addComment({
@@ -328,30 +326,6 @@ const PostView: React.FC = () => {
             setNewComment('');
         } catch (error) {
             console.error('댓글 추가 오류:', error);
-        }
-    };
-
-    // 댓글 수정 누르면 수정 기능
-    const handleEditComment = (commentId: number, currentContent: string) => {
-        setEditingCommentId(commentId);
-        setEditedComment(currentContent);
-    };
-
-
-    const handleUpdateComment = async (commentId: number) => {
-        try {
-            // API를 사용하여 댓글을 업데이트하는 로직을 구현해야 합니다.
-            // 여기에는 API 호출 및 상태 업데이트 등이 포함될 수 있습니다.
-            // 예시 코드에서는 실제 API 호출 코드가 포함되어 있지 않습니다.
-
-            // 일시적인 예시: 수정된 댓글을 바로 UI에 반영하는 방식입니다.
-            const updatedComments = comments.map(comment =>
-                comment.id === commentId ? { ...comment, comment: editedComment } : comment
-            );
-            setComments(updatedComments);
-            setEditingCommentId(null); // 수정 모드 종료
-        } catch (error) {
-            console.error('댓글 업데이트 오류:', error);
         }
     };
 
@@ -386,7 +360,7 @@ const PostView: React.FC = () => {
                 </InfoContainer>
                 <Divider />
                 <EditorWrapper>
-                    <MDEditor.Markdown source={post.content} style={{ fontSize: '40px', lineHeight: '1.6' }} />
+                    <MDEditor.Markdown source={post.content} style={{ fontSize: '20px', lineHeight: '1.6' }} />
                 </EditorWrapper>
             </PostContainer>
             {post.status && (
@@ -415,29 +389,11 @@ const PostView: React.FC = () => {
                             <CommentUserName>{comment.user.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
-                        {editingCommentId === comment.id ? (
-                            <>
-                                <CommentInput
-                                    value={editedComment}
-                                    onChange={(e) => setEditedComment(e.target.value)}
-                                />
-                                <CommentActions>
-                                    <CommentActions>
-                                        <CommentAction onClick={() => setEditingCommentId(null)}>취소</CommentAction>
-                                        <CommentAction onClick={() => handleUpdateComment(comment.id)}>저장</CommentAction>
-                                    </CommentActions>
-
-                                </CommentActions>
-                            </>
-                        ) : (
-                            <>
-                                <CommentContent>{comment.comment}</CommentContent>
-                                <CommentActions>
-                                    <CommentAction onClick={() => handleEditComment(comment.id, comment.comment)}>수정</CommentAction>
-                                    <CommentAction>삭제</CommentAction>
-                                </CommentActions>
-                            </>
-                        )}
+                        <CommentContent>{comment.comment}</CommentContent>
+                        <CommentActions>
+                            <CommentAction>수정</CommentAction>
+                            <CommentAction>삭제</CommentAction>
+                        </CommentActions>
                     </CommentItem>
                 ))}
             </CommentSection>

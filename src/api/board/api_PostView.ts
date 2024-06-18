@@ -13,13 +13,12 @@ export const getPost = async (id: number): Promise<Post> => {
 };
 
 // 좋아요 추가
-export const addLike = async (userId: number, postId: number): Promise<any> => {
+export const addLike = async (userId: number, postId: number): Promise<void> => {
     try {
-        const response = await axios.post(`http://localhost:8080/like`, {
+        await axios.post(`http://localhost:8080/like`, {
             user: { id: userId },
             post: { id: postId }
         });
-        return response.data;
     } catch (error) {
         console.error(`Error adding like for post ${postId} by user ${userId}:`, error);
         throw error;
@@ -63,9 +62,10 @@ export const addComment = async (data: { userId: number; postId: number; comment
 };
 
 // 댓글 수정
-export const updateComment = async (commentId: number, comment: string): Promise<void> => {
+export const updateComment = async (commentId: number, comment: string): Promise<Comment> => {
     try {
-        await axios.put(`http://localhost:8080/comment/${commentId}`, { comment });
+        const response = await axios.put<Comment>(`http://localhost:8080/comment/${commentId}`, { comment });
+        return response.data;
     } catch (error) {
         console.error(`Error updating comment with ID ${commentId}:`, error);
         throw error;
