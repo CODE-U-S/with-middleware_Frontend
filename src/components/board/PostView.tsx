@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment } from '../../api/board/api_PostView';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment } from '../../api/board/api_PostView';
 import { Post as PostType, Comment } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
+import Modal from '../modal/Modal';
 
 import userProfilePic from '../../assets/user/프사.jpeg';
 
@@ -236,6 +237,9 @@ const PostView: React.FC = () => {
     const navigate = useNavigate();
     const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
     const [editedComment, setEditedComment] = useState<string>('');
+    const [showModal, setShowModal] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -355,9 +359,19 @@ const PostView: React.FC = () => {
         }
     };
 
-
-
-
+    const handleDeleteComment = async () => {
+        if (commentToDelete) {
+            try {
+                await deleteComment(commentToDelete);
+                const updatedComments = comments.filter(comment => comment.id !== commentToDelete);
+                setComments(updatedComments);
+                setCommentCount(commentCount - 1);
+                setShowModal(false); // Close modal after deletion
+            } catch (error) {
+                console.error('댓글 삭제 오류:', error);
+            }
+        }
+    };
 
     return (
         <Container>
@@ -400,6 +414,11 @@ const PostView: React.FC = () => {
             <HeartButton onClick={handleLikeClick} isLiked={liked}>
                 <FaHeart style={{ marginRight: '0.5vh' }} />
             </HeartButton>
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={handleDeleteComment}
+            />
             <CommentSection>
                 <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
                 <CommentInputWrapper>
@@ -437,7 +456,10 @@ const PostView: React.FC = () => {
                                 <CommentContent>{comment.comment}</CommentContent>
                                 <CommentActions>
                                     <CommentAction onClick={() => handleEditComment(comment.id, comment.comment)}>수정</CommentAction>
-                                    <CommentAction>삭제</CommentAction>
+                                    <CommentAction onClick={() => {
+                                        setCommentToDelete(comment.id);
+                                        setShowModal(true);
+                                    }}>삭제</CommentAction>
                                 </CommentActions>
                             </>
                         )}
