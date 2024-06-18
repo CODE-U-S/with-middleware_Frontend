@@ -213,6 +213,8 @@ const PostView: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
+    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+    const [editedComment, setEditedComment] = useState<string>('');
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -272,6 +274,32 @@ const PostView: React.FC = () => {
     const handleLikeClick = () => {
         setLiked(!liked);
     };
+
+    // 댓글 수정 누르면 수정 기능
+    const handleEditComment = (commentId: number, currentContent: string) => {
+        setEditingCommentId(commentId);
+        setEditedComment(currentContent);
+    };
+
+    // Function to update a comment after editing
+    const handleUpdateComment = async (commentId: number) => {
+        try {
+            // API를 사용하여 댓글을 업데이트하는 로직을 구현해야 합니다.
+            // 여기에는 API 호출 및 상태 업데이트 등이 포함될 수 있습니다.
+            // 예시 코드에서는 실제 API 호출 코드가 포함되어 있지 않습니다.
+
+            // 일시적인 예시: 수정된 댓글을 바로 UI에 반영하는 방식입니다.
+            const updatedComments = comments.map(comment =>
+                comment.id === commentId ? { ...comment, comment: editedComment } : comment
+            );
+            setComments(updatedComments);
+            setEditingCommentId(null); // 수정 모드 종료
+        } catch (error) {
+            console.error('댓글 업데이트 오류:', error);
+        }
+    };
+
+
 
     const handleAddComment = async () => {
         try {
@@ -342,11 +370,29 @@ const PostView: React.FC = () => {
                 <CommentButton onClick={handleAddComment}>등록</CommentButton>
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
-                        <CommentContent>{comment.comment}</CommentContent>
-                        <CommentActions>
-                            <CommentAction>수정</CommentAction>
-                            <CommentAction>삭제</CommentAction>
-                        </CommentActions>
+                        {editingCommentId === comment.id ? (
+                            <>
+                                <CommentInput
+                                    value={editedComment}
+                                    onChange={(e) => setEditedComment(e.target.value)}
+                                />
+                                <CommentActions>
+                                    <CommentActions>
+                                        <CommentAction onClick={() => setEditingCommentId(null)}>취소</CommentAction>
+                                        <CommentAction onClick={() => handleUpdateComment(comment.id)}>저장</CommentAction>
+                                    </CommentActions>
+
+                                </CommentActions>
+                            </>
+                        ) : (
+                            <>
+                                <CommentContent>{comment.comment}</CommentContent>
+                                <CommentActions>
+                                    <CommentAction onClick={() => handleEditComment(comment.id, comment.comment)}>수정</CommentAction>
+                                    <CommentAction>삭제</CommentAction>
+                                </CommentActions>
+                            </>
+                        )}
                     </CommentItem>
                 ))}
             </CommentSection>
