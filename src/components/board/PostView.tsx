@@ -13,7 +13,6 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 0 5vh; /* 전체 콘텐츠에서 좌우 여백 추가 */
 `;
 
 const PostContainer = styled.div`
@@ -23,7 +22,6 @@ const PostContainer = styled.div`
     background-color: white;
     padding: 5vh 25vh; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 1vh;
 `;
 
 const Title = styled.h1`
@@ -78,13 +76,13 @@ const CustomButton = styled.button`
 const BackButton = styled(ViewButton)`
     position: fixed; 
     top: 25vh; 
-    left: 55vh; 
+    left: 48vh; 
 `;
 
 const StatusButton = styled(ViewButton)`
     position: fixed; 
     top: 35vh; 
-    right: 15vh; 
+    right: 8vh; 
     background: #196CE9;
     color: white;
 `;
@@ -92,7 +90,7 @@ const StatusButton = styled(ViewButton)`
 const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     position: fixed;
     top: 41.5vh;
-    right: 15vh;
+    right: 8vh;
     background: #fff; /* Red color when liked */
     color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
 `;
@@ -108,6 +106,13 @@ const DesignIcon = () => <Icon src="/src/assets/board/design_icon.svg" alt="디�
 const DevelopIcon = () => <Icon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
 const StudyIcon = () => <Icon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
 const TeamIcon = () => <Icon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
+const EditorWrapper = styled.div`
+    line-height: 3.5vh;
+    margin-top: 2vh;
+    margin-bottom: 5vh;
+`;
+
 
 const PostView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -203,7 +208,9 @@ const PostView: React.FC = () => {
                     </InfoItem>
                 </InfoContainer>
                 <Divider />
-                <MDEditor.Markdown source={post.content} /> {/* 마크다운 콘텐츠를 정확히 렌더링 */}
+                <EditorWrapper>
+                    <MDEditor.Markdown source={post.content} style={{ fontSize: '40px', lineHeight: '1.6' }} />
+                </EditorWrapper>
             </PostContainer>
             {post.status && (
                 <StatusButton>
