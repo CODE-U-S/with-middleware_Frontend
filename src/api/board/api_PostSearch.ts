@@ -1,6 +1,5 @@
-// api_Board.ts
 import axios from 'axios';
-import { Post as PostType } from './types'; // types.ts 파일에서 export 한 Post를 가져옵니다.
+import { Post as PostType } from './types';
 
 
 export const getSearchPost = async (searchText: string): Promise<PostType[]> => {
