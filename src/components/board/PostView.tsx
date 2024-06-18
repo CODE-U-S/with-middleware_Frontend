@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId } from '../../api/board/api_PostView';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment } from '../../api/board/api_PostView';
 import { Post as PostType, Comment } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
@@ -340,20 +340,23 @@ const PostView: React.FC = () => {
 
     const handleUpdateComment = async (commentId: number) => {
         try {
-            // API를 사용하여 댓글을 업데이트하는 로직을 구현해야 합니다.
-            // 여기에는 API 호출 및 상태 업데이트 등이 포함될 수 있습니다.
-            // 예시 코드에서는 실제 API 호출 코드가 포함되어 있지 않습니다.
+            // 댓글 수정 API 호출
+            await updateComment(commentId, editedComment);
 
-            // 일시적인 예시: 수정된 댓글을 바로 UI에 반영하는 방식입니다.
+            // 수정된 댓글을 comments 상태에 반영
             const updatedComments = comments.map(comment =>
                 comment.id === commentId ? { ...comment, comment: editedComment } : comment
             );
             setComments(updatedComments);
+
             setEditingCommentId(null); // 수정 모드 종료
         } catch (error) {
             console.error('댓글 업데이트 오류:', error);
         }
     };
+
+
+
 
 
     return (
