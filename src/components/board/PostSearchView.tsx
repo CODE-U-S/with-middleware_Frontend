@@ -1,64 +1,121 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from "react";
+import {getSearchPost} from "../../api/board/api_PostSearch.ts";
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId } from '../../api/board/api_PostView';
-import { Post as PostType, Comment } from '../../api/board/types';
+import {Link, useParams} from 'react-router-dom';
+import {PostType} from '../../api/board/api_Board'; // 파일 확장자(.ts) 제거
 import MDEditor from '@uiw/react-md-editor';
-import { FaArrowLeft, FaHeart } from 'react-icons/fa';
-import { ViewButton } from './ViewButton.ts';
+import {formatDistanceToNow} from 'date-fns';
+import {ko} from 'date-fns/locale';
+import {FaComment, FaHeart} from 'react-icons/fa';
+import {getCommentCountByPostId, getLikeCount} from '../../api/board/api_PostView';
 
-import userProfilePic from '../../assets/user/프사.jpeg';
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+const PostListContainer = styled.div`
     width: 100%;
     height: 100%;
 `;
 
-const PostContainer = styled.div`
+const PostList = styled.div`
+    width: 95%;
+    display: grid;
+    margin-left: 4.5vw;
+    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+`;
+
+const PostItem = styled(Link)`
+    width: 80%;
+    height: 35vh;
+    margin-bottom: 4vh;
+    padding-left: 1.5vh;
+    padding-right: 1.5vh;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    background-color: #fefefe;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
+
+    &:visited {
+        color: black; /* 방문한 링크의 색상을 기본 텍스트 색상과 동일하게 설정 */
+    }
+`;
+
+const PostPin = styled.div`
+    width:100%;
+    height: 2vh;
+    margin-top: 0.5vh;
+    text-align: center;
+`;
+
+const Profile = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 6vh;
+    width: 100%;
+`;
+
+const ProfileImage = styled.img`
+    border-radius: 50%;
+    width: auto;
+    height: 100%;
+`;
+
+const ProfileDescription = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
-    background-color: white;
-    padding: 5vh 40vh;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 0.5vw;
 `;
 
-const Title = styled.h1`
-    font-size: 5vh;
-    margin-bottom: 3vh;
-`;
-
-const UserName = styled.div`
-    font-size: 2.5vh;
-    color: #196CE9; /* 변경된 색상 */
-    font-weight: bold; /* 볼드체로 변경 */
-    margin-bottom: 1vh;
-`;
-
-const InfoContainer = styled.div`
+const ProfileNameAndTime = styled.div`
     display: flex;
-    justify-content: space-between; /* 요소 사이의 간격을 최대화 */
+    flex-direction: row;
     align-items: center;
-    margin-bottom: 1vh;
-    font-size: 2vh;
-    color: #555;
+    height: 2vh;
 `;
 
-const InfoItem = styled.div`
-    margin-right: 1vh;
-`;
-
-const Divider = styled.hr`
+const ProfileIconList = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     width: 100%;
-    border:0.5px solid #ddd;
-    margin: 2vh 0;
 `;
 
-const BoldDate = styled.span`
+const PostTime = styled.p`
+    font-size: calc(0.4vw + 0.7vh);
+    color: gray;
+`;
+
+const PinIcon = styled.img`
+    width: 1.8vh;
+    height: 2vh;
+`;
+
+const ProfileName = styled.div`
+    font-size: calc(0.4vw + 0.7vh);
     font-weight: bold;
+`;
+
+const PostDescription = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 17%;
+`;
+
+const PostTitle = styled.h2`
+    font-size: 1.7vh;
+    margin: 0vh;
+    margin-bottom: 1.5vh;
+    width: 100%;
+    height: 2vh;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const PostContent = styled(MDEditor.Markdown)`
+    height: 18vh;
+    font-size: 13px;
+    overflow-y: clip; //스크롤 형식으로 바꾸고 싶다면 clip을 scroll로 바꾸세요
+    background: rgba(255, 0, 0, 0);
 `;
 
 const CustomButton = styled.button`
@@ -66,192 +123,93 @@ const CustomButton = styled.button`
     align-items: center;
     background-color: #fff;
     color: black;
-    font-size: 2vh;
-    padding: 1vh 2vh;
+    font-size: 1vh;
     border: none;
     border-radius: 5vh;
     cursor: pointer;
+    margin-top: 0.5vh;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
     transition: background-color 0.3s ease;
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-const BackButton = styled(ViewButton)`
-    position: fixed;
-    top: 25vh;
-    left: 48vh;
-`;
+// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
+const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
 
-const StatusButton = styled(ViewButton)`
-    position: fixed;
-    top: 35vh;
-    right: 8vh;
-    background: #196CE9;
-    color: white;
-`;
-
-const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
-    position: fixed;
-    top: 41.5vh;
-    right: 8vh;
-    background: #fff; /* Red color when liked */
-    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; /* White color for icon when liked */
-`;
-
-const Icon = styled.img`
-    width: 1.5vh;
-    height: 2vh;
-    margin-right: 1vh;
-`;
-
-const DesignIcon = () => <Icon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
-const DevelopIcon = () => <Icon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
-const StudyIcon = () => <Icon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
-const TeamIcon = () => <Icon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
-
-const EditorWrapper = styled.div`
-    line-height: 3.5vh;
-    margin-top: 2vh;
-    margin-bottom: 5vh;
-`;
-
-const CommentSection = styled.div`
+const Divider = styled.hr`
     width: 100%;
-    background-color: #f9f9f9;
-    padding: 2vh 40vh;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
+    border: 0.5px solid #ddd;
 `;
 
-const CommentCount = styled.div`
-    font-size: 2vh;
-    font-weight: bold;
-    margin-bottom: 2vh;
-    color: #333;
-    span {
-        color: #196CE9;
-    }
-`;
-
-const CommentInputWrapper = styled.div`
+const PostFooter = styled.div`
     display: flex;
+    flex-direction: row;
     align-items: center;
-    width: 100%;
-    margin-bottom: 1vh;
-`;
-
-const CommentInput = styled.textarea`
-    width: calc(100% - 6vh);
-    padding: 2vh;
-    border: 1px solid #ddd;
-    border-radius: 30px;
-    font-size: 2vh;
-    resize: none;
-`;
-
-const ProfilePicture = styled.img`
-    width: 6vh;
-    height: 6vh;
-    border-radius: 50%;
-    margin-right: 1vh;
-`;
-
-const CommentButton = styled.button`
-    padding: 1vh 2vh;
-    background-color: #196CE9;
-    color: white;
-    border: none;
-    border-radius: 1vh;
-    cursor: pointer;
-    font-size: 2vh;
-    margin-bottom: 3vh;
-    transition: background-color 0.3s ease;
-    margin-left: auto;
-    &:hover {
-        background-color: #145bbd; /* 호버 시 배경색 변경 */
-    }
-`;
-
-const CommentItem = styled.div`
-    background-color: white;
-    padding: 3vh;
-    margin-bottom: 4vh;
-    border: 1px solid #ddd;
-    border-radius: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-`;
-
-const CommentHeader = styled.div`
-    display: flex;
-    align-items: center;
-    margin-bottom: 2vh;
-`;
-
-const CommentUserName = styled.div`
-    font-size: 2vh;
-    font-weight: bold;
-    color: #333;
-`;
-
-const CommentContent = styled.div`
-    font-size: 2.5vh;
-    margin-bottom: 2vh;
-`;
-
-const CommentActions = styled.div`
-    display: flex;
     justify-content: flex-end;
+    margin-top: 0.5vh;
+    height: 2vh;
+`;
+const PostFooterNumber = styled.p`
+    font-size: 1vh;
+    color: #ccc;
+    margin-right: 0.7vw;
 `;
 
-const CommentAction = styled.button`
-    background: none;
-    border: none;
-    color: #196CE9;
-    cursor: pointer;
-    font-size: 2vh;
-    margin-left: 2vh; /* 마진 크기 증가 */
+const PostSearchView: React.FC = () => {
+    // hook
+    const params = useParams().id;
+    const [searchResults, setSearchResults] = useState<PostType[]>([]);
+    const [error, setError] = useState("");
 
-    &:hover {
-        text-decoration: underline;
-    }
-`;
+    const [posts, setPosts] = useState<PostType[]>([]);
+    const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+    const [commentCounts, setcommentCounts] = useState<Record<number, number>>({});
 
-const PostView: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [post, setPost] = useState<PostType | null>(null);
-    const [comments, setComments] = useState<Comment[]>([]);
-    const [commentCount, setCommentCount] = useState(0);
-    const [newComment, setNewComment] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [liked, setLiked] = useState(false);
-    const navigate = useNavigate();
-
+    // 좋아요수 불러오기
     useEffect(() => {
-        const fetchPostData = async () => {
-            try {
-                const data = await getPost(Number(id));
-                setPost(data);
-                const commentsData = await getCommentsByPostId(Number(id));
-                setComments(commentsData);
-                const commentCountData = await getCommentCountByPostId(Number(id));
-                setCommentCount(commentCountData);
-            } catch (error) {
-                setError('포스트를 불러오는 데 실패했습니다.');
+        const fetchLikeCounts = async () => {
+            const counts: Record<number, number> = {};
+            for (const post of posts) {
+                try {
+                    const count = await getLikeCount(post.id);
+                    counts[post.id] = count;
+                } catch (error) {
+                    console.error(`Error fetching like count for post ${post.id}:`, error);
+                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                }
             }
+            setLikeCounts(counts);
         };
 
-        fetchPostData();
-    }, [id]);
+        if (posts.length > 0) {
+            fetchLikeCounts();
+        }
+    }, [posts]);
 
-    if (error) {
-        return <div>{error}</div>;
-    }
+    // 댓글수 불러오기
+    useEffect(() => {
+        const fetchCommentCounts = async () => {
+            const counts: Record<number, number> = {};
+            for (const post of posts) {
+                try {
+                    const count = await getCommentCountByPostId(post.id);
+                    counts[post.id] = count;
+                } catch (error) {
+                    console.error(`Error fetching comments count for post ${post.id}:`, error);
+                    counts[post.id] = 0; // 에러 발생 시 기본 값 설정
+                }
+            }
+            setcommentCounts(counts);
+        };
 
-    if (!post) {
-        return <div>로딩 중...</div>;
-    }
+        if (posts.length > 0) {
+            fetchCommentCounts();
+        }
+    }, [posts]);
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
@@ -264,135 +222,91 @@ const PostView: React.FC = () => {
             case '스터디':
                 return <StudyIcon />;
             default:
-                return null;
+                return null; // 기본적으로 아이콘 없음
         }
     };
 
-    const getStatusButtonText = (status: string | null | undefined): string => {
-        switch (status) {
-            case 'OPEN':
-                return '모집중';
-            case 'CLOSED':
-                return '모집완료';
-            default:
-                return '';
-        }
-    };
+    const formatDate = (date: string | Date): string => {
+        const modifiedDate = new Date(date);
+        const now = new Date(); // 현재 시간
+        const differenceInMilliseconds = now.getTime() - modifiedDate.getTime();
+        const seconds = Math.floor(differenceInMilliseconds / 1000);
 
-    const getPostDate = (createDate: string | null | undefined): string | string => {
-        return createDate ? createDate.substring(0, 10) : "시간 정보 없음";
-    }
-
-    const getTimeDifference = (dateString: string): string => {
-        const now = new Date();
-        const date = new Date(dateString);
-        const diffMs = now.getTime() - date.getTime();
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDay = Math.floor(diffHour / 24);
-
-        if (diffMin < 1) {
-            return `방금 전`;
-        } else if (diffMin < 60) {
-            return `${diffMin}분 전`;
-        } else if (diffHour < 24) {
-            return `${diffHour}시간 전`;
+        if (seconds < 60) {
+            return '방금 전';
+        } else if (seconds < 3600) {
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes}분 전`;
+        } else if (seconds < 86400) {
+            const hours = Math.floor(seconds / 3600);
+            return `${hours}시간 전`;
         } else {
-            return `${diffDay}일 전`;
-        }
-    }
-
-    const handleLikeClick = () => {
-        setLiked(!liked);
-    };
-
-    const handleAddComment = async () => {
-        try {
-            const newCommentData = await addComment({
-                userId: 1,
-                postId: Number(id),
-                comment: newComment,
-            });
-            setComments([...comments, newCommentData]);
-            setCommentCount(commentCount + 1);
-            setNewComment('');
-        } catch (error) {
-            console.error('댓글 추가 오류:', error);
+            return formatDistanceToNow(modifiedDate, { locale: ko, addSuffix: true });
         }
     };
+
+    // useEffect 사용 - useParams를 사용하여 id값을 불러옴
+    useEffect(() => {
+        const fetchSearchData = async () => {
+            try {
+                if (!params)
+                    return
+                const data = await getSearchPost(params);
+                setSearchResults(data);
+            } catch (error) {
+                setError("검색 결과를 가져올 수 없습니다");
+                setSearchResults([]);
+            }
+        };
+
+        fetchSearchData();
+    }, [params]);
 
     return (
-        <Container>
-            <BackButton onClick={() => navigate('/')}>
-                <FaArrowLeft style={{ marginRight: '0.5vh' }} />
-            </BackButton>
-            <PostContainer>
-                <Title>{post.title}</Title>
-                <UserName>{post.user.name || "알 수 없는 사용자"}</UserName>
-                <InfoContainer>
-                    <InfoItem>
-                        작성일 <BoldDate>{getPostDate(post.createdDate)}</BoldDate>
-                    </InfoItem>
-                    <InfoItem>
-                        {post.category && (
-                            <CustomButton>
-                                {getCategoryIcon(post.category)}
-                                {post.category}
-                            </CustomButton>
-                        )}
-                    </InfoItem>
-                    <InfoItem>
-                        {post.field && (
-                            <CustomButton>
-                                {post.field}
-                            </CustomButton>
-                        )}
-                    </InfoItem>
-                </InfoContainer>
-                <Divider />
-                <EditorWrapper>
-                    <MDEditor.Markdown source={post.content} style={{ fontSize: '40px', lineHeight: '1.6' }} />
-                </EditorWrapper>
-            </PostContainer>
-            {post.status && (
-                <StatusButton>
-                    {getStatusButtonText(post.status)}
-                </StatusButton>
+        <PostListContainer>
+            {searchResults ? (
+                <PostList>
+                    {searchResults.map((post) => (
+                        <PostItem key={post.id} to={`/post/${post.id}`}>
+                            <PostPin>
+                                {post.category && getCategoryIcon(post.category)}
+                            </PostPin>
+                            <PostDescription>
+                                <Profile>
+                                    <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
+                                    <ProfileDescription>
+                                        <ProfileNameAndTime>
+                                            <ProfileName>{post.user.name}</ProfileName>
+                                            <PostTime>&nbsp;·&nbsp;{post.modifiedDate && formatDate(post.modifiedDate)}</PostTime>
+                                        </ProfileNameAndTime>
+                                        <ProfileIconList>
+                                            {post.field && (
+                                                <CustomButton>
+                                                    {post.field}
+                                                </CustomButton>
+                                            )}
+                                        </ProfileIconList>
+                                    </ProfileDescription>
+                                </Profile>
+                            </PostDescription>
+                            <Divider/>
+                            <PostTitle>{post.title}</PostTitle>
+                            <PostContent source={post.content} />
+                            <PostFooter>
+                                <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                                <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
+                                <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                                <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
+                            </PostFooter>
+                        </PostItem>
+                    ))}
+                </PostList>
+            ) : (
+                <h1>해당 검색어를 찾을 수 없습니다</h1>
             )}
-            <HeartButton onClick={handleLikeClick} isLiked={liked}>
-                <FaHeart style={{ marginRight: '0.5vh' }} />
-            </HeartButton>
-            <CommentSection>
-                <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
-                <CommentInputWrapper>
-                    <ProfilePicture src={userProfilePic} alt="프로필 사진" />
-                    <CommentInput
-                        placeholder="댓글을 작성해보세요."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                    />
-                </CommentInputWrapper>
-                <CommentButton onClick={handleAddComment}>등록</CommentButton>
-                {comments.map((comment) => (
-                    <CommentItem key={comment.id}>
-                        <CommentHeader>
-                            <ProfilePicture src={userProfilePic} alt="프로필 사진" />
-                            <CommentUserName>{comment.user.name}</CommentUserName>
-                            <div style={{ marginLeft: 'auto', fontSize: '1.5vh', color: '#888' }}>
-                                {getTimeDifference(comment.createdDate || '')}
-                            </div>
-                        </CommentHeader>
-                        <CommentContent>{comment.comment}</CommentContent>
-                        <CommentActions>
-                            <CommentAction>수정</CommentAction>
-                            <CommentAction>삭제</CommentAction>
-                        </CommentActions>
-                    </CommentItem>
-                ))}
-            </CommentSection>
-        </Container>
+            
+        </PostListContainer>
     );
 };
 
-export default PostView;
+export default PostSearchView;
