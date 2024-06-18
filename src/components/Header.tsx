@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
-import {Link} from "react-router-dom";
+import {createBrowserRouter, Link, useParams} from "react-router-dom";
 
 // 헤더 컨테이너 스타일
 const HeaderContainer = styled.header`
@@ -68,6 +68,7 @@ const Header: React.FC = () => {
     const [isClickedSearch, setIsClickedSearch] = useState(false);
     const [searchText, setSearchText] = useState<string>('');
     const searchInputRef = useRef<HTMLInputElement>(null);
+
     // 검색 아이콘 클릭 여부 판단 함수
     const HandleSearchbar = () => {
         if (isClickedSearch)
@@ -82,7 +83,8 @@ const Header: React.FC = () => {
                 src="/src/assets/header/search_icon.svg"
                 alt="검색 아이콘"
                 className="icon-search"
-                onClick={HandleSearchbar}/>
+                onClick={HandleSearchbar}
+            />
         );
     }
     // 유저 아이콘
@@ -127,7 +129,7 @@ const Header: React.FC = () => {
                                 setSearchText(e.target.value);
                             }}
                         />
-                        <Link to={`/posts?posts_title=${searchText}`}>
+                        <Link to={`/post/search/${searchText}`}>
                             {/* 검색 아이콘 */}
                             <SearchIcon />
                         </Link>
