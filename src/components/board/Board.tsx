@@ -23,11 +23,13 @@ const PostList = styled.div`
 
 const PostFilterBar = styled.div`
     width: 100%;
-    height: 5vh;
+    height: 6vh;
     display: flex;
     aligin-items: center;
     margin-bottom: 2vh;
+    border-radius: 3vh;
     background-color: #fff;
+    box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
 const PostItem = styled(Link)`
@@ -145,7 +147,7 @@ const CustomButton = styled.button`
 const FilterSumbmitButton = styled.button`
     align-items: center;
     width: 30%;
-    background-color: #fff;
+    background-color: white;
     color: black;
     font-size: 1.5vh;
     border: none;
@@ -153,6 +155,11 @@ const FilterSumbmitButton = styled.button`
     border-radius: 5vh;
     margin: 1vh;
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
+
+    &:hover {
+        background-color: gray;
+        color: white;
+    }
 `;
 
 const Divider = styled.hr`
@@ -193,8 +200,9 @@ const Dropdown = styled.select`
 `;
 
 const CategoryLabel = styled.p`
-    width: 30%;
-    font-size: 1.5vh;
+    margin-left: 1.5vw;
+    width: 3vw;
+    font-size: 1.7vh;
     font-weight: bold;
 `;
 

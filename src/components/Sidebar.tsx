@@ -2,20 +2,19 @@ import React, {useState} from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
 import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
+import { GoChevronRight } from "react-icons/go";
 import { Theme } from '../styles/theme';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 17px;
+    padding: 20px;
     &.collapse {
-        width: 70px;
+        width: 80px;
     }
     &.default {
-        width: 195px;
+        width: 250px;
     }
 `;
 
@@ -24,27 +23,45 @@ const Profile = styled.div`
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
-    margin-bottom: 40px;
 `;
 
 const ProfileImage = styled.img`
     border-radius: 50%;
+    position: absolute;
     &.collapse {
-        width: 37px;
+        width: 45px;
     }
-    &.default {    
-        width: 100px;
-        margin-bottom: 10px;
+    &.default {
+        width: 70px;
+        left: 27px;
     }
 `;
 
 const ProfileName = styled.div`
-    font-size: 18px;
+    position: absolute;
+    font-size: 15px;
     font-weight: bold;
+    text-align: left;
+    margin: 10px 0 0 100px;
+    padding-right: 70px;
+`;
+
+const LinkMyPageIcon = styled(Link)`
+    position: relative;
+    margin: 10px 0 0 100px;
+    color: ${props => props.theme.Color.gray};
+    cursor: pointer;
+`
+
+const ProfileEmail = styled.div`
+    font-size: 10px;
+    color: gray;
+    margin: 7px 0 0 95px;
 `;
 
 const ButtonContainer = styled.div`
     width: 100%;
+    margin-top: 70px;
 `;
 
 const Button = styled(Link)`
@@ -72,9 +89,10 @@ const Button = styled(Link)`
 
 const AngleArrow = styled.div`
     cursor: pointer;
+    text-align: center;
     
     &.default {
-        margin-left: 120px;
+        margin-left: 190px;
     }
 `;
 
@@ -83,6 +101,7 @@ const Sidebar: React.FC = () => {
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
     }
+
     return (
         <ThemeProvider theme={Theme}>
             <SidebarContainer className={isCollapse ? 'collapse' : 'default'}>
@@ -100,6 +119,8 @@ const Sidebar: React.FC = () => {
                 <Profile>
                     <ProfileImage src="https://via.placeholder.com/80" alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
                     <ProfileName>{isCollapse ? '' : '김선희'}</ProfileName>
+                    {isCollapse ? '' : <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>}
+                    <ProfileEmail>{isCollapse ? '' : 'rlatjsgml@e-mirim.hs.kr'}</ProfileEmail>
                 </Profile>
                 <ButtonContainer>
                     <Button to="/post">

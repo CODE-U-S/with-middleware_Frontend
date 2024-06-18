@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment } from '../../api/board/api_PostView';
-import { Post as PostType, Comment } from '../../api/board/types';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts } from '../../api/board/api_PostView';
+import { Post as PostType, Comment, Like as LikeType } from '../../api/board/types';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
@@ -94,8 +94,8 @@ const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     position: fixed;
     top: 41.5vh;
     right: 8vh;
-    background: #fff; /
-    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '196CE9')}; 
+    background: #fff;
+    color: ${({ isLiked }) => (isLiked ? '#DB4455' : '#ccc')};
 `;
 
 const Icon = styled.img`
@@ -239,6 +239,7 @@ const PostView: React.FC = () => {
     const [editedComment, setEditedComment] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+    const [initialLoad, setInitialLoad] = useState(true);
 
 
     useEffect(() => {
@@ -254,9 +255,31 @@ const PostView: React.FC = () => {
                 setError('포스트를 불러오는 데 실패했습니다.');
             }
         };
-
+    
         fetchPostData();
     }, [id]);
+    
+    useEffect(() => {
+        const fetchLikeData = async () => {
+            if (!post) return;
+    
+            try {
+                const likes = await getLikePosts(Number(id));
+                const userId = post.user.id;
+                const userHasLiked = likes.some((like: LikeType) => like.user.id === userId);
+                setLiked(userHasLiked);
+                setInitialLoad(false); // 최초 데이터 로드 후 상태 변경
+            } catch (error) {
+                console.error('like 불러오기 실패');
+                setInitialLoad(false); // 에러 발생 시에도 상태 변경
+            }
+        };
+    
+        if (initialLoad) {
+            fetchLikeData();
+        }
+    }, [post, id, initialLoad]);
+    
 
     if (error) {
         return <div>{error}</div>;
@@ -297,7 +320,13 @@ const PostView: React.FC = () => {
     }
 
     const handleLikeClick = () => {
-        setLiked(!liked);
+        if(!liked){
+            addLike(post.user.id, post.id);
+            setLiked(true);
+        }else{
+            cancelLike(post.user.id, post.id);
+            setLiked(false);
+        }
     };
 
     const getTimeDifference = (dateString: string): string => {
