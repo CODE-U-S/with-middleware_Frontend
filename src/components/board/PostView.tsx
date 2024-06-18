@@ -96,6 +96,10 @@ const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     right: 8vh;
     background: #fff;
     color: ${({ isLiked }) => (isLiked ? '#DB4455' : '#ccc')};
+
+    span {
+        color: ${({ isLiked }) => (isLiked ? '#000000' : '#A0B2C1')};
+    }
 `;
 
 const Icon = styled.img`
@@ -240,6 +244,8 @@ const PostView: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
     const [initialLoad, setInitialLoad] = useState(true);
+    const [likeCount, setLikeCount] = useState<number>(0);
+
 
 
     useEffect(() => {
@@ -268,6 +274,7 @@ const PostView: React.FC = () => {
                 const userId = post.user.id;
                 const userHasLiked = likes.some((like: LikeType) => like.user.id === userId);
                 setLiked(userHasLiked);
+                setLikeCount(likes.length);
                 setInitialLoad(false); // 최초 데이터 로드 후 상태 변경
             } catch (error) {
                 console.error('like 불러오기 실패');
@@ -288,6 +295,8 @@ const PostView: React.FC = () => {
     if (!post) {
         return <div>로딩 중...</div>;
     }
+
+
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
@@ -323,11 +332,14 @@ const PostView: React.FC = () => {
         if(!liked){
             addLike(post.user.id, post.id);
             setLiked(true);
+            setLikeCount(likeCount + 1);
         }else{
             cancelLike(post.user.id, post.id);
             setLiked(false);
+            setLikeCount(likeCount - 1);
         }
     };
+
 
     const getTimeDifference = (dateString: string): string => {
         const now = new Date();
@@ -405,7 +417,7 @@ const PostView: React.FC = () => {
     return (
         <Container>
             <BackButton onClick={() => navigate('/')}>
-                <FaArrowLeft style={{ marginRight: '0.5vh' }} />
+                <FaArrowLeft style={{marginRight: '0.5vh'}}/>
             </BackButton>
             <PostContainer>
                 <Title>{post.title}</Title>
@@ -430,9 +442,9 @@ const PostView: React.FC = () => {
                         )}
                     </InfoItem>
                 </InfoContainer>
-                <Divider />
+                <Divider/>
                 <EditorWrapper>
-                    <MDEditor.Markdown source={post.content} style={{ fontSize: '40px', lineHeight: '1.6' }} />
+                    <MDEditor.Markdown source={post.content} style={{fontSize: '40px', lineHeight: '1.6'}}/>
                 </EditorWrapper>
             </PostContainer>
             {post.status && (
@@ -442,6 +454,7 @@ const PostView: React.FC = () => {
             )}
             <HeartButton onClick={handleLikeClick} isLiked={liked}>
                 <FaHeart style={{ marginRight: '0.5vh' }} />
+                <span>{likeCount}</span>
             </HeartButton>
             <Modal
                 isOpen={showModal}
@@ -452,7 +465,7 @@ const PostView: React.FC = () => {
             <CommentSection>
                 <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
                 <CommentInputWrapper>
-                    <ProfilePicture src={userProfilePic} alt="프로필 사진" />
+                    <ProfilePicture src={userProfilePic} alt="프로필 사진"/>
                     <CommentInput
                         placeholder="댓글을 작성해보세요."
                         value={newComment}
@@ -463,7 +476,7 @@ const PostView: React.FC = () => {
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
                         <CommentHeader>
-                            <ProfilePicture src={userProfilePic} alt="프로필 사진" />
+                            <ProfilePicture src={userProfilePic} alt="프로필 사진"/>
                             <CommentUserName>{comment.user.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
@@ -476,7 +489,8 @@ const PostView: React.FC = () => {
                                 <CommentActions>
                                     <CommentActions>
                                         <CommentAction onClick={() => setEditingCommentId(null)}>취소</CommentAction>
-                                        <CommentAction onClick={() => handleUpdateComment(comment.id)}>저장</CommentAction>
+                                        <CommentAction
+                                            onClick={() => handleUpdateComment(comment.id)}>저장</CommentAction>
                                     </CommentActions>
 
                                 </CommentActions>
@@ -485,7 +499,8 @@ const PostView: React.FC = () => {
                             <>
                                 <CommentContent>{comment.comment}</CommentContent>
                                 <CommentActions>
-                                    <CommentAction onClick={() => handleEditComment(comment.id, comment.comment)}>수정</CommentAction>
+                                    <CommentAction
+                                        onClick={() => handleEditComment(comment.id, comment.comment)}>수정</CommentAction>
                                     <CommentAction onClick={() => {
                                         setCommentToDelete(comment.id);
                                         setShowModal(true);
