@@ -9,10 +9,22 @@ import { FaHeart, FaComment } from 'react-icons/fa';
 import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 
 const PostListContainer = styled.div`
+    width: 100%;
+    height: 100%;
+`;
+
+const PostList = styled.div`
     width: 95%;
     display: grid;
     margin-left: 4.5vw;
     grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+`;
+
+const PostFilterBar = styled.div`
+    widht: 100%;
+    height: 5vh;
+    margin-bottom: 2vh;
+    background-color: #A1A1FF;
 `;
 
 const PostItem = styled(Link)`
@@ -245,6 +257,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
     return (
         <PostListContainer>
+            <PostFilterBar>
+
+            </PostFilterBar>
+            <PostList>
             {posts.map((post) => (
                 <PostItem key={post.id} to={`/post/${post.id}`}>
                     <PostPin>
@@ -272,13 +288,14 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     <PostTitle>{post.title}</PostTitle>
                     <PostContent source={post.content} />
                     <PostFooter>
-                        <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
+                        <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/> 
                         <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
                         <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh'}}/>
                         <PostFooterNumber>{likeCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
                     </PostFooter>
                 </PostItem>
             ))}
+            </PostList>
         </PostListContainer>
     );
 };
