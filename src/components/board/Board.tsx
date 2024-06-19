@@ -9,6 +9,7 @@ import { FaHeart, FaComment, FaSearch  } from 'react-icons/fa';
 import { options } from './options';
 import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 import { userProfilePic } from '../../api/sidebar/api_getUser';
+import { getSearchPostCategory } from '../../api/board/api_PostSearch';
 
 const PostListContainer = styled.div`
     width: 100%;
@@ -163,7 +164,7 @@ const PostTitle = styled.h2`
 `;
 
 const PostContent = styled(MDEditor.Markdown)`
-    height: 18vh;
+    height: 17vh;
     font-size: 13px;
     overflow-y: clip;
     background: rgba(255, 0, 0, 0);
@@ -214,11 +215,11 @@ const PostFooter = styled.div`
     align-items: center;
     justify-content: flex-end;
     margin-top: 0.5vh;
-    height: 2vh;
+    height: 2.5vh;
 `;
 
 const PostFooterNumber = styled.p`
-    font-size: 1vh;
+    font-size: 100%;
     color: #ccc;
     margin-right: 0.7vw;
 `;
@@ -259,10 +260,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [posts, setPosts] = useState<PostType[]>([]);
     const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
     const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
     const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
-    const [selectedStatus, setSelectedStatus] = useState<string>('');
-    const [selectedSort, setSelectedSort] = useState<string>('likes');
+    const [selectedStatus, setSelectedStatus] = useState<string>('OPEN');
+    const [selectedSort, setSelectedSort] = useState<string>('date');
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
@@ -366,13 +367,26 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
         }
     };
 
-    const getPostsFilter = async (field: string | null, status: string | null, sort: string | null) => {
+    const getPostsFilter = async (field: string, status: string, sort: string) => {
         const posts = await getPostsByCategoryAndField(category, field, status, sort);
         setPosts(posts);
     }
 
-    const handleFilterClick = (field: string | null, status: string | null, sort: string | null) => {
+    const handleFilterClick = (field: string, status: string, sort: string) => {
+        if(field === 'teamProject' || field === 'developer' || field === 'designer')
+            field = 'ALL';
         getPostsFilter(field, status, sort);
+    };
+
+    const getSearch = async () => {
+        const posts = await getSearchPostCategory(category, searchQuery);
+        setPosts(posts);
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            getSearch();
+        }
     };
 
     return (
@@ -382,9 +396,10 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     <SearchIcon />
                     <SearchInput
                         type="text"
-                        placeholder="검색어를 입력하세요"
+                        placeholder={`${category}에서 검색하기`}
                         value={searchQuery} // 추가
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={handleKeyDown}
                     />
                 </SearchInputWrapper>
             </SearchBar>
@@ -393,8 +408,9 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     {selectedCategory !== null && categoryOptions.length > 0 && (
                         <DropdownContainer>
                             <CategoryLabel>분류</CategoryLabel>
+                            
                             <Dropdown value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                                <Option value="">분야를 선택하세요</Option>
+                                <Option value="ALL">전체</Option>
                                 {categoryOptions.map((option: string, index: number) => (
                                     <Option key={index} value={option}>{option}</Option>
                                 ))}
@@ -404,26 +420,22 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     <DropdownContainer>
                         <CategoryLabel>상태</CategoryLabel>
                         <Dropdown value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-                            <Option value="">모집 상태를 선택하세요</Option>
+                            <Option value="" disabled>모집 상태를 선택하세요</Option>
                             {statusOptions.map((option: string, index: number) => (
                                 <Option key={index} value={option}>{option}</Option>
                             ))}
                         </Dropdown>
                     </DropdownContainer>
                     <DropdownContainer>
-                        {selectedCategory && selectedStatus && (
                             <CategoryLabel>순서</CategoryLabel>
-                        )}
-                        {selectedCategory && selectedStatus && (
                             <Dropdown value={selectedSort} onChange={(e) => setSelectedSort(e.target.value)}>
                                 <Option value="" disabled>게시판 순서를 선택하세요</Option>
                                 {sortOptions.map((option: string, index: number) => (
                                     <Option key={index} value={option}>{option}</Option>
                                 ))}
                             </Dropdown>
-                        )}
                     </DropdownContainer>
-                    <FilterSumbmitButton onClick={() => handleFilterClick(selectedCategory || null, selectedStatus || null, selectedSort || null)}>찾기</FilterSumbmitButton>
+                    <FilterSumbmitButton onClick={() => handleFilterClick(selectedCategory, selectedStatus, selectedSort)}>찾기</FilterSumbmitButton>
                 </PostFilterBar>
             )}
             <PostList>
@@ -454,9 +466,9 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                         <PostTitle>{post.title}</PostTitle>
                         <PostContent source={post.content} />
                         <PostFooter>
-                            <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <FaHeart style={{ marginRight: '0.2vw', marginLeft: '0.3vw', color: '#ddd', blockSize: '100%' }} />
                             <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
-                            <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <FaComment style={{ marginRight: '0.2vw', marginLeft: '0.3vw', color: '#ddd', blockSize: '100%' }} />
                             <PostFooterNumber>{commentCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
                         </PostFooter>
                     </PostItem>
