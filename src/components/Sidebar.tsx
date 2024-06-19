@@ -41,17 +41,15 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileName = styled.div`
-    position: absolute;
+    margin-left: 60px;
     font-size: 15px;
     font-weight: bold;
     text-align: left;
-    margin: 10px 0 0 100px;
-    padding-right: 70px;
 `;
 
 const LinkMyPageIcon = styled(Link)`
     position: relative;
-    margin: 10px 0 0 100px;
+    
     color: ${props => props.theme.Color.gray};
     cursor: pointer;
 `
@@ -99,6 +97,10 @@ const AngleArrow = styled.div`
     }
 `;
 
+const UserNameContainer = styled.div`
+    display: flex;
+`
+
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();
     const [isCollapse, setIsCollapse] = useState(false);
@@ -138,8 +140,10 @@ const Sidebar: React.FC = () => {
                     <ProfileImage src={userProfilePic} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
                     {!isCollapse && user && (
                         <>
+                        <UserNameContainer>
                             <ProfileName>{user.name}</ProfileName>
                             <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>
+                        </UserNameContainer>
                             <ProfileEmail>{user.email}</ProfileEmail>
                         </>
                     )}

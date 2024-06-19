@@ -17,6 +17,7 @@ import DesignBoard from "./pages/DesignBoardPage";
 import RecentBoardPage from "./pages/RecentBoardPage.tsx";
 import PostSearchView from "./components/board/PostSearchView.tsx";
 import SavedPost from "./components/board/SavedPost.tsx";
+import MyPage from "./pages/mypage/MyPage.tsx";
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -53,6 +54,7 @@ const App: React.FC = () => {
                                 <Route path="/post/:id" element={<PostView />} />
                                 <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />
+                                <Route path="/mypage" element={<MyPage />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
