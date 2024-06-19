@@ -5,6 +5,7 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    isConfirm: boolean;
     message: string; // 각 모달마다 다른 메시지를 표시할 수 있도록 추가
 }
 
@@ -39,7 +40,7 @@ const ModalButton = styled.button`
     cursor: pointer;
 `;
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, message }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, isConfirm, message }) => {
     if (!isOpen) return null;
 
     return (
@@ -48,7 +49,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, message }) =>
                 <p>{message}</p>
                 <ModalButtons>
                     <ModalButton onClick={onClose}>취소</ModalButton>
-                    <ModalButton onClick={onConfirm}>확인</ModalButton>
+                    {!isConfirm && (
+                        <ModalButton onClick={onConfirm}>확인</ModalButton>
+                    )}
                 </ModalButtons>
             </ModalContent>
         </ModalContainer>

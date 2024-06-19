@@ -463,6 +463,7 @@ const PostView: React.FC = () => {
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
                 onConfirm={handleDeleteComment}
+                isConfirm={false}
                 message="이 댓글을 삭제하시겠습니까?" // 모달에 표시할 메시지
             />
             <CommentSection>
