@@ -103,7 +103,7 @@ const AngleArrow = styled.div`
     &.default {
         margin-left: 190px;
     }
-    `;
+`;
 
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();

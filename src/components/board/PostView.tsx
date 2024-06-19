@@ -415,7 +415,7 @@ const PostView: React.FC = () => {
 
     return (
         <Container>
-            <BackButton onClick={() => navigate('/')}>
+            <BackButton onClick={() => navigate(-1)}>
                 <FaArrowLeft style={{marginRight: '0.5vh'}}/>
             </BackButton>
             <PostContainer>

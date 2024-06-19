@@ -53,7 +53,6 @@ export const cancelLike = async (userId: number, postId: number): Promise<void> 
     }
 };
 
-
 // 좋아요 개수 조회
 export const getLikeCount = async (postId: number): Promise<number> => {
     try {

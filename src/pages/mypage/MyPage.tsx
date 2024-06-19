@@ -3,6 +3,7 @@ import userProfilePic from '../../assets/user/프사.jpeg';
 import styled from "styled-components";
 import {getUser} from "../../api/sidebar/api_getUser.ts";
 import {useParams} from "react-router-dom";
+import SavedPost from "./SavedPost.tsx";
 
 const MyPageContainer = styled.div`
     width: 90%;
@@ -41,18 +42,18 @@ const LabelContainer = styled.div`
 
 const PageLabel = styled.label`
     cursor: pointer;
-    margin: 1.5vw;
-    font-size: 17pt;
+    margin: 0.5vmin;
+    font-size: 12pt;
 `;
 
 const PostOptionP = styled.p`
-    padding: 7px 20px 7px 20px;
-    width: 170px;
+    padding: 1vmin 1vmin 1vmin 1vmin;
+    width: 18vmin;
     text-align: center;
     &.check {
         font-weight: bold;
-        background-color: rgb(0, 0, 0, 0.15);
-        border-radius: 12px;
+        background-color: rgb(0, 0, 0, 0.1);
+        border-radius: 10px;
     }
 `;
 
@@ -76,8 +77,8 @@ const MyPage: React.FC = () => {
         const fetchUserData = async () => {
             try {
                 if (userId) {
-                    const data = await getUser(Number(userId)); // userId를 number로 변환
-                    setUserName(data.name ?? "Unknown User"); // 기본값 설정
+                    const data = await getUser(Number(userId));     // userId를 number로 변환
+                    setUserName(data.name ?? "Unknown User");       // 기본값 설정
                     setUserEmail(data.email ?? "Unknown Email");
                 }
             } catch (error) {
@@ -127,9 +128,13 @@ const MyPage: React.FC = () => {
             </LabelContainer>
             <div>
                 {page === 1 ? (
-                    <h2>찜한 게시물</h2>
+                    <div>
+                        <SavedPost />
+                    </div>
                 ) : (
-                    <h2>내 게시물</h2>
+                    <div>
+                        <h2>내 게시물</h2>
+                    </div>
                 )}
             </div>
         </MyPageContainer>
