@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts,/* getUserImage*/ } from '../../api/board/api_PostView';
 import { Post as PostType, Comment, Like as LikeType } from '../../api/types.ts';
 import MDEditor from '@uiw/react-md-editor';
-import { FaArrowLeft, FaHeart } from 'react-icons/fa';
+import { FaArrowLeft, FaHeart, FaShare } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 import Modal from '../modal/Modal';
 import { userProfilePic } from '../../api/sidebar/api_getUser';
@@ -80,27 +80,65 @@ const CustomButton = styled.button`
 const BackButton = styled(ViewButton)`
     position: fixed;
     top: 25vh;
-    left: 48vh;
+    left: 30vh;
 `;
 
 const StatusButton = styled(ViewButton)`
     position: fixed;
     top: 35vh;
-    right: 8vh;
-    background: #196CE9;
+    right: 10vh;
+    background: ${props => props.theme.Color.primaryColor};
     color: white;
+    font-size: 1.4vh;
+    width: 9vh;
+    height: 4vh;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
 `;
 
 const HeartButton = styled(ViewButton)<{ isLiked: boolean }>`
     position: fixed;
-    top: 41.5vh;
-    right: 8vh;
+    top: 40vh;
+    right: 10vh;
     background: #fff;
     color: ${({ isLiked }) => (isLiked ? '#DB4455' : '#ccc')};
+    width: 8.8vh;
+    height: 3.8vh;
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    
 
     span {
         color: ${({ isLiked }) => (isLiked ? '#000000' : '#A0B2C1')};
     }
+`;
+
+const ShareButton = styled(ViewButton)`
+    position: fixed;
+    top: 45vh;
+    right: 10vh;
+    width: 8.8vh;
+    height: 3.8vh;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    font-size: 1.4vh;
+`;
+
+const AlertBubble = styled.div<{ show: boolean }>`
+    position: fixed;
+    top: 41vh;
+    right: 9.3vh;
+    background-color: rgba(199, 199, 199, 0.9);
+    border-radius: 6px;
+    padding: 1vh 1vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 1.2vh;
+    font-weight: bold;
+    z-index: 999;
+    display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
 const Icon = styled.img`
@@ -248,6 +286,7 @@ const PostView: React.FC = () => {
     const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
     const [initialLoad, setInitialLoad] = useState(true);
     const [likeCount, setLikeCount] = useState<number>(0);
+    const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -339,6 +378,12 @@ const PostView: React.FC = () => {
         }
     };
 
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 1500);
+    };
+
 
     const getTimeDifference = (dateString: string): string => {
         const now = new Date();
@@ -368,6 +413,9 @@ const PostView: React.FC = () => {
                 comment: newComment,
             });
 
+            // Assume you want to use newCommentData for something
+            console.log('New Comment Data:', newCommentData);
+
             // 댓글 추가 후 새로운 댓글 목록을 가져오기
             const updatedComments = await getCommentsByPostId(Number(id));
             setComments(updatedComments);
@@ -381,6 +429,7 @@ const PostView: React.FC = () => {
             console.error('댓글 추가 오류:', error);
         }
     };
+
 
 
     // 댓글 수정 누르면 수정 기능
@@ -463,6 +512,11 @@ const PostView: React.FC = () => {
                 <FaHeart style={{ marginRight: '0.5vh' }} />
                 <span>{likeCount}</span>
             </HeartButton>
+            <ShareButton onClick={handleShare}>
+                <FaShare style={{ marginRight: '0.5vh' }} />
+                공유
+            </ShareButton>
+            <AlertBubble show={showAlert}>링크 복사 완료!</AlertBubble>
             <Modal
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
