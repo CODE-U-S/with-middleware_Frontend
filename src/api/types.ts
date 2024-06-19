@@ -1,4 +1,3 @@
-// types.ts
 export interface User {
     id: number;
     createdDate?: string | null;
@@ -6,6 +5,7 @@ export interface User {
     name: string | null;
     email?: string | null;
     category?: string | null;
+    description?: string | null; // description 필드 추가
 }
 
 export interface Post {

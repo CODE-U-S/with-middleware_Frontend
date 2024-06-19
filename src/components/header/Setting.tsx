@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { getUserInfo } from '../../api/header/api_Setting';
+import { User } from '../../api/types';
 
 const Container = styled.div`
     display: flex;
@@ -30,7 +32,8 @@ const Input = styled.input`
     padding: 1vh;
     font-size: 2vh;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 8px;
+    background: ${props => props.theme.Color.backgroundColor};
 `;
 
 const TextArea = styled.textarea`
@@ -58,19 +61,40 @@ const Button = styled.button`
 `;
 
 const Setting: React.FC = () => {
-    // 예시로 상태 관리를 위한 useState 사용
-    const [profilePic, setProfilePic] = useState<string>('');
+    const [user, setUser] = useState<User | null>(null);
     const [nickname, setNickname] = useState<string>('');
     const [bio, setBio] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const userId = 1; // 예시로 사용자 ID를 1로 지정
+                const userData = await getUserInfo(userId);
+                setUser(userData);
+
+                // 한 줄 소개가 비어있을 경우 기본 값 설정
+                if (userData.description) {
+                    setBio(userData.description);
+                }
+            } catch (error) {
+                console.error('유저 정보를 불러오는 데 실패했습니다.', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // 예시: 설정 데이터를 서버에 전송하는 로직 작성
-        console.log('전송할 데이터:', { profilePic, nickname, bio, email, password });
-        // 추가적인 서버 요청 등 필요한 작업 수행
+        console.log('전송할 데이터:', { nickname, bio, email, password });
+        // 서버에 데이터 전송 등의 추가 작업 수행
     };
+
+    if (!user) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <Container>
@@ -78,19 +102,10 @@ const Setting: React.FC = () => {
                 <h1>프로필 설정</h1>
                 <form onSubmit={handleSubmit}>
                     <FormGroup>
-                        <Label>프로필 사진</Label>
-                        <Input
-                            type="text"
-                            value={profilePic}
-                            onChange={(e) => setProfilePic(e.target.value)}
-                            placeholder="프로필 사진 URL 입력"
-                        />
-                    </FormGroup>
-                    <FormGroup>
                         <Label>닉네임</Label>
                         <Input
                             type="text"
-                            value={nickname}
+                            value={nickname || user.name || ''}
                             onChange={(e) => setNickname(e.target.value)}
                             placeholder="닉네임 입력"
                         />
@@ -107,7 +122,7 @@ const Setting: React.FC = () => {
                         <Label>이메일 정보</Label>
                         <Input
                             type="email"
-                            value={email}
+                            value={email || user.email || ''}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="이메일 입력"
                         />
