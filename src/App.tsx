@@ -14,10 +14,9 @@ import StudyBoard from "./pages/StudyBoardPage";
 import TeamBoard from "./pages/TeamBoardPage";
 import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
-import RecentBoardPage from "./pages/RecentBoardPage.tsx";
 import PostSearchView from "./components/board/PostSearchView.tsx";
-import SavedPost from "./pages/mypage/SavedPost.tsx";
 import MyPage from "./pages/mypage/MyPage.tsx";
+import Setting from "./components/header/Setting"
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -30,7 +29,7 @@ const Content = styled.div`
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-    height: 100%; /* 부모의 높이를 100% 차지 */
+    height: 100%; /* 부모의 높이를 100% 차지 */ 
     //padding: 20px; // Postview에는 뒷배경이 안보이게 하기위함.
 `;
 
@@ -49,12 +48,11 @@ const App: React.FC = () => {
                                 <Route path="/developers" element={<DevelopBoard />} />
                                 <Route path="/designs" element={<DesignBoard />} />
                                 <Route path="/study" element={<StudyBoard />} />
-                                <Route path="/like" element={<SavedPost />} />
-                                <Route path="/recent" element={<RecentBoardPage />} />
                                 <Route path="/post/:id" element={<PostView />} />
                                 <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />
                                 <Route path="/user/:id" element={<MyPage />} />
+                                <Route path="/settings" element={<Setting />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
