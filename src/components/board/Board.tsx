@@ -373,6 +373,8 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     }
 
     const handleFilterClick = (field: string, status: string, sort: string) => {
+        if(field === 'teamProject' || field === 'developer' || field === 'designer')
+            field = 'ALL';
         getPostsFilter(field, status, sort);
     };
 
@@ -406,7 +408,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                     {selectedCategory !== null && categoryOptions.length > 0 && (
                         <DropdownContainer>
                             <CategoryLabel>분류</CategoryLabel>
-                            {/* {() => setSelectedCategory("ALL")} */}
+                            
                             <Dropdown value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                                 <Option value="ALL">전체</Option>
                                 {categoryOptions.map((option: string, index: number) => (
