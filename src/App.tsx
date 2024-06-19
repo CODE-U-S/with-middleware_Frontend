@@ -54,7 +54,7 @@ const App: React.FC = () => {
                                 <Route path="/post/:id" element={<PostView />} />
                                 <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />
-                                <Route path="/mypage" element={<MyPage />} />
+                                <Route path="/user/:id" element={<MyPage />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>

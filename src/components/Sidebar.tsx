@@ -142,7 +142,7 @@ const Sidebar: React.FC = () => {
                         <>
                         <UserNameContainer>
                             <ProfileName>{user.name}</ProfileName>
-                            <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>
+                            <LinkMyPageIcon to="/user/1"><GoChevronRight/></LinkMyPageIcon>
                         </UserNameContainer>
                             <ProfileEmail>{user.email}</ProfileEmail>
                         </>
