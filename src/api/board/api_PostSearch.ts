@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Post as PostType } from './types';
+import { Post as PostType } from '../types';
 
 
 export const getSearchPost = async (searchText: string): Promise<PostType[]> => {

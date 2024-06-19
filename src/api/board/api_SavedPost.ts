@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Like as Post} from './types';
+import {Like as Post} from '../types';
 
 
 export const getSavedPost = async (): Promise<Post[]> => {

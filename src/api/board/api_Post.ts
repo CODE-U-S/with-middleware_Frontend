@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Post } from './types';
+import { Post } from '../types';
 
 interface PostData extends Omit<Post, 'id'> {}
 

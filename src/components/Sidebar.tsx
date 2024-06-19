@@ -1,9 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
 import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { GoChevronRight } from "react-icons/go";
 import { Theme } from '../styles/theme';
+import userProfilePic from '../assets/user/프사.jpeg';
+import { User } from '../api/types';
+import { getUser } from '../api/sidebar/api_getUser';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     min-height: 100vh;
@@ -97,7 +100,22 @@ const AngleArrow = styled.div`
 `;
 
 const Sidebar: React.FC = () => {
+    const [user, setUser] = useState<User>();
     const [isCollapse, setIsCollapse] = useState(false);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const data = await getUser(2);
+                setUser(data);
+            } catch (error) {
+                console.error('유저를 불러오는 데 실패했습니다.');
+            }
+        };
+    
+        fetchUserData();
+    });
+
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
     }
@@ -117,10 +135,14 @@ const Sidebar: React.FC = () => {
                     )}
                 </AngleArrow>
                 <Profile>
-                    <ProfileImage src="https://via.placeholder.com/80" alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
-                    <ProfileName>{isCollapse ? '' : '김선희'}</ProfileName>
-                    {isCollapse ? '' : <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>}
-                    <ProfileEmail>{isCollapse ? '' : 'rlatjsgml@e-mirim.hs.kr'}</ProfileEmail>
+                    <ProfileImage src={userProfilePic} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
+                    {!isCollapse && user && (
+                        <>
+                            <ProfileName>{user.name}</ProfileName>
+                            <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>
+                            <ProfileEmail>{user.email}</ProfileEmail>
+                        </>
+                    )}
                 </Profile>
                 <ButtonContainer>
                     <Button to="/post">
