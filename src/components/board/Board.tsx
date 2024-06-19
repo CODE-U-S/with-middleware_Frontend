@@ -8,6 +8,7 @@ import { ko } from 'date-fns/locale';
 import { FaHeart, FaComment } from 'react-icons/fa';
 import { options } from './options';
 import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
+import { userProfilePic } from '../../api/sidebar/api_getUser';
 
 const PostListContainer = styled.div`
     width: 100%;
@@ -381,7 +382,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                         </PostPin>
                         <PostDescription>
                             <Profile>
-                                <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
+                                <ProfileImage src={userProfilePic(post.user.id)} alt="Profile" />
                                 <ProfileDescription>
                                     <ProfileNameAndTime>
                                         <ProfileName>{post.user.name}</ProfileName>

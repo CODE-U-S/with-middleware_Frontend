@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
 import { Link } from 'react-router-dom';
-import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart } from 'react-icons/fa';
 import { GoChevronRight } from "react-icons/go";
 import { Theme } from '../styles/theme';
-import userProfilePic from '../assets/user/프사.jpeg';
 import { User } from '../api/types';
-import { getUser } from '../api/sidebar/api_getUser';
+import { getUser, userProfilePic } from '../api/sidebar/api_getUser';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     min-height: 100vh;
@@ -88,16 +87,16 @@ const Button = styled(Link)`
         color: ${props => props.theme.Color.textColor};
         font-weight: bold;
     }
-`;
+    `;
 
 const AngleArrow = styled.div`
     cursor: pointer;
     text-align: center;
-
+    
     &.default {
         margin-left: 190px;
     }
-`;
+    `;
 
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();
@@ -106,19 +105,20 @@ const Sidebar: React.FC = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const data = await getUser(2);
+                const data = await getUser(1);
                 setUser(data);
             } catch (error) {
                 console.error('유저를 불러오는 데 실패했습니다.');
             }
         };
-    
+
         fetchUserData();
     });
 
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
     }
+
 
     return (
         <ThemeProvider theme={Theme}>
@@ -130,16 +130,16 @@ const Sidebar: React.FC = () => {
                         </div>
                     ) : (
                         <div>
-                            <FaAngleDoubleLeft  />
+                            <FaAngleDoubleLeft />
                         </div>
                     )}
                 </AngleArrow>
                 <Profile>
-                    <ProfileImage src={userProfilePic} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
                     {!isCollapse && user && (
                         <>
+                            <ProfileImage src={userProfilePic(user.id)} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
                             <ProfileName>{user.name}</ProfileName>
-                            <LinkMyPageIcon to="/mypage"><GoChevronRight/></LinkMyPageIcon>
+                            <LinkMyPageIcon to="/mypage"><GoChevronRight /></LinkMyPageIcon>
                             <ProfileEmail>{user.email}</ProfileEmail>
                         </>
                     )}
