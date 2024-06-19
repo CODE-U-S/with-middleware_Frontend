@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts } from '../../api/board/api_PostView';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts,/* getUserImage*/ } from '../../api/board/api_PostView';
 import { Post as PostType, Comment, Like as LikeType } from '../../api/types.ts';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 import Modal from '../modal/Modal';
-
-import userProfilePic from '../../assets/user/프사.jpeg';
+import { userProfilePic } from '../../api/sidebar/api_getUser';
 
 const Container = styled.div`
     display: flex;
@@ -249,8 +248,6 @@ const PostView: React.FC = () => {
     const [initialLoad, setInitialLoad] = useState(true);
     const [likeCount, setLikeCount] = useState<number>(0);
 
-
-
     useEffect(() => {
         const fetchPostData = async () => {
             try {
@@ -298,8 +295,6 @@ const PostView: React.FC = () => {
     if (!post) {
         return <div>로딩 중...</div>;
     }
-
-
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
@@ -463,12 +458,13 @@ const PostView: React.FC = () => {
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
                 onConfirm={handleDeleteComment}
+                isConfirm={false}
                 message="이 댓글을 삭제하시겠습니까?" // 모달에 표시할 메시지
             />
             <CommentSection>
                 <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
                 <CommentInputWrapper>
-                    <ProfilePicture src={userProfilePic} alt="프로필 사진"/>
+                    <ProfilePicture src={userProfilePic(post.user.id)} alt="프로필 사진"/>
                     <CommentInput
                         placeholder="댓글을 작성해보세요."
                         value={newComment}
@@ -479,7 +475,7 @@ const PostView: React.FC = () => {
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
                         <CommentHeader>
-                            <ProfilePicture src={userProfilePic} alt="프로필 사진"/>
+                            <ProfilePicture src={userProfilePic(post.user.id)} alt="프로필 사진"/>
                             <CommentUserName>{comment.user.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
