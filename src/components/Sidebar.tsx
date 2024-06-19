@@ -69,7 +69,7 @@ const ProfileEmail = styled.div`
 
 const ButtonContainer = styled.div`
     width: 100%;
-    margin-top: 70px;
+    margin-top: 50px;
 `;
 
 const Button = styled(Link) <{ isSelected: boolean }>`
@@ -185,10 +185,6 @@ const Sidebar: React.FC = () => {
                     <Button to="/like" isSelected={selectedButton === '/like'}>
                         <FaHeart />
                         {isCollapse ? '' : '찜한 게시물'}
-                    </Button>
-                    <Button to="/recent" isSelected={selectedButton === '/recent'}>
-                        <FaCode />
-                        {isCollapse ? '' : '최근 본 게시물'}
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>
