@@ -30,14 +30,26 @@ const ModalContent = styled.div`
 
 const ModalButtons = styled.div`
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-top: 1rem;
 `;
 
 const ModalButton = styled.button`
-    margin-left: 1rem;
+    margin: 0.5rem 0.5rem 0 0.5rem;
     padding: 0.5rem 1rem;
     cursor: pointer;
+    border-radius: 3px;
+    border: 0.5px solid rgba(200, 200, 200, 0.2);
+    width: 11vmin;
+    
+    &.Confirm {
+        background-color: ${props => props.theme.Color.primaryColor};
+        color: white;
+    }
+    
+    &.Cancel {
+        color: ${props => props.theme.Color.textColor};
+    }
 `;
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, isConfirm, message }) => {
@@ -48,10 +60,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, isConfirm, me
             <ModalContent>
                 <p>{message}</p>
                 <ModalButtons>
-                    <ModalButton onClick={onClose}>취소</ModalButton>
                     {!isConfirm && (
-                        <ModalButton onClick={onConfirm}>확인</ModalButton>
+                        <ModalButton className="Confirm" onClick={onConfirm}>확인</ModalButton>
                     )}
+                    <ModalButton className="Cancel" onClick={onClose}>취소</ModalButton>
                 </ModalButtons>
             </ModalContent>
         </ModalContainer>
