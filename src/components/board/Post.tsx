@@ -5,6 +5,7 @@ import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
 import { options } from './options';
 import { createPost } from '../../api/board/api_Post.ts';
+import Modal from '../modal/Modal';
 
 const PageContainer = styled.div`
     display: flex;
@@ -125,6 +126,7 @@ const Post: React.FC = () => {
     const [title, setTitle] = useState<string>("");
     const MIN_EDITOR_HEIGHT = 200;
     const [editorHeight, setEditorHeight] = useState(MIN_EDITOR_HEIGHT); // 초기 높이를 설정합니다.
+    const [showModal, setShowModal] = useState(false);
 
     const viewerRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate(); // useNavigate 훅 사용
@@ -170,39 +172,42 @@ const Post: React.FC = () => {
     };
 
     const handleSubmission = async () => {
-        let category;
-        if (selectedButton === 'teamProject') {
-            category = '팀프로젝트';
-        } else if (selectedButton === 'developer') {
-            category = '개발자';
-        } else if (selectedButton === 'designer') {
-            category = '디자이너';
-        } else {
-            category = '스터디';
-        }
-
-        const postData = {
-            title,
-            content: value || "",
-            user: { id: 1, name: 'Example User' }, // 예시로 name 추가
-            category: category,
-            field: selectedCategory,
-            status: 'OPEN' as 'OPEN' | 'CLOSED'
-        };
-
-        console.log("Request data:", postData);
-
-        try {
-            const response = await createPost(postData);
-            console.log("Post created successfully:", response);
-
-            // 등록 후에 새로운 포스트의 ID 값을 얻어옴
-            const postId = response.id;
-
-            // 얻어온 ID를 사용하여 페이지 이동
-            navigate(`/post/${postId}`);
-        } catch (error) {
-            console.error("Failed to create post:", error);
+        if(title === null || title === '') setShowModal(true);
+        else{
+            let category;
+            if (selectedButton === 'teamProject') {
+                category = '팀프로젝트';
+            } else if (selectedButton === 'developer') {
+                category = '개발자';
+            } else if (selectedButton === 'designer') {
+                category = '디자이너';
+            } else {
+                category = '스터디';
+            }
+            
+            const postData = {
+                title,
+                content: value || "",
+                user: { id: 1, name: 'Example User' }, // 예시로 name 추가
+                category: category,
+                field: selectedCategory,
+                status: 'OPEN' as 'OPEN' | 'CLOSED'
+            };
+            
+            console.log("Request data:", postData);
+            
+            try {
+                const response = await createPost(postData);
+                console.log("Post created successfully:", response);
+                
+                // 등록 후에 새로운 포스트의 ID 값을 얻어옴
+                const postId = response.id;
+                
+                // 얻어온 ID를 사용하여 페이지 이동
+                navigate(`/post/${postId}`);
+            } catch (error) {
+                console.error("Failed to create post:", error);
+            }
         }
     };
 
@@ -240,6 +245,13 @@ const Post: React.FC = () => {
                         enableScroll={false}
                     />
                 </MarkdownEditorContainer>
+                <Modal
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)}
+                    onConfirm={() => setShowModal(false)}
+                    isConfirm={true}
+                    message="제목을 작성하여 주십시오" // 모달에 표시할 메시지
+                />
                 <div ref={viewerRef} style={{ visibility: 'hidden', position: 'absolute', top: 0, left: 0 }}>
                     <MDEditor.Markdown source={value} rehypePlugins={[[rehypeSanitize]]} />
                 </div>
