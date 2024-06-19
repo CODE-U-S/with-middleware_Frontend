@@ -80,7 +80,7 @@ const CustomButton = styled.button`
 const BackButton = styled(ViewButton)`
     position: fixed;
     top: 25vh;
-    left: 30vh;
+    left: 37vh;
 `;
 
 const StatusButton = styled(ViewButton)`

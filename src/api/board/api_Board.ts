@@ -31,4 +31,14 @@ export const getPostsByCategoryAndField = async(category: string, field: string 
     }
 }
 
+export const getPostsByCategoryAndSearch = async (category: string, search: string): Promise<PostType[]> => {
+    try {
+        const response = await axios.get<PostType[]>(`http://localhost:8080/post/category/${category}/search/${search}`);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to fetch posts:", error);
+        return [];
+    }
+}
+
 export type { PostType };
