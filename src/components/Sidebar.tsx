@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import {FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart} from 'react-icons/fa';
 import { GoChevronRight } from "react-icons/go";
 import { Theme } from '../styles/theme';
-import userProfilePic from '../assets/user/프사.jpeg';
 import { User } from '../api/types';
 import { getUser } from '../api/sidebar/api_getUser';
 
@@ -119,6 +118,8 @@ const Sidebar: React.FC = () => {
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
     }
+
+    const userProfilePic = `http://localhost:8080/${user!.id}.png`;
 
     return (
         <ThemeProvider theme={Theme}>
