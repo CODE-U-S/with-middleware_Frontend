@@ -24,6 +24,7 @@ const PostContainer = styled.div`
     width: 100%;
     background-color: white;
     padding: 5vh 40vh;
+    padding-bottom: 10vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex: 1;
 `;
