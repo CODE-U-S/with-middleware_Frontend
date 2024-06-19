@@ -381,7 +381,7 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                         </PostPin>
                         <PostDescription>
                             <Profile>
-                                <ProfileImage src="https://via.placeholder.com/80" alt="Profile" />
+                                <ProfileImage src={`http://localhost:8080/${post.user.id})}.png`} alt="Profile" />
                                 <ProfileDescription>
                                     <ProfileNameAndTime>
                                         <ProfileName>{post.user.name}</ProfileName>

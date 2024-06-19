@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts } from '../../api/board/api_PostView';
+import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts,/* getUserImage*/ } from '../../api/board/api_PostView';
 import { Post as PostType, Comment, Like as LikeType } from '../../api/types.ts';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 import Modal from '../modal/Modal';
-
-import userProfilePic from '../../assets/user/프사.jpeg';
 
 const Container = styled.div`
     display: flex;
@@ -249,8 +247,6 @@ const PostView: React.FC = () => {
     const [initialLoad, setInitialLoad] = useState(true);
     const [likeCount, setLikeCount] = useState<number>(0);
 
-
-
     useEffect(() => {
         const fetchPostData = async () => {
             try {
@@ -299,7 +295,7 @@ const PostView: React.FC = () => {
         return <div>로딩 중...</div>;
     }
 
-
+    const userProfilePic = `http://localhost:8080/${post.user.id}.png`;
 
     const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
         switch (category) {
