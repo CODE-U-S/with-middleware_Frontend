@@ -25,6 +25,7 @@ const PostContainer = styled.div`
     background-color: white;
     padding: 5vh 40vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
 `;
 
 const Title = styled.h1`
@@ -121,11 +122,13 @@ const EditorWrapper = styled.div`
 
 const CommentSection = styled.div`
     width: 100%;
+    min-height: 50vh;
     background-color: #f9f9f9;
     padding: 2vh 40vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    flex-grow: 1
 `;
 
 const CommentCount = styled.div`
