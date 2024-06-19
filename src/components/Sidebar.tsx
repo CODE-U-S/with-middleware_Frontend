@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
-import { Link, useLocation } from 'react-router-dom';
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart } from 'react-icons/fa';
-import { GoChevronRight } from "react-icons/go";
-import { Theme } from '../styles/theme';
-import { User } from '../api/types';
-import { getUser, userProfilePic } from '../api/sidebar/api_getUser';
+import React, {useEffect, useState} from 'react';
+import styled, {ThemeProvider, DefaultTheme} from 'styled-components'; // DefaultTheme import 추가
+import {Link, useLocation} from 'react-router-dom';
+import {
+    FaAngleDoubleLeft,
+    FaAngleDoubleRight,
+    FaPen,
+    FaUsers,
+    FaCode,
+    FaPalette,
+    FaBookOpen,
+    FaHeart,
+    FaCog
+} from 'react-icons/fa';
+import {GoChevronRight} from "react-icons/go";
+import {Theme} from '../styles/theme';
+import {Post, User} from '../api/types';
+import {getUser, userProfilePic} from '../api/sidebar/api_getUser';
+import {getMyPost} from "../api/board/api_PostView.ts";
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
     flex-direction: column;
     padding: 20px;
+
     &.collapse {
         width: 80px;
     }
+
     &.default {
         width: 250px;
     }
@@ -25,14 +38,16 @@ const Profile = styled.div`
     flex-direction: row;
     height: 10vh;
     align-items: center;
-    margin-top: 20px;
+    margin-bottom: 70px;
 `;
 
 const ProfileImage = styled.img`
     border-radius: 50%;
+
     &.collapse {
         width: 100%;
     }
+
     &.default {
         width: 70px;
         left: 27px;
@@ -47,8 +62,14 @@ const ProfileName = styled.div`
 const ProfileText = styled.div`
     margin-left: 15px;
     width: 100%;
-    display: flex;
     flex-direction: column;
+`;
+
+const ContainerOption = styled.div`
+    display: flex;
+    padding: 7px;
+    width: 25vmin;
+    justify-content: space-between;
 `;
 
 const LinkMyPageIcon = styled(Link)`
@@ -94,19 +115,22 @@ const Button = styled(Link) <{ isSelected: boolean }>`
         color: #196CE9;
         font-weight: bold;
     }
-    `;
+`;
 
 const AngleArrow = styled.div`
     cursor: pointer;
     text-align: center;
-    
+
     &.default {
         margin-left: 190px;
     }
 `;
 
 const Sidebar: React.FC = () => {
+    const userInfo = 1;
     const [user, setUser] = useState<User>();
+    const [post, setPost] = useState<Post[]>([]);
+    const [postLength, setPostLength] = useState(0);
     const [isCollapse, setIsCollapse] = useState(false);
     const [selectedButton, setSelectedButton] = useState<string | null>(null);
     const location = useLocation();
@@ -114,7 +138,7 @@ const Sidebar: React.FC = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const data = await getUser(1);
+                const data = await getUser(userInfo);
                 setUser(data);
             } catch (error) {
                 console.error('유저를 불러오는 데 실패했습니다.');
@@ -122,11 +146,28 @@ const Sidebar: React.FC = () => {
         };
 
         fetchUserData();
-    }, []);
+    }, [userInfo]);
 
     useEffect(() => {
         setSelectedButton(location.pathname);
     }, [location]);
+
+    useEffect(() => {
+        const fetchCntPost = async () => {
+            try {
+                const data = await getMyPost(userInfo);
+
+                // 이전 상태와 비교하여 실제로 변경이 발생한 경우만 상태 업데이트
+                if (JSON.stringify(data) !== JSON.stringify(post)) {
+                    setPost([data]);
+                    setPostLength(data.length ?? 0); // data를 사용하여 길이를 설정
+                }
+            } catch (error) {
+                console.error('게시물 정보를 불러오는데 실패했습니다.', error);
+            }
+        };
+        fetchCntPost();
+    }, [post, userInfo]);
 
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
@@ -139,57 +180,71 @@ const Sidebar: React.FC = () => {
                 <AngleArrow className={isCollapse ? 'collapse' : 'default'} onClick={HandleCollapse}>
                     {isCollapse ? (
                         <div>
-                            <FaAngleDoubleRight />
+                            <FaAngleDoubleRight/>
                         </div>
                     ) : (
                         <div>
-                            <FaAngleDoubleLeft />
+                            <FaAngleDoubleLeft/>
                         </div>
                     )}
                 </AngleArrow>
                 <Profile>
                     {user && (
-                        <ProfileImage src={userProfilePic(user.id)} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
+                        <ProfileImage src={userProfilePic(user.id)} alt="Profile"
+                                      className={isCollapse ? 'collapse' : 'default'}/>
                     )}
                     {!isCollapse && user && (
-                        <ProfileText>
-                            <ProfileLink>
-                                <ProfileName>{user.name}</ProfileName>
-                                <LinkMyPageIcon to="/mypage"><GoChevronRight /></LinkMyPageIcon>
-                            </ProfileLink>
-                            <ProfileEmail>{user.email}</ProfileEmail>
-                        </ProfileText>
+                        <div>
+                            <div>
+                                <ProfileText>
+                                    <ProfileLink>
+                                        <ProfileName>{user.name}</ProfileName>
+                                        <LinkMyPageIcon to="/user/1"><GoChevronRight/></LinkMyPageIcon>
+                                    </ProfileLink>
+                                    <ProfileEmail>{user.email}</ProfileEmail>
+                                </ProfileText>
+                            </div>
+                            <br/>
+                            <ContainerOption>
+                                <div>
+                                    {`내 게시물 ${postLength}`}
+                                </div>
+                                <div>
+                                    <FaCog/>
+                                </div>
+                            </ContainerOption>
+                        </div>
                     )}
                 </Profile>
                 <ButtonContainer>
                     <Button to="/post" isSelected={selectedButton === '/post'}>
-                        <FaPen />
+                        <FaPen/>
                         {isCollapse ? '' : '글쓰기'}
                     </Button>
                     <Button to="/" isSelected={selectedButton === '/'}>
-                        <FaUsers />
+                        <FaUsers/>
                         {isCollapse ? '' : '팀프로젝트'}
                     </Button>
                     <Button to="/developers" isSelected={selectedButton === '/developers'}>
-                        <FaCode />
+                        <FaCode/>
                         {isCollapse ? '' : '개발자'}
                     </Button>
                     <Button to="/designs" isSelected={selectedButton === '/designs'}>
-                        <FaPalette />
+                        <FaPalette/>
                         {isCollapse ? '' : '디자이너'}
                     </Button>
                     <Button to="/study" isSelected={selectedButton === '/study'}>
-                        <FaBookOpen />
+                        <FaBookOpen/>
                         {isCollapse ? '' : '스터디'}
                     </Button>
                     <Button to="/like" isSelected={selectedButton === '/like'}>
-                        <FaHeart />
+                        <FaHeart/>
                         {isCollapse ? '' : '찜한 게시물'}
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>
         </ThemeProvider>
     );
-}
+};
 
 export default Sidebar;

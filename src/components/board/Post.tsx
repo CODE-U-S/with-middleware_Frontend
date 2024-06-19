@@ -189,7 +189,8 @@ const Post: React.FC = () => {
             user: { id: 1, name: 'Example User' }, // 예시로 name 추가
             category: category,
             field: selectedCategory,
-            status: 'OPEN' as 'OPEN' | 'CLOSED'
+            status: 'OPEN' as 'OPEN' | 'CLOSED',
+            length: null,
             };
             
         if(title === null || title === '' || postData.content === null || postData.content === '') setShowModal(true);
