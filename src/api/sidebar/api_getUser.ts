@@ -10,3 +10,7 @@ export const getUser = async (userId: number): Promise<User> => {
         throw error;
     }
 };
+
+export const userProfilePic = (userId: number) =>{
+    return `http://localhost:8080/${userId}.png`;
+}
