@@ -1,10 +1,10 @@
 import axios from 'axios';
-import {Like as Post} from './types';
+import {Like as Post} from '../types';
 
 
 export const getSavedPost = async (): Promise<Post[]> => {
     try {
-        const response = await axios.get<Post[]>(`http://localhost:8080/like`);
+        const response = await axios.get<Post[]>(`http://localhost:8080/like/post/1`);
         return response.data;
     } catch (error) {
         console.error("Failed to fetch posts:", error);

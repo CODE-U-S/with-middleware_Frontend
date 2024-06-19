@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Post, Comment, Like as LikeType } from './types';
+import { Post, Comment, Like as LikeType } from '../types';
 
 // 게시물 조회
 export const getPost = async (id: number): Promise<Post> => {

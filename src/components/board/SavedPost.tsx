@@ -6,7 +6,7 @@ import {formatDistanceToNow} from 'date-fns';
 import {ko} from 'date-fns/locale';
 import {FaComment, FaHeart} from 'react-icons/fa';
 import {getCommentCountByPostId, getLikeCount} from '../../api/board/api_PostView.ts';
-import {Like} from "../../api/board/types.ts";
+import {Like} from "../../api/types.ts";
 import {getSavedPost} from "../../api/board/api_SavedPost.ts";
 
 const PostListContainer = styled.div`
