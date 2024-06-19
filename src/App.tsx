@@ -14,9 +14,9 @@ import StudyBoard from "./pages/StudyBoardPage";
 import TeamBoard from "./pages/TeamBoardPage";
 import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
-import RecentBoardPage from "./pages/RecentBoardPage.tsx";
+// import RecentBoardPage from "./pages/RecentBoardPage.tsx";
 import PostSearchView from "./components/board/PostSearchView.tsx";
-import SavedPost from "./pages/mypage/SavedPost.tsx";
+// import SavedPost from "./pages/mypage/SavedPost.tsx";
 import MyPage from "./pages/mypage/MyPage.tsx";
 
 const LayoutContainer = styled.div`
@@ -49,8 +49,8 @@ const App: React.FC = () => {
                                 <Route path="/developers" element={<DevelopBoard />} />
                                 <Route path="/designs" element={<DesignBoard />} />
                                 <Route path="/study" element={<StudyBoard />} />
-                                <Route path="/like" element={<SavedPost />} />
-                                <Route path="/recent" element={<RecentBoardPage />} />
+                                {/* <Route path="/like" element={<SavedPost />} /> */}
+                                {/* <Route path="/recent" element={<RecentBoardPage />} /> */}
                                 <Route path="/post/:id" element={<PostView />} />
                                 <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />

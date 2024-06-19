@@ -5,7 +5,7 @@ import { getPostsByCategory, PostType, getPostsByCategoryAndField } from '../../
 import MDEditor from '@uiw/react-md-editor';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { FaHeart, FaComment, FaSearch  } from 'react-icons/fa';
+import { FaHeart, FaComment } from 'react-icons/fa';
 import { options } from './options';
 import { getLikeCount, getCommentCountByPostId } from '../../api/board/api_PostView';
 import { userProfilePic } from '../../api/sidebar/api_getUser';
@@ -13,44 +13,6 @@ import { userProfilePic } from '../../api/sidebar/api_getUser';
 const PostListContainer = styled.div`
     width: 100%;
     height: 100%;
-    padding: 1vh 10vh;
-`;
-
-const SearchBar = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    position: relative;
-    top: -5vh;
-`;
-
-const SearchInputWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    width: 20%;
-    height: 5vh;
-    background-color: #f9f9f9;
-    border-radius: 1vh;
-    padding: 0.5vh 1vh;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-`;
-
-const SearchIcon = styled(FaSearch)`
-    color: #aaa;
-    margin-right: 0.5vh;
-`;
-
-const SearchInput = styled.input`
-    width: 100%;
-    padding: 0.5vh;
-    font-size: 1.8vh;
-    border: none;
-    background-color: transparent;
-    outline: none;
-
-    &::placeholder {
-        color: #aaa;
-    }
 `;
 
 const PostList = styled.div`
@@ -64,14 +26,12 @@ const PostFilterBar = styled.div`
     width: 100%;
     height: 6vh;
     display: flex;
-    align-items: center;
-    margin-bottom: 4vh;
+    aligin-items: center;
+    margin-bottom: 2vh;
     border-radius: 3vh;
     background-color: #fff;
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
-
-
 
 const PostItem = styled(Link)`
     width: 80%;
@@ -218,9 +178,8 @@ const PostFooter = styled.div`
 `;
 
 const PostFooterNumber = styled.p`
-    font-size: 1vh;
+    font-size: 100%;
     color: #ccc;
-    margin-right: 0.7vw;
 `;
 
 const DropdownContainer = styled.div`
@@ -263,7 +222,6 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
     const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
     const [selectedSort, setSelectedSort] = useState<string>('likes');
-    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         switch (category) {
@@ -377,17 +335,6 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
 
     return (
         <PostListContainer>
-            <SearchBar>
-                <SearchInputWrapper>
-                    <SearchIcon />
-                    <SearchInput
-                        type="text"
-                        placeholder="검색어를 입력하세요"
-                        value={searchQuery} // 추가
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </SearchInputWrapper>
-            </SearchBar>
             {category !== '스터디' && (
                 <PostFilterBar>
                     {selectedCategory !== null && categoryOptions.length > 0 && (
@@ -454,9 +401,9 @@ const PostComponent: React.FC<{ category: string }> = ({ category }) => {
                         <PostTitle>{post.title}</PostTitle>
                         <PostContent source={post.content} />
                         <PostFooter>
-                            <FaHeart style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <FaHeart style={{ marginRight: '0.2vw', marginLeft: '0.7vw', color: '#ddd', blockSize: '100%' }} />
                             <PostFooterNumber>{likeCounts[post.id] !== undefined ? likeCounts[post.id] : '?'}</PostFooterNumber>
-                            <FaComment style={{ marginRight: '0.2vw', color: '#ddd', blockSize: '1.3vh' }} />
+                            <FaComment style={{ marginRight: '0.2vw', marginLeft: '0.7vw', color: '#ddd', blockSize: '100' }} />
                             <PostFooterNumber>{commentCounts[post.id] !== undefined ? commentCounts[post.id] : '?'}</PostFooterNumber>
                         </PostFooter>
                     </PostItem>
