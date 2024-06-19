@@ -23,11 +23,12 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
+    display: block;  /* Force the label to be displayed as a block */
     font-size: 2.5vh;
     margin-bottom: 1vh;
 `;
 
-const Input = styled.input`
+const StyledInput = styled.input`
     width: 100%;
     padding: 1vh;
     font-size: 2vh;
@@ -50,7 +51,7 @@ const TextArea = styled.textarea`
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
-    max-width: 50%; 
+    max-width: 50%;
 `;
 
 const CharacterCount = styled.span`
@@ -126,6 +127,10 @@ const SectionGroup = styled.div`
     margin: 10vh 0;
 `;
 
+const HalfWidthInput = styled(StyledInput)`
+    width: 50%;
+`;
+
 const Setting: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [nickname, setNickname] = useState<string>('');
@@ -188,7 +193,7 @@ const Setting: React.FC = () => {
                     <SectionGroup>
                         <FormGroup>
                             <Label>닉네임</Label>
-                            <Input
+                            <HalfWidthInput
                                 type="text"
                                 value={nickname || user.name || ''}
                                 onChange={(e) => setNickname(e.target.value)}
@@ -202,7 +207,7 @@ const Setting: React.FC = () => {
                                     value={bio}
                                     onChange={handleBioChange}
                                     placeholder="한줄 소개 입력"
-                                    maxLength={255} // Limit to 255 characters
+                                    maxLength={255}
                                 />
                                 <CharacterCount>
                                     {bioLength}/255
@@ -214,7 +219,7 @@ const Setting: React.FC = () => {
                     <SectionGroup>
                         <FormGroup>
                             <Label>이메일 정보</Label>
-                            <Input
+                            <StyledInput
                                 type="email"
                                 value={email || user.email || ''}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -226,7 +231,7 @@ const Setting: React.FC = () => {
                     <SectionGroup>
                         <FormGroup>
                             <Label>새 비밀번호</Label>
-                            <Input
+                            <StyledInput
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
