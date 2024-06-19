@@ -60,12 +60,65 @@ const Button = styled.button`
     }
 `;
 
+const Divider = styled.hr`
+    width: 100%;
+    border: none;
+    border-top: 2px solid #ddd;
+    margin: 2vh 0;
+`;
+
+const DottedDivider = styled.hr`
+    width: 100%;
+    border: none;
+    border-top: 4px dotted #ddd; /* Increased thickness and darker color */
+    margin: 2vh 0;
+`;
+
+const InfoBox = styled.div`
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1.5vh;
+    background-color: #f5f5f5;
+    margin-bottom: 2vh;
+    font-size: 1.8vh;
+`;
+
+const CheckBoxContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 1vh;
+`;
+
+const CheckBox = styled.input`
+    margin-right: 1vh;
+`;
+
+const PolicyText = styled.span`
+    font-size: 1.8vh;
+`;
+
+const DeleteButton = styled.button`
+    background-color: #EA949D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 1vh 2vh;
+    font-size: 2vh;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+`;
+
+const SectionGroup = styled.div`
+    margin: 10vh 0;
+`;
+
 const Setting: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [nickname, setNickname] = useState<string>('');
     const [bio, setBio] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [agreeDeletePolicy, setAgreeDeletePolicy] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -92,6 +145,15 @@ const Setting: React.FC = () => {
         // 서버에 데이터 전송 등의 추가 작업 수행
     };
 
+    const handleDeleteAccount = () => {
+        if (agreeDeletePolicy) {
+            // 여기에 계정 삭제 처리 로직 추가
+            console.log('계정 삭제 요청');
+        } else {
+            alert('계정 삭제 정책에 동의해 주세요.');
+        }
+    };
+
     if (!user) {
         return <div>Loading...</div>;
     }
@@ -101,41 +163,68 @@ const Setting: React.FC = () => {
             <FormContainer>
                 <h1>프로필 설정</h1>
                 <form onSubmit={handleSubmit}>
-                    <FormGroup>
-                        <Label>닉네임</Label>
-                        <Input
-                            type="text"
-                            value={nickname || user.name || ''}
-                            onChange={(e) => setNickname(e.target.value)}
-                            placeholder="닉네임 입력"
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>한줄 소개</Label>
-                        <TextArea
-                            value={bio}
-                            onChange={(e) => setBio(e.target.value)}
-                            placeholder="한줄 소개 입력"
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>이메일 정보</Label>
-                        <Input
-                            type="email"
-                            value={email || user.email || ''}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="이메일 입력"
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label>새 비밀번호</Label>
-                        <Input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="새 비밀번호 입력"
-                        />
-                    </FormGroup>
+                    <SectionGroup>
+                        <FormGroup>
+                            <Label>닉네임</Label>
+                            <Input
+                                type="text"
+                                value={nickname || user.name || ''}
+                                onChange={(e) => setNickname(e.target.value)}
+                                placeholder="닉네임 입력"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>한줄 소개</Label>
+                            <TextArea
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                placeholder="한줄 소개 입력"
+                            />
+                        </FormGroup>
+                    </SectionGroup>
+                    <DottedDivider />
+                    <SectionGroup>
+                        <FormGroup>
+                            <Label>이메일 정보</Label>
+                            <Input
+                                type="email"
+                                value={email || user.email || ''}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="이메일 입력"
+                            />
+                        </FormGroup>
+                    </SectionGroup>
+                    <Divider />
+                    <SectionGroup>
+                        <FormGroup>
+                            <Label>새 비밀번호</Label>
+                            <Input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="새 비밀번호 입력"
+                            />
+                        </FormGroup>
+                    </SectionGroup>
+                    <Divider />
+                    <SectionGroup>
+                        <Label>계정삭제</Label>
+                        <InfoBox>
+                            회원 탈퇴일로부터 계정과 닉네임을 포함한 계정 정보(아이디/이메일/닉네임)는 개인정보 처리방침에 따라 60일간 보관(잠김)되며, 60일 경과된 후에는 모든 개인 정보는 완전히 삭제되며 더 이상 복구할 수 없게 됩니다.
+                        </InfoBox>
+                        <CheckBoxContainer>
+                            <CheckBox
+                                type="checkbox"
+                                checked={agreeDeletePolicy}
+                                onChange={() => setAgreeDeletePolicy(!agreeDeletePolicy)}
+                            />
+                            <PolicyText>
+                                계정 삭제에 관한 정책을 읽고 이에 동의합니다.
+                            </PolicyText>
+                        </CheckBoxContainer>
+                        <DeleteButton onClick={handleDeleteAccount}>회원 탈퇴</DeleteButton>
+                    </SectionGroup>
+                    <Divider />
                     <Button type="submit">저장</Button>
                 </form>
             </FormContainer>
