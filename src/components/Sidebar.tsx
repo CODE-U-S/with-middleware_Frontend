@@ -172,7 +172,9 @@ const Sidebar: React.FC = () => {
                     )}
                 </AngleArrow>
                 <Profile>
-                    <ProfileImage src={userProfilePic(user!.id)} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
+                    {user && (
+                        <ProfileImage src={userProfilePic(user.id)} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
+                    )}
                     {!isCollapse && user && (
                         <ProfileText>
                             <ProfileLink>
