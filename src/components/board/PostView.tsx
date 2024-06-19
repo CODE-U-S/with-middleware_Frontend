@@ -363,17 +363,25 @@ const PostView: React.FC = () => {
     const handleAddComment = async () => {
         try {
             const newCommentData = await addComment({
-                userId: 1,
+                userId: 1, // 예시로 사용자 ID를 1로 지정
                 postId: Number(id),
                 comment: newComment,
             });
-            setComments([...comments, newCommentData]);
+
+            // 댓글 추가 후 새로운 댓글 목록을 가져오기
+            const updatedComments = await getCommentsByPostId(Number(id));
+            setComments(updatedComments);
+
+            // 댓글 개수도 업데이트
             setCommentCount(commentCount + 1);
+
+            // 입력 창 초기화
             setNewComment('');
         } catch (error) {
             console.error('댓글 추가 오류:', error);
         }
     };
+
 
     // 댓글 수정 누르면 수정 기능
     const handleEditComment = (commentId: number, currentContent: string) => {
