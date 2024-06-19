@@ -33,16 +33,17 @@ const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
 
 const Profile = styled.div`
     display: flex;
-    flex-direction: row;
-    height: 10vh;
+    flex-direction: column;
     align-items: center;
     margin-top: 15px;
 `;
 
 const ProfileImage = styled.img`
     border-radius: 50%;
+    position: absolute;
+
     &.collapse {
-        width: 100%;
+        width: 45px;
     }
 
     &.default {
@@ -52,18 +53,6 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileName = styled.div`
-    font-size: 15px;
-    font-weight: bold;
-`;
-
-const ProfileText = styled.div`
-    margin-left: 15px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-
-const LinkMyPageIcon = styled(Link)`
     margin-left: 60px;
     font-size: 15px;
     font-weight: bold;
@@ -71,19 +60,16 @@ const LinkMyPageIcon = styled(Link)`
 `;
 
 const LinkMyPageIcon = styled(Link)`
+    position: relative;
+
     color: ${props => props.theme.Color.gray};
     cursor: pointer;
 `
 
-const ProfileLink = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
 const ProfileEmail = styled.div`
-    margin-top: 5px;
     font-size: 10px;
     color: gray;
+    margin: 12px 0 0 95px;
 `;
 
 const ButtonContainer = styled.div`
@@ -91,26 +77,25 @@ const ButtonContainer = styled.div`
     margin-top: 70px;
 `;
 
-const Button = styled(Link) <{ isSelected: boolean }>`
+const Button = styled(Link)`
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     font-size: 16px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    background-color: ${props => props.isSelected ? '#EDF1F8' : props => props.theme.Color.sideColor};
-    color: ${props => props.isSelected ? '#196CE9' : '#A0B2C1'};
-    font-weight: ${props => props.isSelected ? 'bold' : 'none'};
+    background-color: ${props => props.theme.Color.textColor};
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
 
     &:hover {
-        // background-color: #EDF1F8;
-        box-shadow: 0 0 10px #EEE;
-        color: #196CE9;
+        background-color: #61dafb;
+        color: ${props => props.theme.Color.textColor};
         font-weight: bold;
     }
 `;
@@ -132,8 +117,6 @@ const UserNameContainer = styled.div`
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();
     const [isCollapse, setIsCollapse] = useState(false);
-    const [selectedButton, setSelectedButton] = useState<string | null>(null);
-    const location = useLocation();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -147,10 +130,6 @@ const Sidebar: React.FC = () => {
 
         fetchUserData();
     }, []);
-
-    useEffect(() => {
-        setSelectedButton(location.pathname);
-    }, [location]);
 
     const HandleCollapse = () => {
         setIsCollapse(isCollapse => !isCollapse);
@@ -172,44 +151,45 @@ const Sidebar: React.FC = () => {
                     )}
                 </AngleArrow>
                 <Profile>
-                    <ProfileImage src={userProfilePic(user!.id)} alt="Profile" className={isCollapse ? 'collapse' : 'default'} />
                     {!isCollapse && user && (
-                        <ProfileText>
-                            <ProfileLink>
+                        <>
+                            <ProfileImage src={userProfilePic(user.id)} alt="Profile"
+                                          className={isCollapse ? 'collapse' : 'default'}/>
+                            <UserNameContainer>
                                 <ProfileName>{user.name}</ProfileName>
-                                <LinkMyPageIcon to="/mypage"><GoChevronRight /></LinkMyPageIcon>
-                            </ProfileLink>
+                                <LinkMyPageIcon to="/user/1"><GoChevronRight/></LinkMyPageIcon>
+                            </UserNameContainer>
                             <ProfileEmail>{user.email}</ProfileEmail>
-                        </ProfileText>
+                        </>
                     )}
                 </Profile>
                 <ButtonContainer>
-                    <Button to="/post" isSelected={selectedButton === '/post'}>
-                        <FaPen />
+                    <Button to="/post">
+                        <FaPen/>
                         {isCollapse ? '' : '글쓰기'}
                     </Button>
-                    <Button to="/" isSelected={selectedButton === '/'}>
-                        <FaUsers />
+                    <Button to="/">
+                        <FaUsers/>
                         {isCollapse ? '' : '팀프로젝트'}
                     </Button>
-                    <Button to="/developers" isSelected={selectedButton === '/developers'}>
-                        <FaCode />
+                    <Button to="/developers">
+                        <FaCode/>
                         {isCollapse ? '' : '개발자'}
                     </Button>
-                    <Button to="/designs" isSelected={selectedButton === '/designs'}>
-                        <FaPalette />
+                    <Button to="/designs">
+                        <FaPalette/>
                         {isCollapse ? '' : '디자이너'}
                     </Button>
-                    <Button to="/study" isSelected={selectedButton === '/study'}>
-                        <FaBookOpen />
+                    <Button to="/study">
+                        <FaBookOpen/>
                         {isCollapse ? '' : '스터디'}
                     </Button>
-                    <Button to="/like" isSelected={selectedButton === '/like'}>
-                        <FaHeart />
+                    <Button to="/like">
+                        <FaHeart/>
                         {isCollapse ? '' : '찜한 게시물'}
                     </Button>
-                    <Button to="/recent" isSelected={selectedButton === '/recent'}>
-                        <FaCode />
+                    <Button to="/recent">
+                        <FaCode/>
                         {isCollapse ? '' : '최근 본 게시물'}
                     </Button>
                 </ButtonContainer>
