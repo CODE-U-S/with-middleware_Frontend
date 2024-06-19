@@ -133,12 +133,6 @@ const CustomButton = styled.button`
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 `;
 
-// 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
-const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
-const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
-const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
-const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
-
 const Divider = styled.hr`
     width: 100%;
     border: 0.5px solid #ddd;
@@ -166,6 +160,12 @@ const PostResultText = styled.h3`
 `
 
 const PostSearchView: React.FC = () => {
+    // 아이콘 컴포넌트들 (이미지 경로는 적절하게 수정 필요)
+    const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+    const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+    const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+    const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
     // hook
     const params = useParams().id;
     const [searchResults, setSearchResults] = useState<PostType[]>([]);
