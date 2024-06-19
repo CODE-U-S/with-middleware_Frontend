@@ -14,14 +14,19 @@ export const getPost = async (id: number): Promise<Post> => {
 
 // 좋아요 게시물 조회
 export const getLikePosts = async (postId: number): Promise<LikeType[]> => {
-    try{
-        const response = await axios.get<LikeType[]>(`http://localhost:8080/like/post/${postId}`);
+    try {
+        const response = await axios.get<LikeType[]>(`http://localhost:8080/like/user/${postId}`);
         return response.data;
-    }catch (error){
-        console.error(`Error get like for post ${postId} : `, error);
-        throw error;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Axios error:", error.message);
+        } else {
+            console.error("Unexpected error:", error);
+        }
+        return [];
     }
-}
+};
+
 
 // 좋아요 추가
 export const addLike = async (userId: number, postId: number): Promise<void> => {
