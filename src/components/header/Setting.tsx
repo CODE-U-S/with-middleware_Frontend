@@ -36,13 +36,27 @@ const Input = styled.input`
     background: ${props => props.theme.Color.backgroundColor};
 `;
 
-const TextArea = styled.textarea`
+const TextAreaContainer = styled.div`
+    display: flex; /* Ensure TextArea and CharacterCount are in the same flex container */
+    align-items: flex-start; /* Align items to the start */
     width: 100%;
+`;
+
+const TextArea = styled.textarea`
+    flex: 1;
     height: 10vh;
     padding: 1vh;
     font-size: 2vh;
     border: 1px solid #ccc;
     border-radius: 5px;
+    resize: none;
+    max-width: 50%; 
+`;
+
+const CharacterCount = styled.span`
+    font-size: 1.5vh;
+    color: #666;
+    margin-left: 1vh; /* Add some margin for separation */
 `;
 
 const Button = styled.button`
@@ -70,7 +84,7 @@ const Divider = styled.hr`
 const DottedDivider = styled.hr`
     width: 100%;
     border: none;
-    border-top: 4px dotted #ddd; /* Increased thickness and darker color */
+    border-top: 4px dotted #999; /* Increased thickness and darker color */
     margin: 2vh 0;
 `;
 
@@ -119,6 +133,7 @@ const Setting: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [agreeDeletePolicy, setAgreeDeletePolicy] = useState<boolean>(false);
+    const [bioLength, setBioLength] = useState<number>(0); // State to track bio length
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -130,6 +145,7 @@ const Setting: React.FC = () => {
                 // 한 줄 소개가 비어있을 경우 기본 값 설정
                 if (userData.description) {
                     setBio(userData.description);
+                    setBioLength(userData.description.length); // Initialize length
                 }
             } catch (error) {
                 console.error('유저 정보를 불러오는 데 실패했습니다.', error);
@@ -138,6 +154,12 @@ const Setting: React.FC = () => {
 
         fetchUserInfo();
     }, []);
+
+    const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const inputBio = e.target.value;
+        setBio(inputBio);
+        setBioLength(inputBio.length); // Update bio length
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -175,11 +197,17 @@ const Setting: React.FC = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label>한줄 소개</Label>
-                            <TextArea
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value)}
-                                placeholder="한줄 소개 입력"
-                            />
+                            <TextAreaContainer>
+                                <TextArea
+                                    value={bio}
+                                    onChange={handleBioChange}
+                                    placeholder="한줄 소개 입력"
+                                    maxLength={255} // Limit to 255 characters
+                                />
+                                <CharacterCount>
+                                    {bioLength}/255
+                                </CharacterCount>
+                            </TextAreaContainer>
                         </FormGroup>
                     </SectionGroup>
                     <DottedDivider />
