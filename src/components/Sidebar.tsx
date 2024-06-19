@@ -122,7 +122,7 @@ const Sidebar: React.FC = () => {
         };
 
         fetchUserData();
-    });
+    }, []);
 
     useEffect(() => {
         setSelectedButton(location.pathname);

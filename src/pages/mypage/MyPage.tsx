@@ -3,7 +3,6 @@ import userProfilePic from '../../assets/user/프사.jpeg';
 import styled from "styled-components";
 import {getUser} from "../../api/sidebar/api_getUser.ts";
 import {useParams} from "react-router-dom";
-import SavedPost from "./SavedPost.tsx";
 
 const MyPageContainer = styled.div`
     width: 90%;
@@ -129,7 +128,7 @@ const MyPage: React.FC = () => {
             <div>
                 {page === 1 ? (
                     <div>
-                        <SavedPost />
+                        <h2>찜한 게시물</h2>
                     </div>
                 ) : (
                     <div>
