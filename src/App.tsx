@@ -16,6 +16,7 @@ import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
 import PostSearchView from "./components/board/PostSearchView.tsx";
 import MyPage from "./pages/mypage/MyPage.tsx";
+import Setting from "./components/header/Setting"
 
 const LayoutContainer = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ const Content = styled.div`
     display: flex;
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
-    height: 100%; /* 부모의 높이를 100% 차지 */
+    height: 100%; /* 부모의 높이를 100% 차지 */ 
     //padding: 20px; // Postview에는 뒷배경이 안보이게 하기위함.
 `;
 
@@ -51,6 +52,7 @@ const App: React.FC = () => {
                                 <Route path="/post/search/:id" element={<PostSearchView />} />
                                 <Route path="/post" element={<Post />} />
                                 <Route path="/user/:id" element={<MyPage />} />
+                                <Route path="/settings" element={<Setting />} />
                             </Routes>
                         </Content>
                     </LayoutContainer>
