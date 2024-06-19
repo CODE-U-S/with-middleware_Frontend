@@ -21,7 +21,7 @@ const DesignPostsPage: React.FC = () => {
             <TitleContainer>
                 <PageTitle>디자인 게시물</PageTitle>
             </TitleContainer>
-            <Board category="디자인" />
+            <Board category="디자이너" />
         </div>
     );
 };
