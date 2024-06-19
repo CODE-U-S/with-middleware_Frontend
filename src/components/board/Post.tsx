@@ -172,28 +172,28 @@ const Post: React.FC = () => {
     };
 
     const handleSubmission = async () => {
-        if(title === null || title === '') setShowModal(true);
-        else{
-            let category;
-            if (selectedButton === 'teamProject') {
-                category = '팀프로젝트';
-            } else if (selectedButton === 'developer') {
-                category = '개발자';
-            } else if (selectedButton === 'designer') {
-                category = '디자이너';
-            } else {
-                category = '스터디';
-            }
-            
-            const postData = {
-                title,
-                content: value || "",
-                user: { id: 1, name: 'Example User' }, // 예시로 name 추가
-                category: category,
-                field: selectedCategory,
-                status: 'OPEN' as 'OPEN' | 'CLOSED'
+        let category;
+        if (selectedButton === 'teamProject') {
+            category = '팀프로젝트';
+        } else if (selectedButton === 'developer') {
+            category = '개발자';
+        } else if (selectedButton === 'designer') {
+            category = '디자이너';
+        } else {
+            category = '스터디';
+        }
+        
+        const postData = {
+            title,
+            content: value || "",
+            user: { id: 1, name: 'Example User' }, // 예시로 name 추가
+            category: category,
+            field: selectedCategory,
+            status: 'OPEN' as 'OPEN' | 'CLOSED'
             };
             
+        if(title === null || title === '' || postData.content === null || postData.content === '') setShowModal(true);
+        else{
             console.log("Request data:", postData);
             
             try {
@@ -250,7 +250,7 @@ const Post: React.FC = () => {
                     onClose={() => setShowModal(false)}
                     onConfirm={() => setShowModal(false)}
                     isConfirm={true}
-                    message="제목을 작성하여 주십시오" // 모달에 표시할 메시지
+                    message="제목과 내용을 작성하여 주십시오" // 모달에 표시할 메시지
                 />
                 <div ref={viewerRef} style={{ visibility: 'hidden', position: 'absolute', top: 0, left: 0 }}>
                     <MDEditor.Markdown source={value} rehypePlugins={[[rehypeSanitize]]} />
