@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import styled, { ThemeProvider, DefaultTheme } from 'styled-components'; // DefaultTheme import 추가
-import { Link, useLocation } from 'react-router-dom';
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaPen, FaUsers, FaCode, FaPalette, FaBookOpen, FaHeart } from 'react-icons/fa';
-import { GoChevronRight } from "react-icons/go";
-import { Theme } from '../styles/theme';
-import { User } from '../api/types';
-import { getUser, userProfilePic } from '../api/sidebar/api_getUser';
+import React, {useEffect, useState} from 'react';
+import styled, {ThemeProvider, DefaultTheme} from 'styled-components'; // DefaultTheme import 추가
+import {Link} from 'react-router-dom';
+import {
+    FaAngleDoubleLeft,
+    FaAngleDoubleRight,
+    FaPen,
+    FaUsers,
+    FaCode,
+    FaPalette,
+    FaBookOpen,
+    FaHeart
+} from 'react-icons/fa';
+import {GoChevronRight} from "react-icons/go";
+import {Theme} from '../styles/theme';
+import {User} from '../api/types';
+import {getUser, userProfilePic} from '../api/sidebar/api_getUser';
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
     flex-direction: column;
     padding: 20px;
+
     &.collapse {
         width: 80px;
     }
+
     &.default {
         width: 250px;
     }
@@ -25,7 +36,7 @@ const Profile = styled.div`
     flex-direction: row;
     height: 10vh;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 15px;
 `;
 
 const ProfileImage = styled.img`
@@ -33,6 +44,7 @@ const ProfileImage = styled.img`
     &.collapse {
         width: 100%;
     }
+
     &.default {
         width: 70px;
         left: 27px;
@@ -49,6 +61,13 @@ const ProfileText = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
+`;
+
+const LinkMyPageIcon = styled(Link)`
+    margin-left: 60px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left;
 `;
 
 const LinkMyPageIcon = styled(Link)`
@@ -94,16 +113,21 @@ const Button = styled(Link) <{ isSelected: boolean }>`
         color: #196CE9;
         font-weight: bold;
     }
-    `;
+`;
 
 const AngleArrow = styled.div`
     cursor: pointer;
     text-align: center;
-    
+
     &.default {
         margin-left: 190px;
     }
-    `;
+`;
+
+const UserNameContainer = styled.div`
+    display: flex;
+    margin-top: 7px;
+`
 
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();
@@ -122,7 +146,7 @@ const Sidebar: React.FC = () => {
         };
 
         fetchUserData();
-    });
+    }, []);
 
     useEffect(() => {
         setSelectedButton(location.pathname);
@@ -139,11 +163,11 @@ const Sidebar: React.FC = () => {
                 <AngleArrow className={isCollapse ? 'collapse' : 'default'} onClick={HandleCollapse}>
                     {isCollapse ? (
                         <div>
-                            <FaAngleDoubleRight />
+                            <FaAngleDoubleRight/>
                         </div>
                     ) : (
                         <div>
-                            <FaAngleDoubleLeft />
+                            <FaAngleDoubleLeft/>
                         </div>
                     )}
                 </AngleArrow>
