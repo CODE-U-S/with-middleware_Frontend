@@ -19,9 +19,9 @@ const DevelopPostsPage: React.FC = () => {
     return (
         <div style={{ width: '95%', paddingTop: '3vh' }}>
             <TitleContainer>
-                <PageTitle>팀프로젝트 게시물</PageTitle>
+                <PageTitle>개발자 게시물</PageTitle>
             </TitleContainer>
-            <Board category="팀프로젝트" />
+            <Board category="개발자" />
         </div>
     );
 };
