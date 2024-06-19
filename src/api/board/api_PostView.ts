@@ -12,6 +12,17 @@ export const getPost = async (id: number): Promise<Post> => {
     }
 };
 
+// 게시물 갯수 조회
+export const getMyPost = async (id: number): Promise<Post> => {
+    try {
+        const response = await axios.get<Post>(`http://localhost:8080/post/user/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching post with ID ${id}:`, error);
+        throw error;
+    }
+};
+
 // 좋아요 게시물 조회
 export const getLikePosts = async (postId: number): Promise<LikeType[]> => {
     try {

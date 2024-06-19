@@ -18,6 +18,7 @@ export interface Post {
     category: string | null;
     field: string | null;
     status: "OPEN" | "CLOSED";
+    length: number | null;
 }
 
 export interface Like {

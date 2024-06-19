@@ -153,7 +153,7 @@ const Header: React.FC = () => {
                 ) : (
                     <SearchIcon />
                 )}
-                <Link to={`/mypage`}>
+                <Link to={`/user/1`}>
                     <UserIcon />
                 </Link>
                 <AlarmIcon />
