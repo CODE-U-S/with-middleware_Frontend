@@ -112,7 +112,7 @@ const AngleArrow = styled.div`
 const UserNameContainer = styled.div`
     display: flex;
     margin-top: 7px;
-`
+`;
 
 const Sidebar: React.FC = () => {
     const [user, setUser] = useState<User>();

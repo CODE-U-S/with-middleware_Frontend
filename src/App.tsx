@@ -16,7 +16,7 @@ import DevelopBoard from "./pages/DevelopBoardPage";
 import DesignBoard from "./pages/DesignBoardPage";
 import RecentBoardPage from "./pages/RecentBoardPage.tsx";
 import PostSearchView from "./components/board/PostSearchView.tsx";
-import SavedPost from "./components/board/SavedPost.tsx";
+import SavedPost from "./pages/mypage/SavedPost.tsx";
 import MyPage from "./pages/mypage/MyPage.tsx";
 
 const LayoutContainer = styled.div`
