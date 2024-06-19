@@ -20,7 +20,7 @@ import MyPage from "./pages/mypage/MyPage.tsx";
 const LayoutContainer = styled.div`
     display: flex;
     height: calc(100% - 80px); /* 화면 전체 높이에서 헤더 높이(80px)를 뺀 높이 설정 */
-    margin-top: 80px; /* 헤더의 높이만큼 여백 추가 */
+    margin-top: 70px; /* 헤더의 높이만큼 여백 추가 */
 `;
 
 const Content = styled.div`

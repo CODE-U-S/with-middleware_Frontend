@@ -69,7 +69,7 @@ const ProfileEmail = styled.div`
 
 const ButtonContainer = styled.div`
     width: 100%;
-    margin-top: 70px;
+    margin-top: 50px;
 `;
 
 const Button = styled(Link) <{ isSelected: boolean }>`
