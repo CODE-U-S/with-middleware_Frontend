@@ -23,7 +23,7 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-    display: block;  /* Force the label to be displayed as a block */
+    display: block;
     font-size: 2.5vh;
     margin-bottom: 1vh;
 `;
@@ -37,9 +37,13 @@ const StyledInput = styled.input`
     background: ${props => props.theme.Color.backgroundColor};
 `;
 
+const HalfWidthInput = styled(StyledInput)`
+    width: 50%;
+`;
+
 const TextAreaContainer = styled.div`
-    display: flex; /* Ensure TextArea and CharacterCount are in the same flex container */
-    align-items: flex-start; /* Align items to the start */
+    display: flex;
+    align-items: flex-start;
     width: 100%;
 `;
 
@@ -57,7 +61,7 @@ const TextArea = styled.textarea`
 const CharacterCount = styled.span`
     font-size: 1.5vh;
     color: #666;
-    margin-left: 1vh; /* Add some margin for separation */
+    margin-left: 1vh;
 `;
 
 const Button = styled.button`
@@ -85,7 +89,7 @@ const Divider = styled.hr`
 const DottedDivider = styled.hr`
     width: 100%;
     border: none;
-    border-top: 4px dotted #999; /* Increased thickness and darker color */
+    border-top: 4px dotted #999;
     margin: 2vh 0;
 `;
 
@@ -123,12 +127,66 @@ const DeleteButton = styled.button`
     transition: background-color 0.3s ease;
 `;
 
-const SectionGroup = styled.div`
+const ProfileSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5vh;
+`;
+
+const ProfileTextContainer = styled.div`
+    flex: 1;
+    text-align: center; /* Center the text */
+`;
+
+const ProfileLabel = styled(Label)`
+    font-size: 2vh; /* Smaller font size */
+    font-weight: normal; /* Adjust font weight if needed */
+`;
+
+const ProfileImageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2vh; /* Add margin to space out the label and image */
+`;
+
+const ProfileImage = styled.div`
+    width: 10vh;
+    height: 10vh;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-bottom: 2vh;
+`;
+
+const EditButton = styled(Button)`
+    background-color: #555;
+    padding: 0.5vh 1vh;
+    font-size: 1.8vh;
+
+    &:hover {
+        background-color: #333;
+    }
+`;
+
+const NicknameSection = styled.div`
     margin: 10vh 0;
 `;
 
-const HalfWidthInput = styled(StyledInput)`
-    width: 50%;
+const BioSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const EmailSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const PasswordSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const DeleteAccountSection = styled.div`
+    margin: 10vh 0;
 `;
 
 const Setting: React.FC = () => {
@@ -138,19 +196,18 @@ const Setting: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [agreeDeletePolicy, setAgreeDeletePolicy] = useState<boolean>(false);
-    const [bioLength, setBioLength] = useState<number>(0); // State to track bio length
+    const [bioLength, setBioLength] = useState<number>(0);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const userId = 1; // 예시로 사용자 ID를 1로 지정
+                const userId = 1;
                 const userData = await getUserInfo(userId);
                 setUser(userData);
 
-                // 한 줄 소개가 비어있을 경우 기본 값 설정
                 if (userData.description) {
                     setBio(userData.description);
-                    setBioLength(userData.description.length); // Initialize length
+                    setBioLength(userData.description.length);
                 }
             } catch (error) {
                 console.error('유저 정보를 불러오는 데 실패했습니다.', error);
@@ -163,18 +220,16 @@ const Setting: React.FC = () => {
     const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const inputBio = e.target.value;
         setBio(inputBio);
-        setBioLength(inputBio.length); // Update bio length
+        setBioLength(inputBio.length);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log('전송할 데이터:', { nickname, bio, email, password });
-        // 서버에 데이터 전송 등의 추가 작업 수행
     };
 
     const handleDeleteAccount = () => {
         if (agreeDeletePolicy) {
-            // 여기에 계정 삭제 처리 로직 추가
             console.log('계정 삭제 요청');
         } else {
             alert('계정 삭제 정책에 동의해 주세요.');
@@ -189,8 +244,17 @@ const Setting: React.FC = () => {
         <Container>
             <FormContainer>
                 <h1>프로필 설정</h1>
+                <ProfileSection>
+                    <ProfileTextContainer>
+                        <ProfileLabel>프로필 사진</ProfileLabel>
+                    </ProfileTextContainer>
+                    <ProfileImageContainer>
+                        <ProfileImage />
+                        <EditButton>수정</EditButton>
+                    </ProfileImageContainer>
+                </ProfileSection>
                 <form onSubmit={handleSubmit}>
-                    <SectionGroup>
+                    <NicknameSection>
                         <FormGroup>
                             <Label>닉네임</Label>
                             <HalfWidthInput
@@ -200,6 +264,8 @@ const Setting: React.FC = () => {
                                 placeholder="닉네임 입력"
                             />
                         </FormGroup>
+                    </NicknameSection>
+                    <BioSection>
                         <FormGroup>
                             <Label>한줄 소개</Label>
                             <TextAreaContainer>
@@ -214,9 +280,9 @@ const Setting: React.FC = () => {
                                 </CharacterCount>
                             </TextAreaContainer>
                         </FormGroup>
-                    </SectionGroup>
+                    </BioSection>
                     <DottedDivider />
-                    <SectionGroup>
+                    <EmailSection>
                         <FormGroup>
                             <Label>이메일 정보</Label>
                             <StyledInput
@@ -226,9 +292,9 @@ const Setting: React.FC = () => {
                                 placeholder="이메일 입력"
                             />
                         </FormGroup>
-                    </SectionGroup>
+                    </EmailSection>
                     <Divider />
-                    <SectionGroup>
+                    <PasswordSection>
                         <FormGroup>
                             <Label>새 비밀번호</Label>
                             <StyledInput
@@ -238,9 +304,9 @@ const Setting: React.FC = () => {
                                 placeholder="새 비밀번호 입력"
                             />
                         </FormGroup>
-                    </SectionGroup>
+                    </PasswordSection>
                     <Divider />
-                    <SectionGroup>
+                    <DeleteAccountSection>
                         <Label>계정삭제</Label>
                         <InfoBox>
                             회원 탈퇴일로부터 계정과 닉네임을 포함한 계정 정보(아이디/이메일/닉네임)는 개인정보 처리방침에 따라 60일간 보관(잠김)되며, 60일 경과된 후에는 모든 개인 정보는 완전히 삭제되며 더 이상 복구할 수 없게 됩니다.
@@ -256,7 +322,7 @@ const Setting: React.FC = () => {
                             </PolicyText>
                         </CheckBoxContainer>
                         <DeleteButton onClick={handleDeleteAccount}>회원 탈퇴</DeleteButton>
-                    </SectionGroup>
+                    </DeleteAccountSection>
                     <Divider />
                     <Button type="submit">저장</Button>
                 </form>
