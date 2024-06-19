@@ -186,10 +186,6 @@ const Sidebar: React.FC = () => {
                         <FaHeart />
                         {isCollapse ? '' : '찜한 게시물'}
                     </Button>
-                    <Button to="/recent" isSelected={selectedButton === '/recent'}>
-                        <FaCode />
-                        {isCollapse ? '' : '최근 본 게시물'}
-                    </Button>
                 </ButtonContainer>
             </SidebarContainer>
         </ThemeProvider>

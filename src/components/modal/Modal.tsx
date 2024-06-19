@@ -30,6 +30,7 @@ const ModalContent = styled.div`
 
 const ModalButtons = styled.div`
     display: flex;
+    flex-direction: row-reverse;
     justify-content: space-between;
     margin-top: 1rem;
 `;
@@ -60,10 +61,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, isConfirm, me
             <ModalContent>
                 <p>{message}</p>
                 <ModalButtons>
+                    <ModalButton className="Confirm" onClick={onConfirm}>확인</ModalButton>
                     {!isConfirm && (
-                        <ModalButton className="Confirm" onClick={onConfirm}>확인</ModalButton>
+                        <ModalButton className="Cancel" onClick={onClose}>취소</ModalButton>
                     )}
-                    <ModalButton className="Cancel" onClick={onClose}>취소</ModalButton>
                 </ModalButtons>
             </ModalContent>
         </ModalContainer>
