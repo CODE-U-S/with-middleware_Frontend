@@ -32,13 +32,14 @@ const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
         width: 250px;
     }
 `;
-
 const Profile = styled.div`
+    justify-content: center;
+`;
+
+const ProfileContainer = styled.div`
     display: flex;
-    flex-direction: row;
-    height: 10vh;
     align-items: center;
-    margin-bottom: 70px;
+    z-index: auto;
 `;
 
 const ProfileImage = styled.img`
@@ -66,10 +67,11 @@ const ProfileText = styled.div`
 `;
 
 const ContainerOption = styled.div`
+    margin-top: 0.5vw;
+    margin-right: 20px;
     display: flex;
-    padding: 7px;
-    width: 25vmin;
     justify-content: space-between;
+    font-size: 9pt;
 `;
 
 const LinkMyPageIcon = styled(Link)`
@@ -110,7 +112,6 @@ const Button = styled(Link) <{ isSelected: boolean }>`
     text-decoration: none;
 
     &:hover {
-        // background-color: #EDF1F8;
         box-shadow: 0 0 10px #EEE;
         color: #196CE9;
         font-weight: bold;
@@ -189,32 +190,32 @@ const Sidebar: React.FC = () => {
                     )}
                 </AngleArrow>
                 <Profile>
+                    <ProfileContainer>
                     {user && (
                         <ProfileImage src={userProfilePic(user.id)} alt="Profile"
                                       className={isCollapse ? 'collapse' : 'default'}/>
                     )}
                     {!isCollapse && user && (
-                        <div>
-                            <div>
-                                <ProfileText>
-                                    <ProfileLink>
-                                        <ProfileName>{user.name}</ProfileName>
-                                        <LinkMyPageIcon to="/user/1"><GoChevronRight/></LinkMyPageIcon>
-                                    </ProfileLink>
-                                    <ProfileEmail>{user.email}</ProfileEmail>
-                                </ProfileText>
-                            </div>
+                        <>
+                            <ProfileText>
+                                <ProfileLink>
+                                    <ProfileName>{user.name}</ProfileName>
+                                    <LinkMyPageIcon to="/user/1"><GoChevronRight/></LinkMyPageIcon>
+                                </ProfileLink>
+                                <ProfileEmail>{user.email}</ProfileEmail>
+                                <ContainerOption>
+                                    <div>
+                                        {`내 게시물 ${postLength}`}
+                                    </div>
+                                    <Link to="/settings">
+                                        <FaCog/>
+                                    </Link>
+                                </ContainerOption>
+                            </ProfileText>
                             <br/>
-                            <ContainerOption>
-                                <div>
-                                    {`내 게시물 ${postLength}`}
-                                </div>
-                                <div>
-                                    <FaCog/>
-                                </div>
-                            </ContainerOption>
-                        </div>
+                        </>
                     )}
+                    </ProfileContainer>
                 </Profile>
                 <ButtonContainer>
                     <Button to="/post" isSelected={selectedButton === '/post'}>
