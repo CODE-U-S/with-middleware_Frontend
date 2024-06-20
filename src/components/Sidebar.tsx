@@ -160,7 +160,7 @@ const Sidebar: React.FC = () => {
 
                 // 이전 상태와 비교하여 실제로 변경이 발생한 경우만 상태 업데이트
                 if (JSON.stringify(data) !== JSON.stringify(post)) {
-                    setPost([data]);
+                    setPost(data);
                     setPostLength(data.length ?? 0); // data를 사용하여 길이를 설정
                 }
             } catch (error) {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Post, Comment, Like as LikeType } from '../types';
+import { PostType } from './api_Board';
 
 // 게시물 조회
 export const getPost = async (id: number): Promise<Post> => {
@@ -13,9 +14,9 @@ export const getPost = async (id: number): Promise<Post> => {
 };
 
 // 게시물 갯수 조회
-export const getMyPost = async (id: number): Promise<Post> => {
+export const getMyPost = async (id: number): Promise<PostType[]> => {
     try {
-        const response = await axios.get<Post>(`http://localhost:8080/post/user/${id}`);
+        const response = await axios.get<PostType[]>(`http://localhost:8080/post/user/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error fetching post with ID ${id}:`, error);
@@ -24,10 +25,10 @@ export const getMyPost = async (id: number): Promise<Post> => {
 };
 
 // 좋아요 게시물 조회
-export const getLikePosts = async (postId: number): Promise<LikeType[]> => {
+export const getLikePosts = async (postId: number): Promise<PostType[]> => {
     try {
         const response = await axios.get<LikeType[]>(`http://localhost:8080/like/user/${postId}`);
-        return response.data;
+        return response.data.map((post) => post.post);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error("Axios error:", error.message);
@@ -137,3 +138,4 @@ export const getCommentCountByPostId = async (postId: number): Promise<number> =
         throw error;
     }
 };
+
