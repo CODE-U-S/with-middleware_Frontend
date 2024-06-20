@@ -552,8 +552,8 @@ const PostView: React.FC = () => {
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
                         <CommentHeader>
-                            <ProfilePicture src={userProfilePic(user!.id)} alt="프로필 사진"/>
-                            <CommentUserName>{user!.name}</CommentUserName>
+                            <ProfilePicture src={userProfilePic(comment.user.id)} alt="프로필 사진"/>
+                            <CommentUserName>{comment.user.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
                         {editingCommentId === comment.id ? (
