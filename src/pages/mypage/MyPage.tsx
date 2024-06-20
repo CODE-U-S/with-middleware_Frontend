@@ -31,6 +31,7 @@ const PostItem = styled(Link)`
     border: 1px solid #ccc;
     border-radius: 5px;
     text-decoration: none;
+    color: inherit;
     background-color: #fefefe;
     box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0 1px 3px -1px;
 
@@ -336,7 +337,7 @@ const MyPage: React.FC = () => {
     // 게시물 렌더링 함수
     const renderPosts = (posts: PostType[]) => (
         posts.map((post) => (
-            <PostItem key={post.id} to={`/postview/${post.id}`}>
+            <PostItem key={post.id} to={`/post/${post.id}`}>
                 <PostPin>
                     {post.category && getCategoryIcon(post.category)}
                 </PostPin>
