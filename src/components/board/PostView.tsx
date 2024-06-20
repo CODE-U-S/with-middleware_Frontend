@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts,/* getUserImage*/ } from '../../api/board/api_PostView';
 import { Post as PostType, Comment, User } from '../../api/types.ts';
@@ -229,7 +229,9 @@ const CommentItem = styled.div`
     flex-direction: column;
 `;
 
-const CommentHeader = styled.div`
+const CommentHeader = styled(Link)`
+    text-decoration: none;
+    color: inherit;
     display: flex;
     align-items: center;
     margin-bottom: 2vh;
@@ -551,7 +553,7 @@ const PostView: React.FC = () => {
                 <CommentButton onClick={handleAddComment}>등록</CommentButton>
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
-                        <CommentHeader>
+                        <CommentHeader to={`../../user/${comment.user.id}`}>
                             <ProfilePicture src={userProfilePic(comment.user.id)} alt="프로필 사진"/>
                             <CommentUserName>{comment.user.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
