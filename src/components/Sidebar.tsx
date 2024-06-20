@@ -207,9 +207,9 @@ const Sidebar: React.FC = () => {
                                     <div>
                                         {`내 게시물 ${postLength}`}
                                     </div>
-                                    <div>
+                                    <Link to="/settings">
                                         <FaCog/>
-                                    </div>
+                                    </Link>
                                 </ContainerOption>
                             </ProfileText>
                             <br/>
