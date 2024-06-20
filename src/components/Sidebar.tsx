@@ -9,7 +9,6 @@ import {
     FaCode,
     FaPalette,
     FaBookOpen,
-    FaHeart,
     FaCog
 } from 'react-icons/fa';
 import {GoChevronRight} from "react-icons/go";
@@ -24,14 +23,13 @@ const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
     background-color: ${props => props.theme.Color.sideColor};
     flex-direction: column;
     padding: 20px;
-    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
 
     &.collapse {
-        width: 10vmin;
+        width: 80px;
     }
 
     &.default {
-        width: 35vmin;
+        width: 300px;
     }
 `;
 const Profile = styled.div`
@@ -60,7 +58,7 @@ const ProfileImage = styled.img`
 `;
 
 const ProfileName = styled.div`
-    font-size: 15px;
+    font-size: 13pt;
     font-weight: bold;
 `;
 
@@ -71,15 +69,15 @@ const ProfileText = styled.div`
 `;
 
 const ContainerOption = styled.div`
-    margin-top: 0.5vw;
+    margin-top: 1vw;
     margin-right: 2vw;
     display: flex;
     justify-content: space-between;
-    font-size: 9pt;
+    font-size: 10pt;
 `;
 
 const SettingLink = styled(Link)`
-    margin-top: -4.7px;
+    margin: -3px 20px 0 0;
     padding: 5px;
     color: black;
     &:active {
@@ -99,8 +97,8 @@ const ProfileLink = styled.div`
 
 const ProfileEmail = styled.div`
     margin-top: 5px;
-    font-size: 10px;
-    color: gray;
+    font-size: 12px;
+    color: #AAA;
 `;
 
 const ButtonContainer = styled.div`
@@ -111,7 +109,7 @@ const Button = styled(Link) <{ isSelected: boolean }>`
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 17px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -135,7 +133,10 @@ const AngleArrow = styled.div`
     text-align: center;
 
     &.default {
-        margin-left: 190px;
+        margin-left: 240px;
+    }
+    &.collapse {
+        margin-bottom: 20px;
     }
 `;
 
@@ -249,10 +250,6 @@ const Sidebar: React.FC = () => {
                     <Button to="/study" isSelected={selectedButton === '/study'}>
                         <FaBookOpen/>
                         {isCollapse ? '' : '스터디'}
-                    </Button>
-                    <Button to="/like" isSelected={selectedButton === '/like'}>
-                        <FaHeart/>
-                        {isCollapse ? '' : '찜한 게시물'}
                     </Button>
                 </ButtonContainer>
             </SidebarContainer>
