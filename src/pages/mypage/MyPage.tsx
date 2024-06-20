@@ -207,6 +207,11 @@ const MyPage: React.FC = () => {
     const [userEmail, setUserEmail] = useState<string>();
     const [page, setPage] = useState(0);
 
+    const DesignIcon = () => <PinIcon src="/src/assets/board/design_icon.svg" alt="디자인 아이콘" />;
+    const DevelopIcon = () => <PinIcon src="/src/assets/board/develop_icon.svg" alt="개발자 아이콘" />;
+    const StudyIcon = () => <PinIcon src="/src/assets/board/study_icon.svg" alt="스터디 아이콘" />;
+    const TeamIcon = () => <PinIcon src="/src/assets/board/team_icon.svg" alt="팀프로젝트 아이콘" />;
+
     const HandlePage = (m: number) => {
         setPage(m);
     }
@@ -313,12 +318,27 @@ const MyPage: React.FC = () => {
         }
     };
 
+    const getCategoryIcon = (category: string | undefined): JSX.Element | null => {
+        switch (category) {
+            case '팀프로젝트':
+                return <TeamIcon />;
+            case '개발자':
+                return <DevelopIcon />;
+            case '디자이너':
+                return <DesignIcon />;
+            case '스터디':
+                return <StudyIcon />;
+            default:
+                return null;
+        }
+    };
+
     // 게시물 렌더링 함수
     const renderPosts = (posts: PostType[]) => (
         posts.map((post) => (
             <PostItem key={post.id} to={`/postview/${post.id}`}>
                 <PostPin>
-                    <PinIcon src="/img/pin.png" />
+                    {post.category && getCategoryIcon(post.category)}
                 </PostPin>
                 <Profile>
                     <ProfileImage src={userProfilePic(post.user.id)} alt="Profile" />
