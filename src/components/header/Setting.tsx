@@ -23,11 +23,12 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
+    display: block;
     font-size: 2.5vh;
     margin-bottom: 1vh;
 `;
 
-const Input = styled.input`
+const StyledInput = styled.input`
     width: 100%;
     padding: 1vh;
     font-size: 2vh;
@@ -36,9 +37,13 @@ const Input = styled.input`
     background: ${props => props.theme.Color.backgroundColor};
 `;
 
+const HalfWidthInput = styled(StyledInput)`
+    width: 50%;
+`;
+
 const TextAreaContainer = styled.div`
-    display: flex; /* Ensure TextArea and CharacterCount are in the same flex container */
-    align-items: flex-start; /* Align items to the start */
+    display: flex;
+    align-items: flex-start;
     width: 100%;
 `;
 
@@ -50,13 +55,13 @@ const TextArea = styled.textarea`
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
-    max-width: 50%; 
+    max-width: 50%;
 `;
 
 const CharacterCount = styled.span`
     font-size: 1.5vh;
     color: #666;
-    margin-left: 1vh; /* Add some margin for separation */
+    margin-left: 1vh;
 `;
 
 const Button = styled.button`
@@ -84,7 +89,7 @@ const Divider = styled.hr`
 const DottedDivider = styled.hr`
     width: 100%;
     border: none;
-    border-top: 4px dotted #999; /* Increased thickness and darker color */
+    border-top: 4px dotted #999;
     margin: 2vh 0;
 `;
 
@@ -122,7 +127,68 @@ const DeleteButton = styled.button`
     transition: background-color 0.3s ease;
 `;
 
-const SectionGroup = styled.div`
+const FlexContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`;
+
+const ProfileTextContainer = styled.div`
+    flex: 1;
+    text-align: center; 
+`;
+
+const ProfileLabel = styled(Label)`
+    font-size: 2vh; /* Smaller font size */
+    font-weight: normal; /* Adjust font weight if needed */
+`;
+
+const ProfileImageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 2vh; 
+`;
+
+const ProfileImage = styled.div`
+    width: 12vh;
+    height: 12vh;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin-bottom: 2vh;
+    background-image: url('http://localhost:8080/1.png');
+    background-size: cover;
+    background-position: center;
+`;
+
+const EditButton = styled(Button)`
+    background-color: #555;
+    padding: 0.5vh 1vh;
+    font-size: 1.8vh;
+
+    &:hover {
+        background-color: #333;
+    }
+`;
+
+const NicknameSection = styled.div`
+    margin: 10vh 0;
+    margin-right: 2vh;
+`;
+
+const BioSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const EmailSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const PasswordSection = styled.div`
+    margin: 10vh 0;
+`;
+
+const DeleteAccountSection = styled.div`
     margin: 10vh 0;
 `;
 
@@ -133,19 +199,18 @@ const Setting: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [agreeDeletePolicy, setAgreeDeletePolicy] = useState<boolean>(false);
-    const [bioLength, setBioLength] = useState<number>(0); // State to track bio length
+    const [bioLength, setBioLength] = useState<number>(0);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const userId = 1; // 예시로 사용자 ID를 1로 지정
+                const userId = 1;
                 const userData = await getUserInfo(userId);
                 setUser(userData);
 
-                // 한 줄 소개가 비어있을 경우 기본 값 설정
                 if (userData.description) {
                     setBio(userData.description);
-                    setBioLength(userData.description.length); // Initialize length
+                    setBioLength(userData.description.length);
                 }
             } catch (error) {
                 console.error('유저 정보를 불러오는 데 실패했습니다.', error);
@@ -158,18 +223,16 @@ const Setting: React.FC = () => {
     const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const inputBio = e.target.value;
         setBio(inputBio);
-        setBioLength(inputBio.length); // Update bio length
+        setBioLength(inputBio.length);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log('전송할 데이터:', { nickname, bio, email, password });
-        // 서버에 데이터 전송 등의 추가 작업 수행
     };
 
     const handleDeleteAccount = () => {
         if (agreeDeletePolicy) {
-            // 여기에 계정 삭제 처리 로직 추가
             console.log('계정 삭제 요청');
         } else {
             alert('계정 삭제 정책에 동의해 주세요.');
@@ -184,17 +247,28 @@ const Setting: React.FC = () => {
         <Container>
             <FormContainer>
                 <h1>프로필 설정</h1>
-                <form onSubmit={handleSubmit}>
-                    <SectionGroup>
+                <FlexContainer>
+                    <NicknameSection>
                         <FormGroup>
                             <Label>닉네임</Label>
-                            <Input
+                            <HalfWidthInput
                                 type="text"
                                 value={nickname || user.name || ''}
                                 onChange={(e) => setNickname(e.target.value)}
                                 placeholder="닉네임 입력"
                             />
                         </FormGroup>
+                    </NicknameSection>
+                    <ProfileImageContainer>
+                        <ProfileTextContainer>
+                            <ProfileLabel>프로필 사진</ProfileLabel>
+                        </ProfileTextContainer>
+                        <ProfileImage />
+                        <EditButton>수정</EditButton>
+                    </ProfileImageContainer>
+                </FlexContainer>
+                <form onSubmit={handleSubmit}>
+                    <BioSection>
                         <FormGroup>
                             <Label>한줄 소개</Label>
                             <TextAreaContainer>
@@ -202,40 +276,40 @@ const Setting: React.FC = () => {
                                     value={bio}
                                     onChange={handleBioChange}
                                     placeholder="한줄 소개 입력"
-                                    maxLength={255} // Limit to 255 characters
+                                    maxLength={255}
                                 />
                                 <CharacterCount>
                                     {bioLength}/255
                                 </CharacterCount>
                             </TextAreaContainer>
                         </FormGroup>
-                    </SectionGroup>
+                    </BioSection>
                     <DottedDivider />
-                    <SectionGroup>
+                    <EmailSection>
                         <FormGroup>
                             <Label>이메일 정보</Label>
-                            <Input
+                            <StyledInput
                                 type="email"
                                 value={email || user.email || ''}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="이메일 입력"
                             />
                         </FormGroup>
-                    </SectionGroup>
+                    </EmailSection>
                     <Divider />
-                    <SectionGroup>
+                    <PasswordSection>
                         <FormGroup>
                             <Label>새 비밀번호</Label>
-                            <Input
+                            <StyledInput
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="새 비밀번호 입력"
                             />
                         </FormGroup>
-                    </SectionGroup>
+                    </PasswordSection>
                     <Divider />
-                    <SectionGroup>
+                    <DeleteAccountSection>
                         <Label>계정삭제</Label>
                         <InfoBox>
                             회원 탈퇴일로부터 계정과 닉네임을 포함한 계정 정보(아이디/이메일/닉네임)는 개인정보 처리방침에 따라 60일간 보관(잠김)되며, 60일 경과된 후에는 모든 개인 정보는 완전히 삭제되며 더 이상 복구할 수 없게 됩니다.
@@ -251,13 +325,14 @@ const Setting: React.FC = () => {
                             </PolicyText>
                         </CheckBoxContainer>
                         <DeleteButton onClick={handleDeleteAccount}>회원 탈퇴</DeleteButton>
-                    </SectionGroup>
+                    </DeleteAccountSection>
                     <Divider />
                     <Button type="submit">저장</Button>
                 </form>
             </FormContainer>
         </Container>
     );
+
 };
 
 export default Setting;
