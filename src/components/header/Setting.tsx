@@ -127,16 +127,15 @@ const DeleteButton = styled.button`
     transition: background-color 0.3s ease;
 `;
 
-const ProfileSection = styled.div`
+const FlexContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 5vh;
+    justify-content: space-between;
+    width: 100%;
 `;
 
 const ProfileTextContainer = styled.div`
     flex: 1;
-    text-align: center; /* Center the text */
+    text-align: center; 
 `;
 
 const ProfileLabel = styled(Label)`
@@ -148,15 +147,18 @@ const ProfileImageContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 2vh; /* Add margin to space out the label and image */
+    margin-left: 2vh; 
 `;
 
 const ProfileImage = styled.div`
-    width: 10vh;
-    height: 10vh;
+    width: 12vh;
+    height: 12vh;
     border-radius: 50%;
     background-color: #ddd;
     margin-bottom: 2vh;
+    background-image: url('http://localhost:8080/1.png');
+    background-size: cover;
+    background-position: center;
 `;
 
 const EditButton = styled(Button)`
@@ -171,6 +173,7 @@ const EditButton = styled(Button)`
 
 const NicknameSection = styled.div`
     margin: 10vh 0;
+    margin-right: 2vh;
 `;
 
 const BioSection = styled.div`
@@ -244,16 +247,7 @@ const Setting: React.FC = () => {
         <Container>
             <FormContainer>
                 <h1>프로필 설정</h1>
-                <ProfileSection>
-                    <ProfileTextContainer>
-                        <ProfileLabel>프로필 사진</ProfileLabel>
-                    </ProfileTextContainer>
-                    <ProfileImageContainer>
-                        <ProfileImage />
-                        <EditButton>수정</EditButton>
-                    </ProfileImageContainer>
-                </ProfileSection>
-                <form onSubmit={handleSubmit}>
+                <FlexContainer>
                     <NicknameSection>
                         <FormGroup>
                             <Label>닉네임</Label>
@@ -265,6 +259,15 @@ const Setting: React.FC = () => {
                             />
                         </FormGroup>
                     </NicknameSection>
+                    <ProfileImageContainer>
+                        <ProfileTextContainer>
+                            <ProfileLabel>프로필 사진</ProfileLabel>
+                        </ProfileTextContainer>
+                        <ProfileImage />
+                        <EditButton>수정</EditButton>
+                    </ProfileImageContainer>
+                </FlexContainer>
+                <form onSubmit={handleSubmit}>
                     <BioSection>
                         <FormGroup>
                             <Label>한줄 소개</Label>
@@ -329,6 +332,7 @@ const Setting: React.FC = () => {
             </FormContainer>
         </Container>
     );
+
 };
 
 export default Setting;

@@ -500,7 +500,7 @@ const PostView: React.FC = () => {
                 </InfoContainer>
                 <Divider/>
                 <EditorWrapper>
-                    <MDEditor.Markdown source={post.content} style={{fontSize: '40px', lineHeight: '1.6'}}/>
+                    <MDEditor.Markdown source={post.content} style={{fontSize: '20px', lineHeight: '1.6'}}/>
                 </EditorWrapper>
             </PostContainer>
             {post.status && (
