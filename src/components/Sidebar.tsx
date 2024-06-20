@@ -19,27 +19,31 @@ import {getUser, userProfilePic} from '../api/sidebar/api_getUser';
 import {getMyPost} from "../api/board/api_PostView.ts";
 
 const SidebarContainer = styled.div<{ theme: DefaultTheme }>`
+    left: 0;
     min-height: 100vh;
     background-color: ${props => props.theme.Color.sideColor};
     flex-direction: column;
     padding: 20px;
+    box-shadow: 1px 0 5px rgba(0, 0, 0, 0.1);
 
     &.collapse {
-        width: 80px;
+        width: 10vmin;
     }
 
     &.default {
-        width: 250px;
+        width: 35vmin;
     }
 `;
 const Profile = styled.div`
     justify-content: center;
 `;
 
-const ProfileContainer = styled.div`
+const ProfileContainer = styled(Link)`
     display: flex;
     align-items: center;
+    text-decoration: none;
     z-index: auto;
+    color: black;
 `;
 
 const ProfileImage = styled.img`
@@ -68,10 +72,19 @@ const ProfileText = styled.div`
 
 const ContainerOption = styled.div`
     margin-top: 0.5vw;
-    margin-right: 20px;
+    margin-right: 2vw;
     display: flex;
     justify-content: space-between;
     font-size: 9pt;
+`;
+
+const SettingLink = styled(Link)`
+    margin-top: -4.7px;
+    padding: 5px;
+    color: black;
+    &:active {
+        color: gray;
+    }
 `;
 
 const LinkMyPageIcon = styled(Link)`
@@ -91,7 +104,6 @@ const ProfileEmail = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-    width: 100%;
     margin-top: 50px;
 `;
 
@@ -190,7 +202,7 @@ const Sidebar: React.FC = () => {
                     )}
                 </AngleArrow>
                 <Profile>
-                    <ProfileContainer>
+                    <ProfileContainer to="/user/1">
                     {user && (
                         <ProfileImage src={userProfilePic(user.id)} alt="Profile"
                                       className={isCollapse ? 'collapse' : 'default'}/>
@@ -205,11 +217,11 @@ const Sidebar: React.FC = () => {
                                 <ProfileEmail>{user.email}</ProfileEmail>
                                 <ContainerOption>
                                     <div>
-                                        {`내 게시물 ${postLength}`}
+                                        내 게시물 {postLength}
                                     </div>
-                                    <Link to="/settings">
+                                    <SettingLink to="/settings">
                                         <FaCog/>
-                                    </Link>
+                                    </SettingLink>
                                 </ContainerOption>
                             </ProfileText>
                             <br/>
