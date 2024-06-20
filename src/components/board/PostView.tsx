@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getPost, addComment, getCommentsByPostId, getCommentCountByPostId, updateComment, deleteComment, addLike, cancelLike, getLikePosts,/* getUserImage*/ } from '../../api/board/api_PostView';
-import { Post as PostType, Comment, Like as LikeType } from '../../api/types.ts';
+import { Post as PostType, Comment, User } from '../../api/types.ts';
 import MDEditor from '@uiw/react-md-editor';
 import { FaArrowLeft, FaHeart, FaShare } from 'react-icons/fa';
 import { ViewButton } from './ViewButton.ts';
 import Modal from '../modal/Modal';
-import { userProfilePic } from '../../api/sidebar/api_getUser';
+import { getUser, userProfilePic } from '../../api/sidebar/api_getUser';
 
 const Container = styled.div`
     display: flex;
@@ -287,6 +287,20 @@ const PostView: React.FC = () => {
     const [initialLoad, setInitialLoad] = useState(true);
     const [likeCount, setLikeCount] = useState<number>(0);
     const [showAlert, setShowAlert] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() =>{
+        const fetchUserData = async () => {
+            try {
+                const data = await getUser(1);
+                setUser(data);
+            }catch (error){
+                console.error("User data를 불러오는데 실패하였습니다 : ", error);
+            }
+        }
+
+        fetchUserData();
+    }, [user]);
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -312,7 +326,7 @@ const PostView: React.FC = () => {
             try {
                 const likes = await getLikePosts(Number(id));
                 const userId = post.user.id;
-                const userHasLiked = likes.some((like: LikeType) => like.user.id === userId);
+                const userHasLiked = likes.some((like: PostType) => like.user.id === userId);
                 setLiked(userHasLiked);
                 setLikeCount(likes.length);
                 setInitialLoad(false); // 최초 데이터 로드 후 상태 변경
@@ -527,7 +541,7 @@ const PostView: React.FC = () => {
             <CommentSection>
                 <CommentCount>댓글 <span>{commentCount}</span></CommentCount>
                 <CommentInputWrapper>
-                    <ProfilePicture src={userProfilePic(post.user.id)} alt="프로필 사진"/>
+                    <ProfilePicture src={userProfilePic(user!.id)} alt="프로필 사진"/>
                     <CommentInput
                         placeholder="댓글을 작성해보세요."
                         value={newComment}
@@ -538,8 +552,8 @@ const PostView: React.FC = () => {
                 {comments.map((comment) => (
                     <CommentItem key={comment.id}>
                         <CommentHeader>
-                            <ProfilePicture src={userProfilePic(post.user.id)} alt="프로필 사진"/>
-                            <CommentUserName>{comment.user.name}</CommentUserName>
+                            <ProfilePicture src={userProfilePic(user!.id)} alt="프로필 사진"/>
+                            <CommentUserName>{user!.name}</CommentUserName>
                             <CommentTime>{getTimeDifference(comment.createdDate || '')}</CommentTime>
                         </CommentHeader>
                         {editingCommentId === comment.id ? (
